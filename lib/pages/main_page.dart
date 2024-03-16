@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
+import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class MainPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class _MainPageState extends State<MainPage> {
 
   List<List<dynamic>> screensList = [
     [const HomeScreen(), 'Home', Iconsax.home5],
-    [const HomeScreen(), 'Search', Iconsax.search_status],
+    [const SearchScreen(), 'Search', Iconsax.search_status],
     [const HomeScreen(), 'Favourites', Iconsax.lovely],
     [const ProfileScreen(), 'Profile', Iconsax.user]
   ];
