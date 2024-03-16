@@ -8,9 +8,14 @@ class CustomPadding {
 }
 class CustomColors {
   CustomColors._();
-  static const Color backgroundDark = Color(0xFF101010);
-  static const Color cardColorDark = Color(0xFF1E1E1E);
-  static const Color cardColorLight = Color(0xffe5e5f1);
+  static const Color backgroundLight = Color(0xFFF7F5F8);
+  static const Color backgroundDark = Color(0xFF141215);
+
+  static const Color navBarBackgroundLight = Color(0xFFFFFFFF);
+  static const Color navBarBackgroundDark = Color(0xFF1D1B1E);
+
+  static const Color componentColorLight = Color(0xFFFEFDFE);
+  static const Color componentColorDark = Color(0xFFFEFCFF);
 
   static const Color cardColorDarkLoading = Color(0xff353542);
   static const Color cardColorLightLoading = Color(0xffb0b0b7);

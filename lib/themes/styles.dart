@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:quadrant_app/utils/custom_constants.dart';
 
 class Styles {
 
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
+      fontFamily: 'Poppins',
       primaryColor: isDarkTheme ? Colors.white : Colors.black,
       indicatorColor: isDarkTheme ? const Color(0xff0E1D36) : const Color(0xffCBDCF8),
       hintColor: isDarkTheme ? Colors.grey : Colors.black,
@@ -14,11 +16,12 @@ class Styles {
       disabledColor: Colors.grey,
       textSelectionTheme: TextSelectionThemeData(selectionColor: isDarkTheme ? Colors.white : Colors.black),
       cardColor: isDarkTheme ? const Color(0xFF1E1D1D) : const Color(0xFFF5F6F9),
-      canvasColor: isDarkTheme ? const Color(0xFF1E1D1D) : Colors.grey[50],
+      canvasColor: isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
       brightness: isDarkTheme ? Brightness.light : Brightness.light,
         textTheme: TextTheme(
-          bodyLarge: TextStyle(color: isDarkTheme ? Colors.white : Colors.black),
-          bodyMedium: TextStyle(color: isDarkTheme ? Colors.white : Colors.black),
+          bodyLarge: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
+          bodyMedium: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
+          bodySmall: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
         ),
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
           colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),

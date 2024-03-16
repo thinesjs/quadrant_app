@@ -14,10 +14,10 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int? selectedIndex;
 
-  List<List<dynamic>> combinedList = [
+  List<List<dynamic>> screensList = [
     [const HomeScreen(), 'Home', Iconsax.home5],
     [const HomeScreen(), 'Search', Iconsax.search_status],
-    [const HomeScreen(), 'Favouries', Iconsax.lovely],
+    [const HomeScreen(), 'Favourites', Iconsax.lovely],
     [const HomeScreen(), 'Profile', Iconsax.user]
   ];
 
@@ -33,13 +33,13 @@ class _MainPageState extends State<MainPage> {
     if(selectedIndex != null) {
       currentIndex = selectedIndex!;
     }
-    double displayWidth = MediaQuery.of(context).size.width;
+    
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: combinedList[currentIndex][0],
+      body: screensList[currentIndex][0],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
@@ -47,14 +47,15 @@ class _MainPageState extends State<MainPage> {
         elevation: 0.0,
         selectedItemColor: const Color(0xFFD6354D),
         unselectedItemColor: const Color(0xFF7E7E7E),
-        // showSelectedLabels: false,
-        // selectedFontSize: 1,
-        // unselectedFontSize: 12,
+        backgroundColor: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
         items: 
-          combinedList.map((page) {
+          screensList.map((page) {
             return BottomNavigationBarItem(
               label: page[1],
-              icon: Icon(page[2]),
+              icon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(page[2]),
+              ),
             );
           }).toList(),
       ),
