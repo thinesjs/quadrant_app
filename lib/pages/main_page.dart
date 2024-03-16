@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
+import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class MainPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _MainPageState extends State<MainPage> {
     [const HomeScreen(), 'Home', Iconsax.home5],
     [const HomeScreen(), 'Search', Iconsax.search_status],
     [const HomeScreen(), 'Favourites', Iconsax.lovely],
-    [const HomeScreen(), 'Profile', Iconsax.user]
+    [const ProfileScreen(), 'Profile', Iconsax.user]
   ];
 
   int currentIndex = 0;

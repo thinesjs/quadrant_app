@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +15,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  var usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
@@ -20,38 +26,40 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Container(
           padding: EdgeInsets.only(top: 65.0),
-          height: displayWidth / 1.8,
+          height: displayWidth / 1.5,
           // decoration: BoxDecoration(color: Colors.blue.shade800),
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage('https://img.freepik.com/premium-photo/iconic-tower-bridge-view-connecting-london-with-southwark-thames-river-uk-beautiful-view-illuminated-bridge-night_536604-1805.jpg?size=626&ext=jpg'),
+              image: NetworkImage('https://live.staticflickr.com/4475/37095348433_626859af3c_b.jpg'),
               fit: BoxFit.fill,
               opacity: .5
             ),
             color: Colors.black
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      // backgroundImage: AssetImage("assets/images/Profile Image.png"),
-                      backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        color: Colors.black.withOpacity(.4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
                       ),
-                      child: Icon(Iconsax.notification, color: isDark ? CustomColors.componentColorDark : CustomColors.componentColorLight),
-                    )
-                  ],
+                      Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(42)),
+                          color: Colors.black.withOpacity(.4),
+                        ),
+                        child: Icon(Iconsax.notification, color: isDark ? CustomColors.componentColorDark : CustomColors.componentColorLight),
+                      )
+                    ],
+                  ),
                 ),
                 Text("Hey, Adam Brooke 👋🏽",
                   style: TextStyle(
@@ -65,10 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.normal
                   ),
                 ),
+                CustomTextField(hint: 'Search restaurants, salon…', txtController: usernameController, isLoading: false, onChange: (String val) {  },)
               ],
             ),
           ),
-        )
+        ),
+        
       ],
     );
   }

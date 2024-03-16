@@ -42,7 +42,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             scale: animation,
             child:
              Center(
-                child: SvgPicture.asset("assets/logos/logo.svg", height: height/9,),
+                child: SvgPicture.asset(
+                  "assets/logos/logo.svg", 
+                  height: height/9,
+                  colorFilter: ColorFilter.mode(isDark ? Colors.white : Colors.black, BlendMode.srcIn)
+                ),
               ),
           ),
         ],

@@ -8,7 +8,7 @@ class Styles {
       fontFamily: 'Poppins',
       primaryColor: isDarkTheme ? Colors.white : Colors.black,
       indicatorColor: isDarkTheme ? const Color(0xff0E1D36) : const Color(0xffCBDCF8),
-      hintColor: isDarkTheme ? Colors.grey : Colors.black,
+      hintColor: isDarkTheme ? const Color(0xFFFEFDFE) : Colors.black,
       splashFactory: NoSplash.splashFactory,
       highlightColor: isDarkTheme ? Colors.transparent : Colors.transparent,
       hoverColor: isDarkTheme ? const Color(0xff3A3A3B) : const Color(0xff4285F4),
