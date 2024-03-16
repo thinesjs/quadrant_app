@@ -25,10 +25,9 @@ class Styles {
         ),
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
           colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         elevation: 0.0,
-        backgroundColor: CustomColors.textColorLight,
-        foregroundColor: CustomColors.textColorLight,
+        foregroundColor: isDarkTheme ? CustomColors.textColorDark : CustomColors.textColorLight,
         // surfaceTintColor: CommonColors.lightColor,
       ), 
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(background: isDarkTheme ? Colors.black : Colors.white),

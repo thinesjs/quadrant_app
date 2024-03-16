@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             expandedHeight: 200,
             backgroundColor: isDark ? CustomColors.backgroundDark : CustomColors.backgroundLight,
             flexibleSpace: FlexibleSpaceBar(
-              title: InvisibleExpandedHeader(child: Text("Kavilan Upadhya", style: TextStyle(color: CustomColors.textColorLight),)),
+              title: InvisibleExpandedHeader(child: Text("Kavilan Upadhya", style: TextStyle(color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),)),
               background: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
