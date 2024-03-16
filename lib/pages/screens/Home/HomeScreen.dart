@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:ui';
-
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
+import 'package:quadrant_app/pages/components/promo_image.dart';
 import 'package:quadrant_app/routes/route_helper.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   var usernameController = TextEditingController();
+  CustomCarouselController sliderController = CustomCarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,13 +84,66 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: CustomColors.textColorDark
                   ),
                 ),
-                CustomTextField(hint: 'Search restaurants, salon…', txtController: usernameController, isLoading: false, onChange: (String val) {  },)
+                CustomTextFieldComponent(hint: 'Search restaurants, salon…', txtController: usernameController, isLoading: false, onChange: (String val) {  },)
               ],
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(19),
+          child: CarouselSlider(
+            items: [
+              PromoImageComponent(imageUrl: 'https://i.ibb.co/x851dXt/banner-1.jpg', margin: EdgeInsets.all(5), onTap: () {  },),
+              PromoImageComponent(imageUrl: 'https://i.ibb.co/nz5RpPZ/banner-2.jpg', margin: EdgeInsets.all(5), onTap: () {  },),
+              PromoImageComponent(imageUrl: 'https://i.ibb.co/x1BQyNm/banner-3.jpg', margin: EdgeInsets.all(5), onTap: () {  },),
+              PromoImageComponent(imageUrl: 'https://i.ibb.co/KKdnPpk/banner-4.jpg', margin: EdgeInsets.all(5), onTap: () {  },),
+              PromoImageComponent(imageUrl: 'https://i.ibb.co/p1sS22g/banner-6.jpg', margin: EdgeInsets.all(5), onTap: () {  },),
+            ], 
+            options: CarouselOptions(
+              viewportFraction: 1
+            ),
+            carouselController: sliderController,
+          ),
+        ),
+        FutureBuilder(
+          future: sliderController.onReady,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SmoothPageIndicator(
+                    controller: sliderController.state!.pageController!,
+                    count: sliderController.state!.itemCount!,
+                    onDotClicked: (val) {
+                      sliderController.animateToPage(val);
+                    },
+                    effect: const WormEffect(
+                      dotHeight: 7,
+                      dotWidth: 16,
+                      activeDotColor: Color(0xFF34AC7F)
+                    ),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+        },
+      ),
         
       ],
     );
+  }
+}
+
+class CustomCarouselController extends CarouselControllerImpl {
+  CarouselState? _state;
+  CarouselState? get state => _state;
+
+  @override
+  set state(CarouselState? state) {
+    _state = state;
+    super.state = state;
   }
 }

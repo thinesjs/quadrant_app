@@ -5,8 +5,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
-class CustomTextField extends StatelessWidget {
-  CustomTextField({
+class CustomTextFieldComponent extends StatelessWidget {
+  CustomTextFieldComponent({
     Key? key, required this.hint, required this.txtController, required this.onChange, this.isLoading = false,
   }) : super(key: key);
 
