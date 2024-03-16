@@ -19,14 +19,17 @@ class Styles {
       canvasColor: isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
       brightness: isDarkTheme ? Brightness.light : Brightness.light,
         textTheme: TextTheme(
-          bodyLarge: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
-          bodyMedium: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
-          bodySmall: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFFFEFCFF)),
+          bodyLarge: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFF1E1E1E)),
+          bodyMedium: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFF1E1E1E)),
+          bodySmall: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFF1E1E1E)),
         ),
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
           colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),
       appBarTheme: const AppBarTheme(
         elevation: 0.0,
+        backgroundColor: CustomColors.textColorLight,
+        foregroundColor: CustomColors.textColorLight,
+        // surfaceTintColor: CommonColors.lightColor,
       ), 
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(background: isDarkTheme ? Colors.black : Colors.white),
     );

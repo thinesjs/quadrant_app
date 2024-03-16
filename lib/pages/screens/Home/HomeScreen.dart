@@ -3,8 +3,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
+import 'package:quadrant_app/routes/route_helper.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,8 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
+                      InkWell(
+                        onTap: () => {Get.toNamed(RouteHelper.getProfile())},
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
+                        ),
                       ),
                       Container(
                         height: 42,
@@ -64,13 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text("Hey, Adam Brooke 👋🏽",
                   style: TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    color: CustomColors.textColorDark
                   ),
                 ),
                 Text("Discover what's happening around you",
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.normal
+                    fontWeight: FontWeight.normal,
+                    color: CustomColors.textColorDark
                   ),
                 ),
                 CustomTextField(hint: 'Search restaurants, salon…', txtController: usernameController, isLoading: false, onChange: (String val) {  },)

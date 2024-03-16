@@ -4,7 +4,7 @@ class CustomPadding {
   CustomPadding._();
   static const double tDefaultPadding = 20.0;
   static const double tVerticalPadding = 40.0;
-  static const double tRoundEdgePadding = 20.0;
+  static const double tRoundEdgePadding = 10.0;
 }
 class CustomColors {
   CustomColors._();
@@ -17,10 +17,13 @@ class CustomColors {
   static const Color componentColorLight = Color(0xFFFEFDFE);
   static const Color componentColorDark = Color(0xFFFEFCFF);
 
+  static const Color cardColorDark = Color(0xFF1E1E1E);
+  static const Color cardColorLight = Color.fromARGB(255, 236, 236, 239);
+
   static const Color cardColorDarkLoading = Color(0xff353542);
   static const Color cardColorLightLoading = Color(0xffb0b0b7);
 
-  static const Color textColorDark =  Color(0xFFFEFEFE);
+  static const Color textColorDark =  Color(0xFFFEFDFE);
   static const Color textColorLight =  Color(0xFF1E1E1E);
 }
 
