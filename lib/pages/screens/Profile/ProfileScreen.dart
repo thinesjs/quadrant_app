@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/controllers/AuthController.dart';
 import 'package:quadrant_app/routes/route_helper.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
@@ -14,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  AuthController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
@@ -115,6 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     GestureDetector(
+                      onTap: () => authController.logout(),
                       child: Text("Logout",
                         style: TextStyle(
                             fontSize: 12,

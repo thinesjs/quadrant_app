@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:quadrant_app/pages/Favourites/FavouritesScreen.dart';
+import 'package:quadrant_app/pages/screens/Favourites/FavouritesScreen.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Login/LoginScreen.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Register/RegisterScreen.dart';
@@ -36,7 +36,7 @@ class RouteHelper {
   
   static List<GetPage> routes = [
 
-    GetPage(name: splash, page: () => const SplashScreen()),
+    GetPage(name: splash, page: () => SplashScreen()),
 
     GetPage(name: login, page: () {
       return const LoginScreen();
