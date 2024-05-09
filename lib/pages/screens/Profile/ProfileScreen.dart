@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:quadrant_app/routes/route_helper.dart';
+import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:quadrant_app/controllers/AuthController.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -29,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             expandedHeight: 200,
             backgroundColor: isDark ? CustomColors.backgroundDark : CustomColors.backgroundLight,
             flexibleSpace: FlexibleSpaceBar(
-              title: InvisibleExpandedHeader(child: Text("Kavilan Upadhya", style: TextStyle(color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),)),
+              title: InvisibleExpandedHeader(child: Text("${context.select<AuthenticationBloc, String?>((bloc) => bloc.state.user.name)}", style: TextStyle(color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),)),
               background: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -40,11 +42,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxRadius: 50
                         ),
                   ),
-                  const Text("Kavilan Upadhya",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold
-                      ),
+                  Text("${context.select<AuthenticationBloc, String?>((bloc) => bloc.state.user.name)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold
                     ),
+                  ),
                   const Text("Tier 1 - 1080 points",
                     style: TextStyle(
                       fontWeight: FontWeight.normal
@@ -73,21 +75,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Edit Profile", 
                               caption: "Make changes to your profile", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Security", 
                               caption: "Change your password and setup 2FA", 
                               icon: Iconsax.security,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Notification", 
                               caption: "Setup notification preferance", 
                               icon: Iconsax.notification,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                           ],
@@ -107,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Help & Support", 
                               caption: "Talk to us for additional support", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                           ],
@@ -115,6 +117,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     GestureDetector(
+                      onTap: () => {
+                        context
+                          .read<AuthenticationBloc>()
+                          .add(AuthenticationLogoutRequested())
+                      },
                       child: Text("Logout",
                         style: TextStyle(
                             fontSize: 12,

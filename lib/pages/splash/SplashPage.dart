@@ -2,32 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:quadrant_app/routes/route_helper.dart';
+import 'package:quadrant_app/controllers/AuthController.dart';
+import 'package:quadrant_app/pages/screens/Onboarding/OnboardScreen.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatelessWidget {
+  SplashScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin{
-
-  late Animation<double> animation;
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 120))..forward();
-    animation = CurvedAnimation(parent: controller, curve: Curves.linear);
-
-    Timer(
-      const Duration(seconds: 1),
-        () => Get.offNamed(RouteHelper.getMain())
-    );
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => SplashScreen());
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +21,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ScaleTransition(
-            scale: animation,
-            child:
-             Center(
-                child: SvgPicture.asset(
-                  "assets/logos/logo.svg", 
-                  height: height/9,
-                  colorFilter: ColorFilter.mode(isDark ? Colors.white : Colors.black, BlendMode.srcIn)
-                ),
-              ),
+          Center(
+            child: SvgPicture.asset(
+              "assets/logos/logo.svg", 
+              height: height/9,
+              colorFilter: ColorFilter.mode(isDark ? Colors.white : Colors.black, BlendMode.srcIn)
+            ),
           ),
         ],
       ),
