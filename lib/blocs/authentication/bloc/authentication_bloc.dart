@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:quadrant_app/services/AuthService/authentication_service.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
+import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
+import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -12,19 +13,20 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
-    required AuthenticationService authenticationService,
+    required AuthenticationRepository authenticationRepository,
     required UserRepository userRepository,
-  })  : _authenticationService = authenticationService,
+  })  : _authenticationRepository = authenticationRepository,
         _userRepository = userRepository,
         super(const AuthenticationState.unknown()) {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
-    _authenticationStatusSubscription = _authenticationService.status.listen(
+    on<AppStarted>(_onAppStarted);
+    _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
     );
   }
 
-  final AuthenticationService _authenticationService;
+  final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
   late StreamSubscription<AuthenticationStatus>
       _authenticationStatusSubscription;
@@ -33,6 +35,24 @@ class AuthenticationBloc
   Future<void> close() {
     _authenticationStatusSubscription.cancel();
     return super.close();
+  }
+
+  Future<void> _onAppStarted(
+    AppStarted event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    log("started");
+    final isLoggedIn = await _authenticationRepository.isLoggedIn();
+    if(isLoggedIn){
+      await _authenticationRepository.updateTokenFromStorage();
+
+      log("getting profile");
+      User? currentUser = await _userRepository.getUser();
+      if(currentUser != null){
+        return emit(AuthenticationState.authenticated(currentUser));
+      }
+    }
+    return emit(const AuthenticationState.unauthenticated());
   }
 
   Future<void> _onAuthenticationStatusChanged(
@@ -50,7 +70,7 @@ class AuthenticationBloc
               : const AuthenticationState.unauthenticated(),
         );
       case AuthenticationStatus.unknown:
-        return emit(const AuthenticationState.unknown());
+        // return emit(const AuthenticationState.unknown());  DEBUG:: triggers after app init
     }
   }
 
@@ -58,7 +78,7 @@ class AuthenticationBloc
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
   ) {
-    _authenticationService.logOut();
+    _authenticationRepository.logOut();
   }
 
   Future<User?> _tryGetUser() async {

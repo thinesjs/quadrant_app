@@ -9,6 +9,10 @@ import 'package:quadrant_app/utils/custom_constants.dart';
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => const MainPage());
+  }
+
   @override
   State<MainPage> createState() => _MainPageState();
 }

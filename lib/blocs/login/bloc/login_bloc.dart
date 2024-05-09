@@ -4,14 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:quadrant_app/blocs/login/models/password.dart';
 import 'package:quadrant_app/blocs/login/models/email.dart';
-import 'package:quadrant_app/services/AuthService/authentication_service.dart';
+import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
-    required AuthenticationService authenticationRepository,
+    required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
         super(const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
@@ -19,7 +19,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onSubmitted);
   }
 
-  final AuthenticationService _authenticationRepository;
+  final AuthenticationRepository _authenticationRepository;
 
   void _onUsernameChanged(
     LoginUsernameChanged event,
@@ -55,12 +55,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       try {
-        await _authenticationRepository.login(
+        final String? response = await _authenticationRepository.login(
           email: state.email.value,
           password: state.password.value, 
           device_name: deviceInfo.deviceInfo.toString(),
         );
-        emit(state.copyWith(status: FormzSubmissionStatus.success));
+
+        if (response != null) {
+          await _authenticationRepository.updateToken(response);
+          await _authenticationRepository.updateLoggedIn(true);
+          emit(state.copyWith(status: FormzSubmissionStatus.success));
+        } else {
+          // add(LogoutRequested());
+          emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        }
+
+        // emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (_) {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }

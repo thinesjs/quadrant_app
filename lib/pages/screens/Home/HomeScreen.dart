@@ -4,8 +4,10 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
@@ -74,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Text("Hey, Adam Brooke 👋🏽",
+                  Text("Hey, ${context.select<AuthenticationBloc, String?>((bloc) => bloc.state.user.name)} 👋🏽",
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

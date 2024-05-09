@@ -4,6 +4,7 @@ sealed class AuthenticationEvent {
   const AuthenticationEvent();
 }
 
+final class AppStarted extends AuthenticationEvent {}
 final class _AuthenticationStatusChanged extends AuthenticationEvent {
   const _AuthenticationStatusChanged(this.status);
 

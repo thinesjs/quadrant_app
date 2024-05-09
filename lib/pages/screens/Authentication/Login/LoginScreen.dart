@@ -1,4 +1,3 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,7 +5,7 @@ import 'package:formz/formz.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/login/bloc/login_bloc.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Register/RegisterScreen.dart';
-import 'package:quadrant_app/services/AuthService/authentication_service.dart';
+import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
           create: (context) {
             return LoginBloc(
               authenticationRepository:
-                  RepositoryProvider.of<AuthenticationService>(context),
+                  RepositoryProvider.of<AuthenticationRepository>(context),
             );
           },
           child: const LoginForm(),
@@ -118,7 +117,7 @@ class _UsernameInput extends StatelessWidget {
             ),
             child: Row(
               children: [
-                SizedBox(width: 15),
+                const SizedBox(width: 15),
                 Expanded(
                   child: TextField(
                     key: const Key('loginForm_usernameInput_textField'),

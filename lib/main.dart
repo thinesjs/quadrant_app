@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Login/LoginScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Onboarding/OnboardScreen.dart';
 import 'package:quadrant_app/pages/splash/SplashPage.dart';
-import 'package:quadrant_app/services/AuthService/authentication_service.dart';
-import 'package:quadrant_app/services/Initialization/network/dio_manager.dart';
+import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
+import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:quadrant_app/themes/styles.dart';
-import 'package:user_repository/user_repository.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -28,14 +28,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final AuthenticationService _authenticationRepository;
+  late final AuthenticationBloc _authenticationBloc;
+
+  late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
+
 
   @override
   void initState() {
     super.initState();
-    _authenticationRepository = AuthenticationService(DioManager.instance);
-    _userRepository = UserRepository();
+    _authenticationRepository = AuthenticationRepository(DioManager.instance);
+    _userRepository = UserRepository(DioManager.instance);
+
+    _authenticationBloc = AuthenticationBloc(
+      authenticationRepository: _authenticationRepository,
+      userRepository: _userRepository,
+    );
+    _authenticationBloc.add(AppStarted()); // Trigger AppStarted event
   }
 
   @override
@@ -50,10 +59,7 @@ class _MyAppState extends State<MyApp> {
     return RepositoryProvider.value(
       value: _authenticationRepository,
       child: BlocProvider(
-        create: (context) => AuthenticationBloc(
-          authenticationService: _authenticationRepository,
-          userRepository: _userRepository,
-        ),
+        create: (context) => _authenticationBloc,
         child: AppView(isDark: isDark),
       ),
     );
@@ -87,7 +93,7 @@ class _AppViewState extends State<AppView> {
             switch (state.status) {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
-                  HomeScreen.route(),
+                  MainPage.route(),
                   (route) => false,
                 );
               case AuthenticationStatus.unauthenticated:
@@ -107,7 +113,6 @@ class _AppViewState extends State<AppView> {
       darkTheme: Styles.themeData(widget.isDark, context),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      // initialRoute: RouteHelper.getSplash(),
     );
   }
 }
