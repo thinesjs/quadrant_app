@@ -1,16 +1,17 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:quadrant_app/blocs/login/models/password.dart';
-import 'package:quadrant_app/blocs/login/models/username.dart';
+import 'package:quadrant_app/blocs/login/models/email.dart';
+import 'package:quadrant_app/services/AuthService/authentication_service.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
-    required AuthenticationRepository authenticationRepository,
+    required AuthenticationService authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
         super(const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
@@ -18,16 +19,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onSubmitted);
   }
 
-  final AuthenticationRepository _authenticationRepository;
+  final AuthenticationService _authenticationRepository;
 
   void _onUsernameChanged(
     LoginUsernameChanged event,
     Emitter<LoginState> emit,
   ) {
-    final username = Username.dirty(event.username);
+    final username = Email.dirty(event.username);
     emit(
       state.copyWith(
-        username: username,
+        email: username,
         isValid: Formz.validate([state.password, username]),
       ),
     );
@@ -41,7 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(
       state.copyWith(
         password: password,
-        isValid: Formz.validate([password, state.username]),
+        isValid: Formz.validate([password, state.email]),
       ),
     );
   }
@@ -52,10 +53,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       try {
-        await _authenticationRepository.logIn(
-          username: state.username.value,
-          password: state.password.value,
+        await _authenticationRepository.login(
+          email: state.email.value,
+          password: state.password.value, 
+          device_name: deviceInfo.deviceInfo.toString(),
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (_) {

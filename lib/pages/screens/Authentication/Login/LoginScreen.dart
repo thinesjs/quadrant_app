@@ -6,6 +6,7 @@ import 'package:formz/formz.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/login/bloc/login_bloc.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Register/RegisterScreen.dart';
+import 'package:quadrant_app/services/AuthService/authentication_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isButtonDisabled = true;
     });
-    // Add your login logic here
   }
 
   @override
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
           create: (context) {
             return LoginBloc(
               authenticationRepository:
-                  RepositoryProvider.of<AuthenticationRepository>(context),
+                  RepositoryProvider.of<AuthenticationService>(context),
             );
           },
           child: const LoginForm(),
@@ -58,7 +58,7 @@ class LoginForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
+              const SnackBar(content: Text('authentication failure')),
             );
         }
       },
@@ -104,7 +104,7 @@ class _UsernameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.username != current.username,
+      buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -113,7 +113,7 @@ class _UsernameInput extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               border: Border.all(
-                color: state.username.displayError != null ? Colors.red : (isDark ? Colors.white : Colors.black87),
+                color: state.email.displayError != null ? Colors.red : (isDark ? Colors.white : Colors.black87),
               )
             ),
             child: Row(
@@ -125,7 +125,7 @@ class _UsernameInput extends StatelessWidget {
                     onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Username',
+                      hintText: 'Email',
                     ),
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
@@ -147,7 +147,7 @@ class _PasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.username != current.username,
+      buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -165,7 +165,7 @@ class _PasswordInput extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     key: const Key('loginForm_passwordInput_textField'),
-                    onChanged: (username) => context.read<LoginBloc>().add(LoginPasswordChanged(username)),
+                    onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Password',

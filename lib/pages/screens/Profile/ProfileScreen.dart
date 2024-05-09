@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
-import 'package:quadrant_app/routes/route_helper.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  AuthController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
@@ -75,21 +73,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Edit Profile", 
                               caption: "Make changes to your profile", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Security", 
                               caption: "Change your password and setup 2FA", 
                               icon: Iconsax.security,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Notification", 
                               caption: "Setup notification preferance", 
                               icon: Iconsax.notification,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                           ],
@@ -109,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Help & Support", 
                               caption: "Talk to us for additional support", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {Get.toNamed(RouteHelper.getSplash())}, 
+                              onTap: () => {}, 
                               isDark: isDark
                             ),
                           ],
@@ -117,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => authController.logout(),
+                      onTap: () => {},
                       child: Text("Logout",
                         style: TextStyle(
                             fontSize: 12,

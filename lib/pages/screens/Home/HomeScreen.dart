@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
-import 'package:quadrant_app/routes/route_helper.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => {Get.toNamed(RouteHelper.getProfile())},
+                          onTap: () => {},
                           child: CircleAvatar(
                             backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
                           ),

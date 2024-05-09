@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
 import 'package:quadrant_app/pages/screens/Onboarding/OnboardScreen.dart';
-import 'package:quadrant_app/routes/route_helper.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({Key? key}) : super(key: key);

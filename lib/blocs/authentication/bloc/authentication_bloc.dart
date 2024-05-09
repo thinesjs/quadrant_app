@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:quadrant_app/services/AuthService/authentication_service.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'authentication_event.dart';
@@ -11,19 +12,19 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
-    required AuthenticationRepository authenticationRepository,
+    required AuthenticationService authenticationService,
     required UserRepository userRepository,
-  })  : _authenticationRepository = authenticationRepository,
+  })  : _authenticationService = authenticationService,
         _userRepository = userRepository,
         super(const AuthenticationState.unknown()) {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
-    _authenticationStatusSubscription = _authenticationRepository.status.listen(
+    _authenticationStatusSubscription = _authenticationService.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
     );
   }
 
-  final AuthenticationRepository _authenticationRepository;
+  final AuthenticationService _authenticationService;
   final UserRepository _userRepository;
   late StreamSubscription<AuthenticationStatus>
       _authenticationStatusSubscription;
@@ -57,7 +58,7 @@ class AuthenticationBloc
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
   ) {
-    _authenticationRepository.logOut();
+    _authenticationService.logOut();
   }
 
   Future<User?> _tryGetUser() async {
