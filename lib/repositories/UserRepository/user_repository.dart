@@ -13,15 +13,17 @@ class UserRepository {
   User? _user;
 
   Future<User?> getUser() async {
-    if (_user != null) return _user;
+    // if (_user != null) return _user;
 
     var response = await dioManager.dio.get(
-      "/api/user",
+      "/v1/user",
     );
 
     if (response.statusCode == HttpStatus.ok) {
       UserResponse user = UserResponse.fromJson(response.data);
-      _user = User(user.data!.id, user.data!.name, user.data!.email, user.data?.emailVerifiedAt ?? "", user.data!.createdAt, user.data!.updatedAt);
+      if(user.message != null){
+        _user = User(user.message?.id ?? "", user.message?.name ?? "", user.message?.email ?? "", user.message?.emailVerified ?? "", user.message?.avatar ?? "", user.message?.role ?? "", user.message?.createdAt ?? "");
+      }
     } 
     return _user;
   }

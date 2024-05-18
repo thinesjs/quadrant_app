@@ -38,20 +38,18 @@ class AuthenticationRepository {
     required String device_name
   }) async {
     var response = await dioManager.dio.post(
-      "/api/login",
+      "/v1/auth/login",
       data: LoginBody(
         email: email,
         password: password,
-        device_name: device_name,
       ).toJson(),
     );
 
-    // log(response.toString());
-
     if (response.statusCode == HttpStatus.ok) {
-      final token = LoginResponse.fromJson(response.data).data?.token;
-      if (token != null){
-        return token;
+      final access_token = LoginResponse.fromJson(response.data).message?.accessToken;
+
+      if (access_token != null){
+        return access_token;
       }
     } 
   }

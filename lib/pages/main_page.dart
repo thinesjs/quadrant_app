@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
 
   List<List<dynamic>> screensList = [
     [const HomeScreen(), 'Home', Iconsax.home5],
-    [const SearchScreen(), 'Search', Iconsax.search_status],
+    [const SearchScreen(), 'Browse', Iconsax.search_status],
     [const HomeScreen(), 'Favourites', Iconsax.lovely],
     [const ProfileScreen(), 'Profile', Iconsax.user]
   ];

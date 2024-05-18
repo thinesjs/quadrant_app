@@ -63,10 +63,12 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return emit(const AuthenticationState.unauthenticated());
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser();
+        log("getting profile2");
+        User? currentUser = await _userRepository.getUser();
+  
         return emit(
-          user != null
-              ? AuthenticationState.authenticated(user)
+          currentUser != null
+              ? AuthenticationState.authenticated(currentUser)
               : const AuthenticationState.unauthenticated(),
         );
       case AuthenticationStatus.unknown:
@@ -81,12 +83,12 @@ class AuthenticationBloc
     _authenticationRepository.logOut();
   }
 
-  Future<User?> _tryGetUser() async {
-    try {
-      final user = await _userRepository.getUser();
-      return user;
-    } catch (_) {
-      return null;
-    }
-  }
+  // Future<User?> _tryGetUser() async {
+  //   try {
+  //     final user = await _userRepository.getUser();
+  //     return user;
+  //   } catch (_) {
+  //     return null;
+  //   }
+  // }
 }

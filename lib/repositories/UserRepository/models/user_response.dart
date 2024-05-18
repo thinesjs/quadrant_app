@@ -1,50 +1,51 @@
 class UserResponse {
   bool? success;
-  Data? data;
-  String? message;
+  Message? message;
 
-  UserResponse({this.success, this.data, this.message});
+  UserResponse({this.success, this.message});
 
   UserResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    message = json['message'];
+    message =
+        json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    if (this.message != null) {
+      data['message'] = this.message!.toJson();
     }
-    data['message'] = this.message;
     return data;
   }
 }
 
-class Data {
+class Message {
   String? id;
   String? name;
   String? email;
-  String? emailVerifiedAt;
+  String? emailVerified;
+  String? avatar;
+  String? role;
   String? createdAt;
-  String? updatedAt;
 
-  Data(
+  Message(
       {this.id,
       this.name,
       this.email,
-      this.emailVerifiedAt,
-      this.createdAt,
-      this.updatedAt});
+      this.emailVerified,
+      this.avatar,
+      this.role,
+      this.createdAt});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Message.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];
-    emailVerifiedAt = json['email_verified_at'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    emailVerified = json['emailVerified'];
+    avatar = json['avatar'];
+    role = json['role'];
+    createdAt = json['createdAt'];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,9 +53,10 @@ class Data {
     data['id'] = this.id;
     data['name'] = this.name;
     data['email'] = this.email;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['emailVerified'] = this.emailVerified;
+    data['avatar'] = this.avatar;
+    data['role'] = this.role;
+    data['createdAt'] = this.createdAt;
     return data;
   }
 }

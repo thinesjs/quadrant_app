@@ -14,7 +14,7 @@ class Styles {
       hoverColor: isDarkTheme ? const Color(0xff3A3A3B) : const Color(0xff4285F4),
       focusColor: isDarkTheme ? Colors.white : Colors.black87,
       disabledColor: Colors.grey,
-      // textSelectionTheme: TextSelectionThemeData(selectionColor: isDarkTheme ? Colors.white : Colors.black),
+      scaffoldBackgroundColor:isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
       cardColor: isDarkTheme ? const Color(0xFF1E1D1D) : const Color(0xFFF5F6F9),
       canvasColor: isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
       brightness: isDarkTheme ? Brightness.light : Brightness.light,
@@ -23,14 +23,17 @@ class Styles {
           bodyMedium: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFF1E1E1E)),
           bodySmall: TextStyle(color: isDarkTheme ? const Color(0xFFFEFDFE) : const Color(0xFF1E1E1E)),
         ),
-      buttonTheme: Theme.of(context).buttonTheme.copyWith(
-          colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),
+      buttonTheme: Theme.of(context).buttonTheme.copyWith(colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         foregroundColor: isDarkTheme ? CustomColors.textColorDark : CustomColors.textColorLight,
         // surfaceTintColor: CommonColors.lightColor,
       ), 
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(background: isDarkTheme ? Colors.black : Colors.white),
+      dialogTheme: DialogTheme(
+        backgroundColor: isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
+        titleTextStyle: isDarkTheme? const TextStyle(color: Colors.white) : const TextStyle(color: Colors.black),
+      ),
     );
 
   }

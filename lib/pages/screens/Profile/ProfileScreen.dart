@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
+import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double displayWidth = MediaQuery.of(context).size.width;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
+    User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -35,10 +38,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               background: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Padding(
+                  Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
+                          backgroundImage: (user.avatar != "") ? NetworkImage(user.avatar) : AssetImage('assets/placeholders/placeholder-user.jpg') as ImageProvider<Object>,
                           maxRadius: 50
                         ),
                   ),

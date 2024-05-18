@@ -1,48 +1,40 @@
-import 'dart:convert';
-
-LoginResponse loginRespFromJson(String str) => LoginResponse.fromJson(json.decode(str));
-
-String loginRespToJson(LoginResponse data) => json.encode(data.toJson());
-
 class LoginResponse {
   bool? success;
-  Data? data;
-  String? message;
+  Message? message;
 
-  LoginResponse({this.success, this.data, this.message});
+  LoginResponse({this.success, this.message});
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    message = json['message'];
+    message =
+        json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    if (this.message != null) {
+      data['message'] = this.message!.toJson();
     }
-    data['message'] = this.message;
     return data;
   }
 }
 
-class Data {
-  String? token;
-  String? name;
+class Message {
+  String? accessToken;
+  String? refreshToken;
 
-  Data({this.token, this.name});
+  Message({this.accessToken, this.refreshToken});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    token = json['token'];
-    name = json['name'];
+  Message.fromJson(Map<String, dynamic> json) {
+    accessToken = json['access_token'];
+    refreshToken = json['refresh_token'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['token'] = this.token;
-    data['name'] = this.name;
+    data['access_token'] = this.accessToken;
+    data['refresh_token'] = this.refreshToken;
     return data;
   }
 }

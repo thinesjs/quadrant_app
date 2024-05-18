@@ -9,7 +9,8 @@ class DioManager {
     return _instance!;
   }
 
-  final String _baseUrl = 'http://quadrant-api.test';
+  final String _baseUrl = 'https://api.thinesjaishankar.com';
+  // final String _baseUrl = 'http://localhost:8800';
   late final Dio dio;
 
   DioManager._init() {

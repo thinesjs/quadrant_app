@@ -11,6 +11,12 @@ class CustomColors {
   static const Color backgroundLight = Color(0xFFF7F5F8);
   static const Color backgroundDark = Color(0xFF141215);
 
+  static const Color primaryLight = Color(0xFF7E7E7E);
+  static const Color primaryDark = Color(0xFFD6354D);
+
+  static const Color secondaryLight = Color(0xFFFFFFFF);
+  static const Color secondaryDark = Color(0xFF1D1B1E);
+
   static const Color navBarBackgroundLight = Color(0xFFFFFFFF);
   static const Color navBarBackgroundDark = Color(0xFF1D1B1E);
 
@@ -25,6 +31,8 @@ class CustomColors {
 
   static const Color textColorDark =  Color(0xFFFEFDFE);
   static const Color textColorLight =  Color(0xFF1E1E1E);
+
+  // static const Color  = Color(0xFFD6354D);
 }
 
 
