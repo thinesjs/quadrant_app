@@ -1,16 +1,21 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/pages/screens/Cart/CartScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
+final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
+
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({Key? key}) : super(key: key); 
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const MainPage());
+    return MaterialPageRoute<void>(builder: (_) => MainPage(key: mainPageKey));
   }
 
   @override
@@ -23,12 +28,18 @@ class _MainPageState extends State<MainPage> {
   List<List<dynamic>> screensList = [
     [const HomeScreen(), 'Home', Iconsax.home5],
     [const SearchScreen(), 'Browse', Iconsax.search_status],
-    [const HomeScreen(), 'Favourites', Iconsax.lovely],
+    [const CartScreen(), 'Cart', Iconsax.shopping_cart],
     [const ProfileScreen(), 'Profile', Iconsax.user]
   ];
 
   int currentIndex = 0;
   void onTap(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
+  void switchToScreen(int index) {
     setState(() {
       currentIndex = index;
     });

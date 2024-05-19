@@ -11,16 +11,18 @@ import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
+import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
-import 'package:quadrant_app/pages/components/section_text.dart';
-import 'package:quadrant_app/pages/components/side_section_text.dart';
+import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/repositories/BillboardRepository/billboard_repository.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Category {
@@ -110,18 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       as ImageProvider<Object>,
                             ),
                           ),
-                          Container(
-                            height: 42,
-                            width: 42,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(42)),
-                              color: Colors.black.withOpacity(.4),
-                            ),
-                            child: Icon(Iconsax.notification,
-                                color: isDark
-                                    ? CustomColors.componentColorDark
-                                    : CustomColors.componentColorLight),
-                          )
+                          CircleActionButton(isDark: isDark, icon: Iconsax.notification, onTap: () {  },)
                         ],
                       ),
                     ),
@@ -157,34 +148,106 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<BillboardBloc, BillboardState>(builder: (context, state) {
                   switch (state) {
                     case BillboardLoading():
-                      return const Center(child: CircularProgressIndicator());
+                      return Column(
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: isDark ? CustomColors.cardColorDark : CustomColors.cardColorLight,
+                            highlightColor: isDark ? CustomColors.cardColorDarkLoading : CustomColors.cardColorLightLoading,
+                            child: CarouselSlider(
+                              items: [
+                                PromoImageComponent(
+                                  imageUrl: "",
+                                  margin: EdgeInsets.all(5),
+                                  onTap: () {},
+                                )
+                              ],
+                              options: CarouselOptions(autoPlay: true, viewportFraction: 1, height: 134, enableInfiniteScroll: false),
+                              carouselController: sliderController,
+                            )
+                          ),
+                          FutureBuilder(
+                            future: sliderController.onReady,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: SmoothPageIndicator(
+                                      controller: sliderController.state!.pageController!,
+                                      count: sliderController.state!.itemCount!,
+                                      onDotClicked: (val) {
+                                        sliderController.animateToPage(val);
+                                      },
+                                      effect: const WormEffect(
+                                          dotHeight: 5,
+                                          dotWidth: 16,
+                                          activeDotColor: Color(0xFF34AC7F)),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          )
+                        ],
+                      );
                     case BillboardLoaded():
-                      return CarouselSlider(
-                        items: state.billboards?.map((billboard) {
-                          return PromoImageComponent(
-                            imageUrl: billboard.imageUrl ?? "",
-                            margin: EdgeInsets.all(5),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(billboard.title ?? ""),
-                                    content: Text(billboard.description ?? ""),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {Navigator.of(context, rootNavigator: true).pop('dialog');},
-                                        child: Text('Close'),
-                                      )
-                                    ],
+                      return Column(
+                        children: [
+                          CarouselSlider(
+                            items: state.billboards?.map((billboard) {
+                              return PromoImageComponent(
+                                imageUrl: billboard.imageUrl ?? "",
+                                margin: EdgeInsets.all(5),
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(billboard.title ?? ""),
+                                        content: Text(billboard.description ?? ""),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {Navigator.of(context, rootNavigator: true).pop('dialog');},
+                                            child: Text('Close'),
+                                          )
+                                        ],
+                                      );
+                                    },
                                   );
                                 },
                               );
+                            }).toList(), 
+                            options: CarouselOptions(autoPlay: true, viewportFraction: 1, height: 134),
+                            carouselController: sliderController,
+                          ),
+                          FutureBuilder(
+                            future: sliderController.onReady,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: SmoothPageIndicator(
+                                      controller: sliderController.state!.pageController!,
+                                      count: sliderController.state!.itemCount!,
+                                      onDotClicked: (val) {
+                                        sliderController.animateToPage(val);
+                                      },
+                                      effect: const WormEffect(
+                                          dotHeight: 5,
+                                          dotWidth: 16,
+                                          activeDotColor: Color(0xFF34AC7F)),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
                             },
-                          );
-                        }).toList(), 
-                        options: CarouselOptions(autoPlay: true, viewportFraction: 1, height: 134),
-                        carouselController: sliderController,
+                          )
+                        ],
                       );
                     case BillboardError():
                       return const Text('Something went wrong!');
@@ -195,31 +258,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 }),
               ),
-            ),
-            FutureBuilder(
-              future: sliderController.onReady,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SmoothPageIndicator(
-                        controller: sliderController.state!.pageController!,
-                        count: sliderController.state!.itemCount!,
-                        onDotClicked: (val) {
-                          sliderController.animateToPage(val);
-                        },
-                        effect: const WormEffect(
-                            dotHeight: 7,
-                            dotWidth: 16,
-                            activeDotColor: Color(0xFF34AC7F)),
-                      ),
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
             ),
             Padding(
               padding: const EdgeInsets.all(19),
@@ -267,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SectionText(isDark: isDark, text: "Featured", size: 20.0, bold: true),
-                  SideSectionText(isDark: isDark, text: "See all", size: 16.0),
+                  SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
                 ],
               ),
             ),

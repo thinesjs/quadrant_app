@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
-import 'package:quadrant_app/pages/components/section_text.dart';
+import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -10,6 +10,10 @@ import 'package:sticky_headers/sticky_headers.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
+
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => const Scaffold(body: SearchScreen()));
+  }
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -66,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen>
                   txtController: searchController,
                   isLoading: false,
                   onChange: (String val) {
-                    if (val.length > 2) {
+                    if (val.length > 3) {
                       BlocProvider.of<ProductBloc>(context).add(SearchProducts(val));
                     } else {
                       BlocProvider.of<ProductBloc>(context).add(FetchProduct());

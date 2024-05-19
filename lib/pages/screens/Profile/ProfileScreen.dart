@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
+import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
+import 'package:quadrant_app/pages/screens/Profile/NotificationScreen.dart';
+import 'package:quadrant_app/pages/screens/Profile/SecurityScreen.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
@@ -78,21 +81,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Edit Profile", 
                               caption: "Make changes to your profile", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {}, 
+                              onTap: () => {Navigator.push(context, EditProfileScreen.route())}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Security", 
                               caption: "Change your password and setup 2FA", 
                               icon: Iconsax.security,
-                              onTap: () => {}, 
+                              onTap: () => {Navigator.push(context, SecurityScreen.route())}, 
                               isDark: isDark
                             ),
                             ProfileButton(
                               title: "Notification", 
                               caption: "Setup notification preferance", 
                               icon: Iconsax.notification,
-                              onTap: () => {}, 
+                              onTap: () => {Navigator.push(context, NotificationScreen.route())}, 
                               isDark: isDark
                             ),
                           ],
