@@ -12,8 +12,6 @@ class BillboardRepository {
   Future<List<Message>?> fetchBillboardImages() async {
     log("getting billboards", name: "BillboardRepository");
     var response = await dioManager.dio.get("/v1/billboards");
-
-    await Future.delayed(const Duration(seconds: 3));
     
     if (response.statusCode == HttpStatus.ok) {
       BillboardResponse jsonResponse = BillboardResponse.fromJson(response.data);

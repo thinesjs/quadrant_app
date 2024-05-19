@@ -52,6 +52,8 @@ dependencies:
       url: https://github.com/thinesjs/flutter_sticky_headers
   shimmer: ^3.0.0
   package_info_plus: ^8.0.0
+  cloudinary_flutter: ^1.0.0
+  cloudinary_url_gen: ^1.0.0
   
 
 dev_dependencies:

@@ -35,9 +35,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
             ),
             SectionHelperText(isDark: isDark, text: 'Update and manage your shipping and billing addresses.'),
             SectionText(isDark: isDark, text: "Basic Information", size: 20, bold: true),
-            // UserAvatarComponent(isDark: isDark, user: user),
-            // AppTextField(label: "Username", placeholder: "John Doe", controller: _usernameController, isDark: isDark),
-            // AppTextField(label: "Email", placeholder: "example@mail.com", controller: _emailController, isDark: isDark),
+
           ],
         ),
       ),
