@@ -15,7 +15,18 @@ class ProductRepository {
     if (response.statusCode == HttpStatus.ok) {
       ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      await Future.delayed(const Duration(seconds: 2));
+      return jsonResponse.message?.products;
+    } else {
+      throw Exception('Failed to load billboard images');
+    }
+  }
+
+  Future<List<Products>?> searchProduct({ required String query }) async {
+    log("search product (query:$query)", name: "ProductRepository");
+    var response = await dioManager.dio.get("/v1/products/all/search?arg=$query");
+    
+    if (response.statusCode == HttpStatus.ok) {
+      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
       return jsonResponse.message?.products;
     } else {

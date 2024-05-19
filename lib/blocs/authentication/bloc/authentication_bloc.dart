@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
+import 'package:quadrant_app/utils/helpers/cache/cache_manager.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -41,12 +42,11 @@ class AuthenticationBloc
     AppStarted event,
     Emitter<AuthenticationState> emit,
   ) async {
-    log("started");
+    log("app started", name: "AuthenticationRepository");
     final isLoggedIn = await _authenticationRepository.isLoggedIn();
     if(isLoggedIn){
       await _authenticationRepository.updateTokenFromStorage();
 
-      log("getting profile");
       User? currentUser = await _userRepository.getUser();
       if(currentUser != null){
         return emit(AuthenticationState.authenticated(currentUser));
@@ -63,7 +63,6 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return emit(const AuthenticationState.unauthenticated());
       case AuthenticationStatus.authenticated:
-        log("getting profile2");
         User? currentUser = await _userRepository.getUser();
   
         return emit(
@@ -76,19 +75,11 @@ class AuthenticationBloc
     }
   }
 
-  void _onAuthenticationLogoutRequested(
+  Future<void> _onAuthenticationLogoutRequested(
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
-  ) {
-    _authenticationRepository.logOut();
+  ) async {
+    await CacheManager.remove("/api/login");
+    await _authenticationRepository.logOut();
   }
-
-  // Future<User?> _tryGetUser() async {
-  //   try {
-  //     final user = await _userRepository.getUser();
-  //     return user;
-  //   } catch (_) {
-  //     return null;
-  //   }
-  // }
 }

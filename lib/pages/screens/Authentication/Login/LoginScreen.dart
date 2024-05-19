@@ -53,13 +53,13 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state.status.isFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('authentication failure')),
-            );
-        }
+        // if (state.status.isFailure) {
+        //   ScaffoldMessenger.of(context)
+        //     ..hideCurrentSnackBar()
+        //     ..showSnackBar(
+        //       const SnackBar(content: Text('authentication failure')),
+        //     );
+        // }
       },
       child: Align(
         alignment: const Alignment(0, -1 / 3),
@@ -202,22 +202,32 @@ class _LoginButton extends StatelessWidget {
               onTap: state.isValid ? () {
                 context.read<LoginBloc>().add(const LoginSubmitted());
               } : null,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.white : (state.isValid ? Colors.black87 : Colors.black54),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                    child: Center(
-                      child: Text( "Sign In",
-                      style: TextStyle(
-                        color: isDark ? Colors.black87 : Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                      ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white : (state.isValid ? Colors.black87 : Colors.black54),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                ),
+                        child: Center(
+                          child: Text( "Sign In",
+                          style: TextStyle(
+                            color: isDark ? Colors.black87 : Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          ),
+                        ),
+                  ),
+                  (state.status.isFailure) ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("You have entered an invalid email or password.", style: TextStyle(
+                      color: Colors.red,
+                    )),
+                  ) : Container()
+                ],
+              ),
             );
       },
     );

@@ -37,6 +37,7 @@ class AuthenticationRepository {
     required String password,
     required String device_name
   }) async {
+    
     var response = await dioManager.dio.post(
       "/v1/auth/login",
       data: LoginBody(
@@ -51,7 +52,7 @@ class AuthenticationRepository {
       if (access_token != null){
         return access_token;
       }
-    } 
+    }
   }
 
   Future<void> updateToken(String? token) async {

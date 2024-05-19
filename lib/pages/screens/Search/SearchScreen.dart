@@ -15,7 +15,8 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> with WidgetsBindingObserver {
+class _SearchScreenState extends State<SearchScreen>
+    with WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   late final ProductRepository _productRepository;
   var searchController = TextEditingController();
@@ -44,53 +45,60 @@ class _SearchScreenState extends State<SearchScreen> with WidgetsBindingObserver
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return ListView(
-      controller: _scrollController,
-      children: <Widget>[
+    return BlocProvider<ProductBloc>(
+      create: (_) => ProductBloc(productRepository: _productRepository)
+        ..add(FetchProduct()),
+      child: ListView(controller: _scrollController, children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
-          child: SectionText(isDark: isDark, text: 'Browse', size: 32.0, bold: true),
+          child: SectionText(
+              isDark: isDark, text: 'Browse', size: 32.0, bold: true),
         ),
         StickyHeader(
           controller: _scrollController,
           headerSpacing: 60.0,
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: CustomTextFieldComponent(
-              hint: 'Search for groceries, and more...',
-              txtController: searchController,
-              isLoading: false,
-              onChange: (String val) {},
+            child: Builder(
+              builder: (context) {
+                return CustomTextFieldComponent(
+                  hint: 'Search for groceries, and more...',
+                  txtController: searchController,
+                  isLoading: false,
+                  onChange: (String val) {
+                    if (val.length > 2) {
+                      BlocProvider.of<ProductBloc>(context).add(SearchProducts(val));
+                    } else {
+                      BlocProvider.of<ProductBloc>(context).add(FetchProduct());
+                    }
+                  },
+                );
+              }
             ),
           ),
-          content: ProductsGrid(productRepository: _productRepository, isDark: isDark),
+          content: ProductsGrid(isDark: isDark),
         ),
-      ]
+      ]),
     );
   }
 }
 
 class ProductsGrid extends StatelessWidget {
-  const ProductsGrid({
-    super.key,
-    required ProductRepository productRepository,
+  const ProductsGrid({super.key, 
     required this.isDark,
-  }) : _productRepository = productRepository;
-
-  final ProductRepository _productRepository;
+  });
   final bool isDark;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchProduct()),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
-          switch (state) {
-            case ProductLoading():
-              return const Center(child: CircularProgressIndicator());
-            case ProductLoaded():
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child:
+          BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+        switch (state) {
+          case ProductLoading():
+            return const Center(child: CircularProgressIndicator());
+          case ProductLoaded():
             return GridView.builder(
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
@@ -112,15 +120,14 @@ class ProductsGrid extends StatelessWidget {
                 );
               },
             );
-            case ProductError():
-              return const Text('Something went wrong!');
-            case ProductInitial():
-              return const Center(child: Text("Initial"));
-            default:
-              return const Placeholder();
-          }
-        }),
-      ),
+          case ProductError():
+            return const Text('Something went wrong!');
+          case ProductInitial():
+            return const Center(child: Text("Initial"));
+          default:
+            return const Placeholder();
+        }
+      }),
     );
   }
 }
@@ -132,7 +139,8 @@ class ProductCard extends StatelessWidget {
   final double rating;
   final String image;
 
-  ProductCard({super.key, 
+  ProductCard({
+    super.key,
     required this.isDark,
     required this.name,
     required this.price,
@@ -146,16 +154,18 @@ class ProductCard extends StatelessWidget {
       width: 200,
       padding: EdgeInsets.all(30),
       decoration: BoxDecoration(
-        color: isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
+        color:
+            isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
         borderRadius: BorderRadius.circular(CustomSize.md),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(CustomSize.md),
-            child: (image != "") ? Image.network(image) : Image.asset('assets/placeholders/placeholder-user.jpg')
-          ),
+              borderRadius: BorderRadius.circular(CustomSize.md),
+              child: (image != "")
+                  ? Image.network(image)
+                  : Image.asset('assets/placeholders/placeholder-user.jpg')),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
@@ -192,7 +202,6 @@ class ProductCard extends StatelessWidget {
                   ),
                 ],
               ),
-
             ],
           ),
         ],

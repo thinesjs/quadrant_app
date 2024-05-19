@@ -8,18 +8,32 @@ part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({ required ProductRepository productRepository }) : _productRepository = productRepository, super(ProductLoading()) {
-    on<FetchProduct>(_onGetProducts);
+    on<FetchProduct>(_onFetchProducts);
+    on<SearchProducts>(_oSearchProducts);
   }
 
   final ProductRepository _productRepository;
 
-  Future<void> _onGetProducts(
+  Future<void> _onFetchProducts(
     FetchProduct event,
     Emitter<ProductState> emit,
   ) async {
     emit(ProductLoading());
     try {
       final response = await _productRepository.fetchProducts();
+      emit(ProductLoaded(products: response));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _oSearchProducts(
+    SearchProducts event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.searchProduct(query: event.query);
       emit(ProductLoaded(products: response));
     } catch (_) {
       emit(ProductError());

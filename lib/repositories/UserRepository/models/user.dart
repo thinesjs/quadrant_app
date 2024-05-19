@@ -14,5 +14,5 @@ class User extends Equatable {
   @override
   List<Object> get props => [id, name, email, email_verified_at, avatar, role, created_at];
 
-  static const empty = User('NaN', 'NaN', 'NaN', 'NaN', 'NaN', 'NaN', 'NaN');
+  static const empty = User('NaN', 'NaN', 'NaN', 'NaN', '', 'NaN', 'NaN');
 }
