@@ -1,12 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'dart:ffi';
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';

@@ -4,18 +4,18 @@ import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 
-class SecurityScreen extends StatefulWidget {
-  const SecurityScreen({super.key});
+class AddressesScreen extends StatefulWidget {
+  const AddressesScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const SecurityScreen());
+    return MaterialPageRoute<void>(builder: (_) => const AddressesScreen());
   }
 
   @override
-  State<SecurityScreen> createState() => _SecurityScreenState();
+  State<AddressesScreen> createState() => _AddressesScreenState();
 }
 
-class _SecurityScreenState extends State<SecurityScreen> {
+class _AddressesScreenState extends State<AddressesScreen> {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -30,11 +30,14 @@ class _SecurityScreenState extends State<SecurityScreen> {
               children: [
                 CircleActionButton(isDark: isDark, icon: Iconsax.arrow_left, onTap: () { Navigator.pop(context); },),
                 const SizedBox(width: 10,),
-                SectionText(isDark: isDark, text: 'Security', size: 32.0, bold: true),
+                SectionText(isDark: isDark, text: 'Addresses', size: 32.0, bold: true),
               ],
             ),
-            SectionHelperText(isDark: isDark, text: 'Manage your password and enhance account protection with 2FA settings.'),
-            // SectionText(isDark: isDark, text: "Basic Information", size: 20, bold: true),
+            SectionHelperText(isDark: isDark, text: 'Update and manage your shipping and billing addresses.'),
+            SectionText(isDark: isDark, text: "Basic Information", size: 20, bold: true),
+            // UserAvatarComponent(isDark: isDark, user: user),
+            // AppTextField(label: "Username", placeholder: "John Doe", controller: _usernameController, isDark: isDark),
+            // AppTextField(label: "Email", placeholder: "example@mail.com", controller: _emailController, isDark: isDark),
           ],
         ),
       ),

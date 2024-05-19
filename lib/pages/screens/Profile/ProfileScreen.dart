@@ -2,15 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
+import 'package:quadrant_app/pages/screens/Profile/AddressesScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/NotificationScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/SecurityScreen.dart';
+import 'package:quadrant_app/pages/screens/Support/SupportScreen.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -26,7 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -53,11 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontWeight: FontWeight.bold
                     ),
                   ),
-                  const Text("Tier 1 - 1080 points",
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal
-                    ),
-                  ),
+                  // const Text("Tier 1 - 1080 points",
+                  //   style: TextStyle(
+                  //     fontWeight: FontWeight.normal
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -78,10 +80,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: [
                             ProfileButton(
-                              title: "Edit Profile", 
-                              caption: "Make changes to your profile", 
+                              title: "Account", 
+                              caption: "Make changes to your account", 
                               icon: Iconsax.user_edit,
                               onTap: () => {Navigator.push(context, EditProfileScreen.route())}, 
+                              isDark: isDark
+                            ),
+                            ProfileButton(
+                              title: "Addresses", 
+                              caption: "Manage your profiles and addresses", 
+                              icon: Iconsax.location,
+                              onTap: () => {Navigator.push(context, AddressesScreen.route())}, 
                               isDark: isDark
                             ),
                             ProfileButton(
@@ -115,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Help & Support", 
                               caption: "Talk to us for additional support", 
                               icon: Iconsax.user_edit,
-                              onTap: () => {}, 
+                              onTap: () => {Navigator.push(context, SupportScreen.route())}, 
                               isDark: isDark
                             ),
                           ],
@@ -136,6 +145,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 20,),
+                    FutureBuilder(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                        if(snapshot.hasData){
+                          return Text('${snapshot.data!.appName} Version ${snapshot.data!.version} '
+                                'Build: ${snapshot.data!.buildNumber}',
+                            style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.grey[700] : Colors.black26
+                          ),);
+                        }
+                        return Text('');
+                      },
+                    )
                   ],
                 ),
               ),

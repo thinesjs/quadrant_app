@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class CustomPadding {
   CustomPadding._();
   static const double tDefaultPadding = 20.0;
@@ -31,6 +33,12 @@ class CustomColors {
 
   static const Color textColorDark =  Color(0xFFFEFDFE);
   static const Color textColorLight =  Color(0xFF1E1E1E);
+
+  static const Color outlinedButtonColorDark = Color.fromARGB(255, 51, 51, 51);
+  static const Color outlinedButtonColorLight = Color.fromARGB(255, 203, 203, 203);
+
+  static const Color placeholderTextColorLight = Colors.black12;
+  static const Color placeholderTextColorDark = Colors.white12;
 
   // static const Color  = Color(0xFFD6354D);
 }

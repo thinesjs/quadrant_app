@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:quadrant_app/controllers/AuthController.dart';
 import 'package:quadrant_app/pages/screens/Onboarding/OnboardScreen.dart';
 
