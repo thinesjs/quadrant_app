@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:cloudinary_flutter/cloudinary_context.dart';
+import 'package:cloudinary_flutter/cloudinary_object.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Login/LoginScreen.dart';
-import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
-import 'package:quadrant_app/pages/screens/Onboarding/OnboardScreen.dart';
 import 'package:quadrant_app/pages/splash/SplashPage.dart';
 import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
 import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
@@ -27,10 +28,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AuthenticationBloc _authenticationBloc;
-
   late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
-
 
   @override
   void initState() {

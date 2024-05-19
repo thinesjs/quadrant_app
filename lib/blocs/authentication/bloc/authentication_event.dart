@@ -11,4 +11,6 @@ final class _AuthenticationStatusChanged extends AuthenticationEvent {
   final AuthenticationStatus status;
 }
 
+final class ProfileAvatarRemoveRequested extends AuthenticationEvent {}
+
 final class AuthenticationLogoutRequested extends AuthenticationEvent {}

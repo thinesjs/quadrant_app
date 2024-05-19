@@ -1,12 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/textfields.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
+// import 'package:cloudinary_flutter/cloudinary_context.dart';
+// import 'package:cloudinary_flutter/image/cld_image.dart';
+// import 'package:cloudinary_url_gen/cloudinary.dart';
+
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -23,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +38,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
     _usernameController.text = user.name;
     _emailController.text = user.email;
+
+    // Cloudinary cloudinary = CloudinaryObject.fromCloudName(cloudName: "dz6ucd5lw");
 
     return Scaffold(
       body: Padding(
@@ -63,11 +73,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 }
 
-class UserAvatarComponent extends StatelessWidget {
+class UserAvatarComponent extends StatefulWidget {
   const UserAvatarComponent({super.key, required this.isDark, required this.user});
 
   final bool isDark;
   final User user;
+
+  @override
+  State<UserAvatarComponent> createState() => _UserAvatarComponentState();
+}
+
+class _UserAvatarComponentState extends State<UserAvatarComponent> {
+  File? _imageFile;
+  String? _imageURL;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker image = ImagePicker();
+    final XFile? pickedFile = await image.pickImage(source: source);
+    setState(() {
+      if (pickedFile != null) _imageFile = File(pickedFile.path); 
+    });
+  }
+
+  Future<void> _uploadImage() async {
+    _pickImage(ImageSource.gallery);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +121,9 @@ class UserAvatarComponent extends StatelessWidget {
             ),
             Row(
               children: [
-                AppOutlinedButton(isDark: isDark, text: "Change", onTap: () { print("hey"); }),
+                AppOutlinedButton(isDark: widget.isDark, text: "Change", onTap: ()=>_uploadImage()),
                 const SizedBox(width: 5),
-                AppOutlinedButton(isDark: isDark, text: "Remove", onTap: () { })
+                AppOutlinedButton(isDark: widget.isDark, text: "Remove", onTap: () { BlocProvider.of<AuthenticationBloc>(context).add(ProfileAvatarRemoveRequested()); })
               ],
             )
           ],
@@ -101,7 +131,7 @@ class UserAvatarComponent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: CircleAvatar(
-            backgroundImage: (user.avatar != "") ? NetworkImage(user.avatar) : const AssetImage('assets/placeholders/placeholder-user.jpg') as ImageProvider<Object>,
+            backgroundImage: (widget.user.avatar != "") ? NetworkImage(widget.user.avatar) : const AssetImage('assets/placeholders/placeholder-user.jpg') as ImageProvider<Object>,
             maxRadius: 50
           ),
         ),

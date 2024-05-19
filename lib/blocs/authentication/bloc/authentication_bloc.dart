@@ -21,6 +21,7 @@ class AuthenticationBloc
         super(const AuthenticationState.unknown()) {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
+    on<ProfileAvatarRemoveRequested>(_onProfileAvatarRemove);
     on<AppStarted>(_onAppStarted);
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
@@ -73,6 +74,14 @@ class AuthenticationBloc
       case AuthenticationStatus.unknown:
         // return emit(const AuthenticationState.unknown());  DEBUG:: triggers after app init
     }
+  }
+
+  Future<void> _onProfileAvatarRemove(
+    ProfileAvatarRemoveRequested event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    User? user = await _authenticationRepository.removeProfileAvatar();
+    if(user != null) return emit(AuthenticationState.authenticated(user));
   }
 
   Future<void> _onAuthenticationLogoutRequested(
