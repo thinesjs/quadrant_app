@@ -34,6 +34,16 @@ class Styles {
         backgroundColor: isDarkTheme ? CustomColors.backgroundDark : CustomColors.backgroundLight,
         titleTextStyle: isDarkTheme? const TextStyle(color: Colors.white) : const TextStyle(color: Colors.black),
       ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return isDarkTheme ? CustomColors.primaryDark : CustomColors.primaryDark;
+            }
+            return Colors.transparent;
+          },
+        ),
+      ),
     );
 
   }

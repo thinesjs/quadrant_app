@@ -38,12 +38,12 @@ class _SecurityScreenState extends State<SecurityScreen> {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        height: 50,
-        margin: const EdgeInsets.all(10),
-        child: AppFilledButton(isDark: isDark, text: "Save", onTap: () { }, isBlock: true)
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: Container(
+      //   height: 50,
+      //   margin: const EdgeInsets.all(10),
+      //   child: AppFilledButton(isDark: isDark, text: "Save", onTap: () { }, isBlock: true)
+      // ),
     );
   }
 }

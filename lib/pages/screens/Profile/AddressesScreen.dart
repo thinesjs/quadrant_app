@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/pages/components/add_card.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
+import 'package:quadrant_app/pages/components/list_card.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 
 class AddressesScreen extends StatefulWidget {
@@ -34,17 +36,19 @@ class _AddressesScreenState extends State<AddressesScreen> {
               ],
             ),
             SectionHelperText(isDark: isDark, text: 'Update and manage your shipping and billing addresses.'),
-            SectionText(isDark: isDark, text: "Basic Information", size: 20, bold: true),
+            AddCardComponent(isDark: isDark, text: "Add New Address", onTap: () {}),
+            ListCardComponent(isDark: isDark, text: "text", onTap: () {}, isDefault: false,)
+
 
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        height: 50,
-        margin: const EdgeInsets.all(10),
-        child: AppFilledButton(isDark: isDark, text: "Save", onTap: () { }, isBlock: true)
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: Container(
+      //   height: 50,
+      //   margin: const EdgeInsets.all(10),
+      //   child: AppFilledButton(isDark: isDark, text: "Save", onTap: () { }, isBlock: true)
+      // ),
     );
   }
 }
