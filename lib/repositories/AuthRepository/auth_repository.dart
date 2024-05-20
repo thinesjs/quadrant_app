@@ -30,7 +30,7 @@ class AuthenticationRepository {
   final _controller = StreamController<AuthenticationStatus>();
 
   Stream<AuthenticationStatus> get status async* {
-    await Future<void>.delayed(const Duration(seconds: 1));
+    // await Future<void>.delayed(const Duration(seconds: 1));
     yield AuthenticationStatus.unknown;
     yield* _controller.stream;
   }
@@ -91,7 +91,125 @@ class AuthenticationRepository {
         }
       }
     }
-    
+  }
+
+  Future<User?> updateProfile(String username, String email) async {
+    User? _user;
+    try {
+      var response = await dioManager.dio.put(
+        "/v1/user/update", data: {
+          "name" : username,
+          "email" : email
+        }
+      );
+
+      if (response.statusCode == HttpStatus.ok) {
+        UserResponse user = UserResponse.fromJson(response.data);
+
+        if (user.message != null) {
+            _user = User(
+                user.message?.id ?? "",
+                user.message?.name ?? "",
+                user.message?.email ?? "",
+                user.message?.emailVerified ?? "",
+                user.message?.avatar ?? "",
+                user.message?.role ?? "",
+                user.message?.createdAt ?? "");
+
+        }
+      }
+      return _user;
+    } catch (error) {
+      if (error is DioException) {
+        if (error.response?.statusCode == HttpStatus.badRequest) {
+          await CacheManager.clearAll();
+          _controller.add(AuthenticationStatus.unauthenticated);
+        }
+      }
+    }
+  }
+
+  Future<User?> changeProfileAvatar(String imagePath) async {
+    User? _user;
+    Dio dio = Dio();
+    DateTime dateTime = DateTime.now();
+
+    var timestamp = dateTime.millisecondsSinceEpoch;
+    var public_id = "image$timestamp";
+    var api_key = "647698169117413";
+
+    var responseSigned;
+    var cldResponse;
+
+    try {
+      responseSigned = await dioManager.dio.post(
+        "/v1/products/image/sign",data: {
+          "paramsToSign": {
+            "timestamp": timestamp,
+            "upload_preset": "jaasktnb",
+          }
+        }
+      );
+    } catch (error) {
+      if (error is DioException) {
+          if (error.response?.statusCode == HttpStatus.badRequest) {
+
+          }
+      }
+    }
+
+    try {
+        FormData formData = FormData.fromMap({
+          "file": await MultipartFile.fromFile(imagePath),
+          "signature": responseSigned.data["signature"],
+          "api_key": api_key,
+          "timestamp": timestamp,
+          "upload_preset": "jaasktnb",
+        });
+
+        cldResponse = await dio.post("https://api.cloudinary.com/v1_1/dz6ucd5lw/image/upload",
+          data: formData
+        );
+    } catch (error) {
+      if (error is DioException) {
+          if (error.response?.statusCode == HttpStatus.badRequest) {
+
+          }
+      }
+    }
+
+    try {
+      var response = await dioManager.dio.put(
+        "/v1/user/avatar/update", data: {
+          "avatarUrl" : cldResponse.data['secure_url']
+        }
+      );
+
+      if (response.statusCode == HttpStatus.ok) {
+        UserResponse user = UserResponse.fromJson(response.data);
+
+        if (user.message != null) {
+            _user = User(
+                user.message?.id ?? "",
+                user.message?.name ?? "",
+                user.message?.email ?? "",
+                user.message?.emailVerified ?? "",
+                user.message?.avatar ?? "",
+                user.message?.role ?? "",
+                user.message?.createdAt ?? "");
+
+        }
+      }
+      return _user;
+    } catch (error) {
+      if (error is DioException) {
+        if (error.response?.statusCode == HttpStatus.badRequest) {
+          // implement refresh token
+          await CacheManager.clearAll();
+          _controller.add(AuthenticationStatus.unauthenticated);
+        }
+      }
+    }
   }
 
   Future<void> updateToken(String? token) async {

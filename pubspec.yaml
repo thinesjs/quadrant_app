@@ -55,6 +55,8 @@ dependencies:
   cloudinary_flutter: ^1.0.0
   cloudinary_url_gen: ^1.0.0
   image_picker: ^1.1.1
+  firebase_messaging: ^14.9.2
+  firebase_core: ^2.31.0
   
 
 dev_dependencies:
