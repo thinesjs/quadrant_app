@@ -315,27 +315,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     case ProductLoading():
                       return const Center(child: CircularProgressIndicator());
                     case ProductLoaded():
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // 2 columns
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: 0.75,
-                      ),
-                      itemCount: state.products?.length,
-                      itemBuilder: (context, index) {
-                        return ProductCard(
-                          isDark: isDark,
-                          name: state.products?[index].name ?? "",
-                          price: state.products?[index].price ?? 0.0,
-                          rating: 0.0,
-                          image: state.products?[index].images?[0].url ?? "",
-                        );
-                      },
-                    );
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // 2 columns
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                          childAspectRatio: 0.75,
+                        ),
+                        itemCount: state.products?.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(
+                            isDark: isDark,
+                            name: state.products?[index].name ?? "",
+                            price: state.products?[index].price ?? 0.0,
+                            rating: 0.0,
+                            image: state.products?[index].images?[0].url ?? "",
+                          );
+                        },
+                      );
                     case ProductError():
                       return const Text('Something went wrong!');
                     case ProductInitial():

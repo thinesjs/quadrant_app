@@ -9,6 +9,9 @@ part 'product_state.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({ required ProductRepository productRepository }) : _productRepository = productRepository, super(ProductLoading()) {
     on<FetchProduct>(_onFetchProducts);
+    on<FetchFeaturedProduct>(_onFetchFeaturedProducts);
+    on<FetchForYouProduct>(_onFetchForYouProducts);
+    on<FetchNewArrivalsProduct>(_onFetchNewArrivalsProducts);
     on<SearchProducts>(_oSearchProducts);
   }
 
@@ -21,6 +24,45 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
     try {
       final response = await _productRepository.fetchProducts();
+      emit(ProductLoaded(products: response));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _onFetchFeaturedProducts(
+    FetchFeaturedProduct event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.fetchFeaturedProducts();
+      emit(ProductLoaded(products: response));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _onFetchForYouProducts(
+    FetchForYouProduct event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.fetchForYouProducts();
+      emit(ProductLoaded(products: response));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _onFetchNewArrivalsProducts(
+    FetchNewArrivalsProduct event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.fetchNewArrivalProducts();
       emit(ProductLoaded(products: response));
     } catch (_) {
       emit(ProductError());

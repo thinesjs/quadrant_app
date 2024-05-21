@@ -9,13 +9,32 @@ class ListCardComponent extends StatefulWidget {
   const ListCardComponent(
       {super.key,
       required this.isDark,
-      required this.text,
       required this.onTap,
-      this.isDefault = false});
+      this.isDefault = false,
+      required this.type, 
+      required this.name, 
+      required this.phone,
+      required this.address1,
+      required this.address2,
+      this.address3,
+      required this.zipcode,
+      required this.city,
+      required this.state,
+      required this.country});
 
   final bool isDark;
-  final String text;
-  final VoidCallback onTap;
+  final String type;
+  final String name;
+  final String phone;
+  final String address1;
+  final String address2;
+  final String? address3;
+  final String zipcode;
+  final String city;
+  final String state;
+  final String country;
+
+  final void Function(bool) onTap;
   final bool isDefault;
 
   @override
@@ -36,7 +55,7 @@ class _ListCardComponentState extends State<ListCardComponent> {
       _isPressed = false;
     });
     // if (!widget.isLoading) widget.onTap();
-    widget.onTap();
+    // widget.onTap();
   }
 
   void _onTapCancel() {
@@ -54,7 +73,7 @@ class _ListCardComponentState extends State<ListCardComponent> {
         // onTapUp: _onTapUp,
         // onTapCancel: _onTapCancel,
         child: AnimatedContainer(
-          height: 150,
+          height: 220,
           duration: const Duration(milliseconds: 100),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -96,7 +115,7 @@ class _ListCardComponentState extends State<ListCardComponent> {
                           size: 20),
                       SizedBox(width: 10),
                       Text(
-                        "Home",
+                        widget.type,
                         style: TextStyle(fontWeight: FontWeight.w500),
                         overflow: TextOverflow.ellipsis,
                       )
@@ -106,21 +125,27 @@ class _ListCardComponentState extends State<ListCardComponent> {
                     height: 24,
                     width: 24,
                     child: Checkbox(
-                      side: BorderSide(
-                        color: widget.isDark ? Colors.white : Colors.black87,
-                      ),
-                      checkColor:Colors.white,
-                      value: true, 
-                      onChanged: (val) {}),
+                        side: BorderSide(
+                          color: widget.isDark ? Colors.white : Colors.black87,
+                        ),
+                        checkColor: Colors.white,
+                        value: widget.isDefault,
+                        onChanged: (val)=>widget.onTap(val!)),
                   ),
                 ],
               ),
               SizedBox(
                 height: 10,
               ),
-              Text(
-                  "212A Jalan Perajurit, \nTaman Ipoh Baru, \n31400 Ipoh, Perak",
-                  style: TextStyle(fontSize: 13)),
+              Text(widget.name, style: TextStyle(fontSize: 13)),
+              Text(widget.address1, style: TextStyle(fontSize: 13)),
+              Text(widget.address2, style: TextStyle(fontSize: 13)),
+              if (widget.address3 != null)
+                Text(widget.address3 ?? "", style: TextStyle(fontSize: 13)),
+              Text("${widget.city}, ${widget.state}" ?? "", style: TextStyle(fontSize: 13)),
+              Text(widget.country, style: TextStyle(fontSize: 13)),
+              SizedBox(height: 10),
+              Text(widget.phone, style: TextStyle(fontSize: 13)),
             ],
           ),
         ),
