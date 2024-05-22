@@ -13,6 +13,7 @@ import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/main_page.dart';
+import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/repositories/BillboardRepository/billboard_repository.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
@@ -69,9 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     double displayWidth = MediaQuery.of(context).size.width;
     double displayHeight = MediaQuery.of(context).size.height;
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -80,8 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.only(top: 65.0),
-              height: displayWidth / 1.5,
+              padding: EdgeInsets.only(top: displayHeight / 14),
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: NetworkImage(
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocProvider(
               create: (context) => BillboardBloc(billboardRepository: _billboardRepository)..add(FetchBillboard()),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 19.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: BlocBuilder<BillboardBloc, BillboardState>(builder: (context, state) {
                   switch (state) {
                     case BillboardLoading():
@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               items: [
                                 PromoImageComponent(
                                   imageUrl: "",
-                                  margin: EdgeInsets.all(5),
+                                  margin: EdgeInsets.all(10),
                                   onTap: () {},
                                 )
                               ],
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       effect: const WormEffect(
                                           dotHeight: 5,
                                           dotWidth: 16,
-                                          activeDotColor: Color(0xFF34AC7F)),
+                                          activeDotColor: CustomColors.primaryDark),
                                     ),
                                   ),
                                 );
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             items: state.billboards?.map((billboard) {
                               return PromoImageComponent(
                                 imageUrl: billboard.imageUrl ?? "",
-                                margin: EdgeInsets.all(5),
+                                margin: EdgeInsets.all(10),
                                 onTap: () {
                                   showDialog(
                                     context: context,
@@ -234,9 +234,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         sliderController.animateToPage(val);
                                       },
                                       effect: const WormEffect(
-                                          dotHeight: 5,
-                                          dotWidth: 16,
-                                          activeDotColor: Color(0xFF34AC7F)),
+                                        dotHeight: 5,
+                                        dotWidth: 16,
+                                        activeDotColor: CustomColors.primaryDark
+                                      ),
                                     ),
                                   ),
                                 );
@@ -266,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: 4,
                   mainAxisSpacing: 16.0,
                   crossAxisSpacing: 16.0,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.7,
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
@@ -297,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 19.0),
+              padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -307,34 +308,41 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             BlocProvider(
-              create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchProduct()),
+              create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchFeaturedProduct()),
               child: Padding(
                 padding: const EdgeInsets.all(19),
                 child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
                   switch (state) {
                     case ProductLoading():
                       return const Center(child: CircularProgressIndicator());
-                    case ProductLoaded():
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // 2 columns
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 8.0,
-                          childAspectRatio: 0.75,
+                    case ProductsLoaded():
+                      return SizedBox(
+                        height: 270.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.products?.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: ProductCard(
+                                isDark: isDark,
+                                name: state.products?[index].name ?? "",
+                                price: state.products?[index].price ?? 0.0,
+                                rating: 0.0,
+                                image: state.products?[index].images?[0].url ?? "",
+                                onTap: () { 
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductScreen(productId: state.products?[index].id ?? ''),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
-                        itemCount: state.products?.length,
-                        itemBuilder: (context, index) {
-                          return ProductCard(
-                            isDark: isDark,
-                            name: state.products?[index].name ?? "",
-                            price: state.products?[index].price ?? 0.0,
-                            rating: 0.0,
-                            image: state.products?[index].images?[0].url ?? "",
-                          );
-                        },
                       );
                     case ProductError():
                       return const Text('Something went wrong!');
@@ -346,11 +354,122 @@ class _HomeScreenState extends State<HomeScreen> {
                 }),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(19.0),
-            //   child: ,
-            // ),
-            SizedBox(height: displayHeight / 6),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SectionText(isDark: isDark, text: "New Arrivals", size: 20.0, bold: true),
+                  SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
+                ],
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchNewArrivalsProduct()),
+              child: Padding(
+                padding: const EdgeInsets.all(19),
+                child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+                  switch (state) {
+                    case ProductLoading():
+                      return const Center(child: CircularProgressIndicator());
+                    case ProductsLoaded():
+                      return SizedBox(
+                        height: 270.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.products?.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: ProductCard(
+                                isDark: isDark,
+                                name: state.products?[index].name ?? "",
+                                price: state.products?[index].price ?? 0.0,
+                                rating: 0.0,
+                                image: state.products?[index].images?[0].url ?? "",
+                                onTap: () { 
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductScreen(productId: state.products?[index].id ?? ''),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    case ProductError():
+                      return const Text('Something went wrong!');
+                    case ProductInitial():
+                      return const Center(child: Text("Initial"));
+                    default:
+                      return const Placeholder();
+                  }
+                }),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SectionText(isDark: isDark, text: "For You", size: 20.0, bold: true),
+                  SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
+                ],
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchForYouProduct()),
+              child: Padding(
+                padding: const EdgeInsets.all(19),
+                child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+                  switch (state) {
+                    case ProductLoading():
+                      return const Center(child: CircularProgressIndicator());
+                    case ProductsLoaded():
+                      return SizedBox(
+                        height: 270.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.products?.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: ProductCard(
+                                isDark: isDark,
+                                name: state.products?[index].name ?? "",
+                                price: state.products?[index].price ?? 0.0,
+                                rating: 0.0,
+                                image: state.products?[index].images?[0].url ?? "",
+                                onTap: () { 
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductScreen(productId: state.products?[index].id ?? ''),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    case ProductError():
+                      return const Text('Something went wrong!');
+                    case ProductInitial():
+                      return const Center(child: Text("Initial"));
+                    default:
+                      return const Placeholder();
+                  }
+                }),
+              ),
+            ),
+
+            SizedBox(height: displayHeight / 7),
           ],
         ),
       ),

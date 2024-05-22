@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -12,7 +13,8 @@ class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const Scaffold(body: SearchScreen()));
+    return MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: SearchScreen()));
   }
 
   @override
@@ -51,8 +53,8 @@ class _SearchScreenState extends State<SearchScreen>
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return BlocProvider<ProductBloc>(
       create: (_) => ProductBloc(productRepository: _productRepository)
-        ..add(FetchProduct()),
-      child: ListView(controller: _scrollController, children: <Widget>[
+        ..add(FetchProducts()),
+      child: ListView(controller: _scrollController, physics: const ClampingScrollPhysics(), children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
           child: SectionText(
@@ -63,22 +65,21 @@ class _SearchScreenState extends State<SearchScreen>
           headerSpacing: 60.0,
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Builder(
-              builder: (context) {
-                return CustomTextFieldComponent(
-                  hint: 'Search for groceries, and more...',
-                  txtController: searchController,
-                  isLoading: false,
-                  onChange: (String val) {
-                    if (val.length > 3) {
-                      BlocProvider.of<ProductBloc>(context).add(SearchProducts(val));
-                    } else {
-                      BlocProvider.of<ProductBloc>(context).add(FetchProduct());
-                    }
-                  },
-                );
-              }
-            ),
+            child: Builder(builder: (context) {
+              return CustomTextFieldComponent(
+                hint: 'Search for groceries, and more...',
+                txtController: searchController,
+                isLoading: false,
+                onChange: (String val) {
+                  if (val.length > 3) {
+                    BlocProvider.of<ProductBloc>(context)
+                        .add(SearchProducts(val));
+                  } else {
+                    BlocProvider.of<ProductBloc>(context).add(FetchProducts());
+                  }
+                },
+              );
+            }),
           ),
           content: ProductsGrid(isDark: isDark),
         ),
@@ -88,7 +89,8 @@ class _SearchScreenState extends State<SearchScreen>
 }
 
 class ProductsGrid extends StatelessWidget {
-  const ProductsGrid({super.key, 
+  const ProductsGrid({
+    super.key,
     required this.isDark,
   });
   final bool isDark;
@@ -97,12 +99,11 @@ class ProductsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child:
-          BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+      child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
         switch (state) {
           case ProductLoading():
             return const Center(child: CircularProgressIndicator());
-          case ProductLoaded():
+          case ProductsLoaded():
             return GridView.builder(
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
@@ -120,7 +121,15 @@ class ProductsGrid extends StatelessWidget {
                   name: state.products?[index].name ?? "",
                   price: state.products?[index].price ?? 0.0,
                   rating: 0.0,
-                  image: state.products?[index].images?[0].url ?? "",
+                  image: state.products?[index].images?[0].url ?? "", 
+                  onTap: () { 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductScreen(productId: state.products?[index].id ?? ''),
+                      ),
+                    );
+                    },
                 );
               },
             );
@@ -142,6 +151,7 @@ class ProductCard extends StatelessWidget {
   final double price;
   final double rating;
   final String image;
+  final VoidCallback onTap;
 
   ProductCard({
     super.key,
@@ -149,66 +159,70 @@ class ProductCard extends StatelessWidget {
     required this.name,
     required this.price,
     required this.rating,
-    required this.image,
+    required this.image, 
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      padding: EdgeInsets.all(30),
-      decoration: BoxDecoration(
-        color:
-            isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
-        borderRadius: BorderRadius.circular(CustomSize.md),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(CustomSize.md),
-              child: (image != "")
-                  ? Image.network(image)
-                  : Image.asset('assets/placeholders/placeholder-user.jpg')),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'RM ${price.toStringAsFixed(2)}',
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 200,
+        padding: EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color:
+              isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
+          borderRadius: BorderRadius.circular(CustomSize.md),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+                borderRadius: BorderRadius.circular(CustomSize.md),
+                child: (image != "")
+                    ? Image.network(image)
+                    : Image.asset('assets/placeholders/placeholder-user.jpg')),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                name,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'RM ${price.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 16,
                   ),
-                  SizedBox(width: 2),
-                  Text(
-                    '0.0',
-                    style: TextStyle(
-                      fontSize: 16,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                      size: 20,
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+                    SizedBox(width: 2),
+                    Text(
+                      '0.0',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

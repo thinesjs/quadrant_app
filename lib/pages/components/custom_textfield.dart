@@ -29,7 +29,7 @@ class CustomTextFieldComponent extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(1),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withOpacity(.2) : Colors.grey[200],
+              color: isDark ? Colors.white.withOpacity(.2) : Colors.white.withOpacity(.8),
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
@@ -44,17 +44,17 @@ class CustomTextFieldComponent extends StatelessWidget {
                       heightFactor: 1.0,
                       child: Icon(
                         Iconsax.search_normal,
-                        color: isDark ? const Color(0xFFFEFDFE) : Colors.black87
+                        color: isDark ? const Color(0xFFFEFDFE) : Colors.black87,
                         ),
                     ),
-                    suffixIcon: Align(
-                      widthFactor: 1.0,
-                      heightFactor: 1.0,
-                      child: !isLoading ? Icon(Iconsax.filter, color: isDark ? const Color(0xFFFEFDFE) : Colors.black87) : LoadingAnimationWidget.inkDrop(
-                        color: isDark ? const Color(0xFFFEFDFE) : Colors.black87,
-                        size: 24,
-                      )
-                    ),
+                    // suffixIcon: Align(
+                    //   widthFactor: 1.0,
+                    //   heightFactor: 1.0,
+                    //   child: !isLoading ? Icon(Iconsax.filter, color: isDark ? const Color(0xFFFEFDFE) : Colors.black87) : LoadingAnimationWidget.inkDrop(
+                    //     color: isDark ? const Color(0xFFFEFDFE) : Colors.black87,
+                    //     size: 24,
+                    //   )
+                    // ),
                   ),
                   style: const TextStyle(
                     fontWeight: FontWeight.normal,

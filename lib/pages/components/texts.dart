@@ -74,3 +74,26 @@ class SectionHelperText extends StatelessWidget {
     );
   }
 }
+
+class NormalText extends StatelessWidget {
+  const NormalText({super.key, required this.isDark, this.size = 16, this.bold = false, required this.text});
+
+  final bool isDark;
+  final double size;
+  final bool bold;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: size,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+}

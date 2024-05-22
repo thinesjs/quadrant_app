@@ -51,6 +51,8 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double height = MediaQuery.of(context).size.height;
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         // if (state.status.isFailure) {
@@ -67,9 +69,23 @@ class LoginForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Welcome back", style: TextStyle(
-              fontSize: 24,
-            )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SvgPicture.asset(
+                    "assets/logos/logo.svg", 
+                    height: height/13,
+                    colorFilter: ColorFilter.mode(isDark ? Colors.white : Colors.black, BlendMode.srcIn)
+                  ),
+                  const Text("Quadrant.", style: TextStyle(
+                    fontSize: 24,
+                  )),
+                ],
+              ),
+            ),
+            
             const Text("Let's sign you in.", style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

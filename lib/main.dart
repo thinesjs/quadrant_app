@@ -1,11 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
-
-import 'package:cloudinary_flutter/cloudinary_context.dart';
-import 'package:cloudinary_flutter/cloudinary_object.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:quadrant_app/firebase_options.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Login/LoginScreen.dart';
 import 'package:quadrant_app/pages/splash/SplashPage.dart';
@@ -13,10 +14,41 @@ import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
 import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:quadrant_app/themes/styles.dart';
+import 'package:quadrant_app/utils/notification_service.dart';
 
-void main() {
-  HttpOverrides.global = MyHttpOverrides();
+void main() async {
   runApp(const MyApp());
+  HttpOverrides.global = MyHttpOverrides();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  local_notification_service.initialize();
+  
+  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  log(fcmToken.toString(), name: 'FCM Token');
+
+
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    // AndroidNotification? android = message.notification?.android;
+
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${notification}');
+
+    if (notification != null) {
+      local_notification_service.createNotification(message);
+    }
+  });
 }
 
 class MyApp extends StatefulWidget {

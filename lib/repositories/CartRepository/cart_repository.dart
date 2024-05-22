@@ -4,9 +4,9 @@ import 'package:quadrant_app/repositories/ProductRepository/models/response.dart
 import 'package:quadrant_app/repositories/ProductRepository/models/singleResponse.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
-class ProductRepository {
+class CartRepository {
   final DioManager dioManager;
-  ProductRepository(this.dioManager);
+  CartRepository(this.dioManager);
 
   Future<List<Products>?> fetchProducts() async {
     log("getting products", name: "ProductRepository");

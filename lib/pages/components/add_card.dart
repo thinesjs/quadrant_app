@@ -46,7 +46,7 @@ class _AddCardComponentState extends State<AddCardComponent> {
         onTapUp: _onTapUp,
         onTapCancel: _onTapCancel,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
+          duration: const Duration(milliseconds: 100),
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0),
           decoration: BoxDecoration(
             color: _isPressed ? widget.isDark ? CustomColors.outlinedButtonColorDark.withAlpha(100) : CustomColors.primaryDark.withAlpha(50) : widget.isDark ? CustomColors.outlinedButtonColorDark : CustomColors.primaryDark.withAlpha(20),

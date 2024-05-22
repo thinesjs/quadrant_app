@@ -62,6 +62,7 @@ class _MainPageState extends State<MainPage> {
         currentIndex: currentIndex,
         onTap: onTap,
         elevation: 0.0,
+        enableFeedback: true,
         selectedItemColor: const Color(0xFFD6354D),
         unselectedItemColor: const Color(0xFF7E7E7E),
         backgroundColor: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,

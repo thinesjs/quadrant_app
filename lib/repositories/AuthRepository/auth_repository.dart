@@ -4,7 +4,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:quadrant_app/models/Authentication/LoginRespose.dart';
+import 'package:quadrant_app/repositories/AuthRepository/models/fcm_response.dart';
 import 'package:quadrant_app/repositories/AuthRepository/models/login_payload.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user_response.dart';
@@ -56,6 +58,45 @@ class AuthenticationRepository {
         return access_token;
       }
     }
+  }
+
+  Future<bool> registerFcmToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    var response = await dioManager.dio.post(
+      "/v1/user/fcm/link",
+      data: {
+        "token": fcmToken
+      },
+    );
+
+    if (response.statusCode == HttpStatus.ok) {
+      final success = FcmResponse.fromJson(response.data).success;
+      if (success == true){
+        log("fcm token registered");
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> unregisterFcmToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    var response = await dioManager.dio.delete(
+      "/v1/user/fcm/$fcmToken/unlink",
+    );
+
+    if (response.statusCode == HttpStatus.ok) {
+      log("fcm token unregistered");
+      return true;
+      final success = FcmResponse.fromJson(response.data).success;
+      if (success == true){
+        log("fcm token unregistered");
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 
   Future<User?> removeProfileAvatar() async {
@@ -249,6 +290,7 @@ class AuthenticationRepository {
   }
 
   Future<void> logOut() async {
+    await unregisterFcmToken();
     await CacheManager.clearAll();
     _controller.add(AuthenticationStatus.unauthenticated);
   }

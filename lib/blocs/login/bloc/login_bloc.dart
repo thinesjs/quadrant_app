@@ -63,7 +63,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         if (response != null) {
           await _authenticationRepository.updateToken(response);
+          await _authenticationRepository.registerFcmToken();
           await _authenticationRepository.updateLoggedIn(true);
+
           emit(state.copyWith(status: FormzSubmissionStatus.success));
         } else {
           // add(LogoutRequested());

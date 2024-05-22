@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
-import 'package:quadrant_app/controllers/AuthController.dart';
 import 'package:quadrant_app/pages/screens/Profile/AddressesScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/NotificationScreen.dart';

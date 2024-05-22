@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -58,7 +60,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 isDark: isDark,
                 text: 'Update and manage your shipping and billing addresses.'),
             AddCardComponent(
-                isDark: isDark, text: "Add New Address", onTap: () {}),
+                isDark: isDark, text: "Add New Address", onTap: () { log("message");}),
             BlocProvider(
                 create: (context) =>
                     ProfileBloc(profileRepository: _profileRepository)

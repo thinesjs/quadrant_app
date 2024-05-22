@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "983598678161",
+    "project_id": "quadrantai",
+    "storage_bucket": "quadrantai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983598678161:android:f8ced98182981ad0b63f30",
+        "android_client_info": {
+          "package_name": "com.thinesjs.quadrant_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAbPw6vj2VIDbU52B6u_Ql49lTA5XzAfk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
