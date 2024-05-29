@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/ewallet/bloc/ewallet_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
@@ -81,12 +82,21 @@ class _EwalletScreenState extends State<EwalletScreen> {
                               builder: (ctx, state) {
                             switch (state) {
                               case EwalletLoading():
-                                return Text(
-                                  'RM',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: CustomColors.textColorDark),
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'RM',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: CustomColors.textColorDark),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    LoadingAnimationWidget.waveDots(color: !isDark ? CustomColors.textColorDark : CustomColors.textColorLight, size: 24)
+                                  ],
                                 );
                               case EwalletLoaded():
                                 return Text(

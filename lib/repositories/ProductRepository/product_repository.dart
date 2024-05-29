@@ -1,5 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
+import 'package:quadrant_app/repositories/CartRepository/models/productincart_response.dart' as picr;
 import 'package:quadrant_app/repositories/ProductRepository/models/response.dart';
 import 'package:quadrant_app/repositories/ProductRepository/models/singleResponse.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -31,6 +34,30 @@ class ProductRepository {
     } else {
       throw Exception('Failed to load products');
     }
+  }
+
+  Future<picr.Data?> checkProductInCart(String productId) async {
+    log("getting product: $productId", name: "ProductRepository");
+    try {
+      var response = await dioManager.dio.get("/v1/cart/$productId");
+      if (response.statusCode == HttpStatus.ok) {
+        picr.ProductInCart jsonResponse = picr.ProductInCart.fromJson(response.data);
+        return jsonResponse.data;
+      } else {
+        throw Exception('Failed to load products');
+      }
+      
+    } catch (e) {
+      if(e is DioException){
+        if(e.response!.statusCode == HttpStatus.notFound && e.response!.data["message"] == "product not in cart"){
+          return null;
+        }else{
+          throw Exception('Failed to load products');
+        }
+      }
+    }
+    
+    
   }
 
   Future<List<Products>?> fetchProductsByCategory(String category) async {
@@ -97,4 +124,6 @@ class ProductRepository {
       throw Exception('Failed to search product');
     }
   }
+
+  // addProductToCart
 }

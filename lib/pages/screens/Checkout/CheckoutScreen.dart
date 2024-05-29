@@ -1,11 +1,19 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quadrant_app/blocs/cart/bloc/cart_bloc.dart';
+import 'package:quadrant_app/pages/components/cart_item.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Checkout/GatewayWebviewScreen.dart';
+import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -21,11 +29,13 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final _slideToActKey = GlobalKey<SlideActionState>();
+  final _scrollController = ScrollController();
 
   List<PaymentMethod> paymentMethods = [
     PaymentMethod('Google Pay', 'assets/icons/gpay.svg'),
     PaymentMethod('Apple Pay', 'assets/icons/applepay.svg'),
     PaymentMethod('Online Banking', 'assets/icons/online1.svg'),
+    PaymentMethod('Q-Wallet', 'assets/icons/online1.svg'),
   ];
 
   late PaymentMethod selectedPaymentMethod;
@@ -88,7 +98,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  void _checkout() {
+  void _checkout(BuildContext context) {
+    // context.read<CartBloc>().add(CartCheckout());
+
     Future.delayed(
       Duration(seconds: 10),
       () => {_slideToActKey.currentState!.reset()},
@@ -98,136 +110,228 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Checkout'),
-      ),
-      body: const Center(
-        child: Text('Checkout Screen'),
-      ),
-      bottomNavigationBar: Container(
-        height: 190,
-        decoration: BoxDecoration(
-            color: isDark
-                ? CustomColors.navBarBackgroundDark
-                : CustomColors.navBarBackgroundLight,
-            borderRadius: const BorderRadius.all(
-                Radius.circular(CustomSizes.borderRadiusMd)),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? CustomColors.primaryDark.withOpacity(0.2)
-                    : CustomColors.primaryLight.withOpacity(0.2),
-                spreadRadius: 5,
-                blurRadius: 100,
-                offset: const Offset(0, 3),
-              )
-            ]),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: isDark
-                                ? CustomColors.borderDark
-                                : CustomColors.borderLight,
-                            width: 1,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SvgPicture.asset(
-                            selectedPaymentMethod.assetPath,
-                            height: 50,
-                            colorFilter:
-                                (selectedPaymentMethod == paymentMethods[2])
-                                    ? ColorFilter.mode(
-                                        Colors.white, BlendMode.srcIn)
-                                    : null,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SideSectionText(
-                              isDark: isDark,
-                              text: "Pay using",
-                              size: 13.0,
-                              color: isDark
-                                  ? CustomColors.textColorDark
-                                  : CustomColors.textColorLight),
-                          SideSectionText(
-                              isDark: isDark,
-                              text: selectedPaymentMethod.name,
-                              size: 15.0,
-                              bold: true,
-                              color: isDark
-                                  ? CustomColors.textColorDark
-                                  : CustomColors.textColorLight),
-                        ],
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => _showPaymentMethodSelection(context),
-                    child: Row(
+    return BlocProvider(
+      create: (context) =>
+          CartBloc(cartRepository: CartRepository(DioManager.instance))
+            ..add(FetchCart()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Checkout'),
+        ),
+        body: BlocListener<CartBloc, CartState>(
+          listener: (context, state) {
+            if (state is CartCheckoutCallback) {
+            // Navigate to the WebViewScreen with the payment URL
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PaymentWebViewScreen(url: state.cartCheckout.redirectUrl!),
+                ),
+              );
+            }
+          },
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FadingEdgeScrollView.fromScrollView(
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        switch (state) {
+                          case CartLoading():
+                            return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                          case CartLoaded():
+                            return Container(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? CustomColors.secondaryDark
+                                    : CustomColors.secondaryLight,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                        CustomSizes.borderRadiusLg)),
+                              ),
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ClampingScrollPhysics(),
+                                  itemCount: state.cart.length,
+                                  itemBuilder: (context, index) {
+                                    final cartItem = state.cart[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 1),
+                                      child:
+                                          ShoppingCartItem(cartItem: cartItem),
+                                    );
+                                  }),
+                            );
+                          case CartError():
+                            return const Text('Something went wrong!');
+                          case CartInitial():
+                            return const Center(child: Text("Loading"));
+                          default:
+                            return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                        }
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SectionText(
+                          isDark: isDark,
+                          text: "Offers & Benefits",
+                          size: 20.0,
+                          bold: true),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 190,
+          decoration: BoxDecoration(
+              color: isDark
+                  ? CustomColors.navBarBackgroundDark
+                  : CustomColors.navBarBackgroundLight,
+              borderRadius: const BorderRadius.all(
+                  Radius.circular(CustomSizes.borderRadiusMd)),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark
+                      ? CustomColors.primaryDark.withOpacity(0.2)
+                      : CustomColors.primaryLight.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 100,
+                  offset: const Offset(0, 3),
+                )
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SideSectionText(
-                            isDark: isDark, text: "Change", size: 16.0),
-                        Icon(
-                          Iconsax.arrow_right_3,
-                          color: isDark
-                              ? CustomColors.primaryDark
-                              : CustomColors.primaryLight,
-                          size: 16,
-                        )
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isDark
+                                  ? CustomColors.borderDark
+                                  : CustomColors.borderLight,
+                              width: 1,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SvgPicture.asset(
+                              selectedPaymentMethod.assetPath,
+                              height: 50,
+                              colorFilter:
+                                  (selectedPaymentMethod == paymentMethods[2] ||
+                                          selectedPaymentMethod ==
+                                              paymentMethods[3])
+                                      ? ColorFilter.mode(
+                                          isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight,
+                                          BlendMode.srcIn)
+                                      : null,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SideSectionText(
+                                isDark: isDark,
+                                text: "Pay using",
+                                size: 13.0,
+                                color: isDark
+                                    ? CustomColors.textColorDark
+                                    : CustomColors.textColorLight),
+                            SideSectionText(
+                                isDark: isDark,
+                                text: selectedPaymentMethod.name,
+                                size: 15.0,
+                                bold: true,
+                                color: isDark
+                                    ? CustomColors.textColorDark
+                                    : CustomColors.textColorLight),
+                          ],
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 15),
-              SlideAction(
-                key: _slideToActKey,
-                borderRadius: 50,
-                elevation: 0,
-                innerColor: CustomColors.secondaryLight,
-                outerColor: isDark
-                    ? CustomColors.primaryDark
-                    : CustomColors.primaryDark,
-                sliderButtonIcon: Icon(Iconsax.arrow_right_3),
-                text: 'Slide to Pay',
-                textStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: () => _showPaymentMethodSelection(context),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SideSectionText(
+                              isDark: isDark, text: "Change", size: 16.0),
+                          Icon(
+                            Iconsax.arrow_right_3,
+                            color: isDark
+                                ? CustomColors.primaryDark
+                                : CustomColors.primaryLight,
+                            size: 16,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                submittedIcon: LoadingAnimationWidget.threeArchedCircle(
-                  color: CustomColors.secondaryLight,
-                  size: 21,
-                ),
-                trigger: 0.99,
-                animationDuration: Duration(milliseconds: 450),
-                onSubmit: () {
-                  _checkout();
-                },
-              )
-            ],
+                SizedBox(height: 15),
+                BlocBuilder<CartBloc, CartState>(
+                  builder: (context, state) {
+                    switch (state) {
+                      case CartLoading():
+                        return Center(child: LoadingAnimationWidget.threeArchedCircle(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                      case CartLoaded():
+                        return SlideAction(
+                          key: _slideToActKey,
+                          borderRadius: 50,
+                          elevation: 0,
+                          innerColor: CustomColors.secondaryLight,
+                          outerColor: isDark
+                              ? CustomColors.primaryDark
+                              : CustomColors.primaryDark,
+                          sliderButtonIcon: Icon(Iconsax.arrow_right_3),
+                          text: 'Slide to Pay | RM ${state.meta.total?.toStringAsFixed(2)}',
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          submittedIcon:
+                              LoadingAnimationWidget.threeArchedCircle(
+                            color: CustomColors.secondaryLight,
+                            size: 21,
+                          ),
+                          trigger: 0.99,
+                          animationDuration: Duration(milliseconds: 450),
+                          onSubmit: () {
+                            context.read<CartBloc>().add(CartCheckout());
+                          },
+                        );
+
+                      default:
+                        return Center(child: LoadingAnimationWidget.threeArchedCircle(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                    }
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

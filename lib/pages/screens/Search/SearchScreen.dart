@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/product_card.dart';
@@ -103,7 +104,7 @@ class ProductsGrid extends StatelessWidget {
       child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
         switch (state) {
           case ProductLoading():
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
           case ProductsLoaded():
             return GridView.builder(
               shrinkWrap: true,

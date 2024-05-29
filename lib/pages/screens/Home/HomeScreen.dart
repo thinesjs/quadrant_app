@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
@@ -302,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
                   switch (state) {
                     case ProductLoading():
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
                     case ProductsLoaded():
                       return SizedBox(
                         height: 270.0,
@@ -359,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
                   switch (state) {
                     case ProductLoading():
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
                     case ProductsLoaded():
                       return SizedBox(
                         height: 270.0,
@@ -416,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
                   switch (state) {
                     case ProductLoading():
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
                     case ProductsLoaded():
                       return SizedBox(
                         height: 270.0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/cart/bloc/cart_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/cart_item.dart';
@@ -34,6 +35,8 @@ class _CartScreenState extends State<CartScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
           child: ListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             children: <Widget>[
               SectionText(isDark: isDark, text: 'Cart', size: 32.0, bold: true),
               BlocProvider(
@@ -43,11 +46,10 @@ class _CartScreenState extends State<CartScreen> {
                     builder: (context, state) {
                       switch (state) {
                         case CartLoading():
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
                         case CartLoaded():
                           return Container(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
                               color: isDark
                                   ? CustomColors.secondaryDark
@@ -55,49 +57,49 @@ class _CartScreenState extends State<CartScreen> {
                               borderRadius: const BorderRadius.all(
                                   Radius.circular(CustomSizes.borderRadiusLg)),
                             ),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const ClampingScrollPhysics(),
-                                itemCount: state.cart.length,
-                                itemBuilder: (context, index) {
-                                  final cartItem = state.cart[index];
-                                  return Dismissible(
-                                    key: Key(cartItem.product!.id.toString()),
-                                    direction: DismissDirection.endToStart,
-                                    onDismissed: (direction) {
-                                      // Remove the item from the data source.
-                                      // setState(() {
-                                      //   items.removeAt(index);
-                                      // });
-                                    },
-                                    background: Container(
-                                      color: Colors.redAccent,
-                                      alignment: Alignment.centerRight,
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Icon(Icons.delete,
-                                              color: Colors.white),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            "Delete",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                            child: Container(
+                              height: displayHeight / 1.6,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: state.cart.length,
+                                  itemBuilder: (context, index) {
+                                    final cartItem = state.cart[index];
+                                    return Dismissible(
+                                      key: Key(cartItem.product!.id.toString()),
+                                      direction: DismissDirection.endToStart,
+                                      onDismissed: (direction) {
+                                        context.read<CartBloc>().add(RemoveProductFromCart(productId: cartItem.product!.id!));
+                                      },
+                                      background: Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.centerRight,
+                                        padding: const EdgeInsets.only(right: 20),
+                                        child: const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Icon(Icons.delete,
+                                                color: Colors.white),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "Delete",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 1),
-                                      child:
-                                          ShoppingCartItem(cartItem: cartItem),
-                                    ),
-                                  );
-                                }),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 1),
+                                        child:
+                                            ShoppingCartItem(cartItem: cartItem),
+                                      ),
+                                    );
+                                  }),
+                            ),
                           );
                         case CartError():
                           return const Text('Something went wrong!');

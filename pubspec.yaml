@@ -66,6 +66,8 @@ dependencies:
   slide_to_act:
     git:
       url: https://github.com/muhammadtalhasultan/flutter-slide-to-act
+  webview_flutter: ^4.8.0
+  google_maps_flutter: ^2.6.1
   
 
 dev_dependencies:
