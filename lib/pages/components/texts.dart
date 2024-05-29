@@ -28,13 +28,14 @@ class SectionText extends StatelessWidget {
 
 class SideSectionText extends StatelessWidget {
   const SideSectionText({super.key, 
-    required this.isDark, required this.text, this.size = 14, this.bold = false, this.onTap
+    required this.isDark, required this.text, this.size = 14, this.bold = false, this.onTap, this.color
   });
 
   final bool isDark;
   final double size;
   final bool bold;
   final String text;
+  final Color? color;
   final VoidCallback? onTap;
 
   @override
@@ -46,7 +47,7 @@ class SideSectionText extends StatelessWidget {
         style: TextStyle(
           fontSize: size,
           fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-          color: isDark ? CustomColors.primaryDark : CustomColors.primaryLight,
+          color: (color == null) ? isDark ? CustomColors.primaryDark : CustomColors.primaryLight : color,
         ),
       ),
     );

@@ -10,7 +10,7 @@ class CustomPadding {
 }
 class CustomColors {
   CustomColors._();
-  static const Color backgroundLight = Color(0xFFF7F5F8);
+  static const Color backgroundLight = Color.fromARGB(255, 238, 236, 239);
   static const Color backgroundDark = Color(0xFF141215);
 
   static const Color primaryLight = Color(0xFF7E7E7E);
@@ -40,11 +40,15 @@ class CustomColors {
   static const Color placeholderTextColorLight = Colors.black12;
   static const Color placeholderTextColorDark = Colors.white12;
 
+  static const Color borderDark = Colors.white12;
+  static const Color borderLight = Colors.black26;
+
   // static const Color  = Color(0xFFD6354D);
 }
 
 
-class CustomSize {
+class CustomSizes {
+  CustomSizes._();
   // Padding and margin sizes
   static const double xs = 4.0;
   static const double sm = 8.0;

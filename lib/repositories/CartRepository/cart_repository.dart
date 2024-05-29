@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:quadrant_app/repositories/CartRepository/models/response.dart';
 import 'package:quadrant_app/repositories/ProductRepository/models/response.dart';
 import 'package:quadrant_app/repositories/ProductRepository/models/singleResponse.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -8,93 +10,93 @@ class CartRepository {
   final DioManager dioManager;
   CartRepository(this.dioManager);
 
-  Future<List<Products>?> fetchProducts() async {
-    log("getting products", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products");
+  Future<List<Items>?> fetchCart() async {
+    log("getting user's cart", name: "CartRepository");
+    var response = await dioManager.dio.get("/v1/cart");
     
     if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+      UserCartResponse jsonResponse = UserCartResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
+      return jsonResponse.data?.items;
     } else {
-      throw Exception('Failed to load products');
+      throw Exception('Failed to load cart');
     }
   }
 
-  Future<Product?> fetchProduct(String productId) async {
-    log("getting product: $productId", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/$productId");
+  // Future<Product?> fetchProduct(String productId) async {
+  //   log("getting product: $productId", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products/$productId");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductResponse jsonResponse = ProductResponse.fromJson(response.data);
-      return jsonResponse.message?.product;
-    } else {
-      throw Exception('Failed to load products');
-    }
-  }
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductResponse jsonResponse = ProductResponse.fromJson(response.data);
+  //     return jsonResponse.message?.product;
+  //   } else {
+  //     throw Exception('Failed to load products');
+  //   }
+  // }
 
-  Future<List<Products>?> fetchProductsByCategory(String category) async {
-    log("getting products by category", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products?category=$category");
+  // Future<List<Products>?> fetchProductsByCategory(String category) async {
+  //   log("getting products by category", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products?category=$category");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
-    } else {
-      throw Exception('Failed to load products');
-    }
-  }
+  //     return jsonResponse.message?.products;
+  //   } else {
+  //     throw Exception('Failed to load products');
+  //   }
+  // }
 
-  Future<List<Products>?> fetchFeaturedProducts() async {
-    log("getting featured products", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/featured");
+  // Future<List<Products>?> fetchFeaturedProducts() async {
+  //   log("getting featured products", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products/featured");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
-    } else {
-      throw Exception('Failed to load featured products');
-    }
-  }
+  //     return jsonResponse.message?.products;
+  //   } else {
+  //     throw Exception('Failed to load featured products');
+  //   }
+  // }
 
-  Future<List<Products>?> fetchForYouProducts() async {
-    log("getting for you products", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/for-you");
+  // Future<List<Products>?> fetchForYouProducts() async {
+  //   log("getting for you products", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products/for-you");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
-    } else {
-      throw Exception('Failed to load featured products');
-    }
-  }
+  //     return jsonResponse.message?.products;
+  //   } else {
+  //     throw Exception('Failed to load featured products');
+  //   }
+  // }
 
-  Future<List<Products>?> fetchNewArrivalProducts() async {
-    log("getting new arrival products", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/new-arrivals");
+  // Future<List<Products>?> fetchNewArrivalProducts() async {
+  //   log("getting new arrival products", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products/new-arrivals");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
-    } else {
-      throw Exception('Failed to load featured products');
-    }
-  }
+  //     return jsonResponse.message?.products;
+  //   } else {
+  //     throw Exception('Failed to load featured products');
+  //   }
+  // }
 
-  Future<List<Products>?> searchProduct({ required String query }) async {
-    log("search product (query:$query)", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/all/search?arg=$query");
+  // Future<List<Products>?> searchProduct({ required String query }) async {
+  //   log("search product (query:$query)", name: "ProductRepository");
+  //   var response = await dioManager.dio.get("/v1/products/all/search?arg=$query");
     
-    if (response.statusCode == HttpStatus.ok) {
-      ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
+  //   if (response.statusCode == HttpStatus.ok) {
+  //     ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
 
-      return jsonResponse.message?.products;
-    } else {
-      throw Exception('Failed to search product');
-    }
-  }
+  //     return jsonResponse.message?.products;
+  //   } else {
+  //     throw Exception('Failed to search product');
+  //   }
+  // }
 }

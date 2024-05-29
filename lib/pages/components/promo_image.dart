@@ -20,7 +20,7 @@ class PromoImageComponent extends StatelessWidget {
       child: Container(
         margin: margin,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(CustomSize.md),
+          borderRadius: BorderRadius.circular(CustomSizes.md),
           child: Image(
             fit: BoxFit.contain,
             image: (imageUrl != "") ? NetworkImage(imageUrl) : const AssetImage('assets/placeholders/placeholder-banner.png') as ImageProvider<Object>

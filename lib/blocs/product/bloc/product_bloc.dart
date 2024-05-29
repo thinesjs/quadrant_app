@@ -11,6 +11,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({ required ProductRepository productRepository }) : _productRepository = productRepository, super(ProductLoading()) {
     on<FetchProducts>(_onFetchProducts);
     on<FetchProduct>(_onFetchProduct);
+    on<FetchProductByCategory>(_onFetchProductsByCategory);
     on<FetchFeaturedProduct>(_onFetchFeaturedProducts);
     on<FetchForYouProduct>(_onFetchForYouProducts);
     on<FetchNewArrivalsProduct>(_onFetchNewArrivalsProducts);
@@ -26,6 +27,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
     try {
       final response = await _productRepository.fetchProducts();
+      emit(ProductsLoaded(products: response));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _onFetchProductsByCategory(
+    FetchProductByCategory event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.fetchProductsByCategory(event.category);
       emit(ProductsLoaded(products: response));
     } catch (_) {
       emit(ProductError());

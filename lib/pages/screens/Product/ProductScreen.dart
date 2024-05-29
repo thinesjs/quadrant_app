@@ -26,7 +26,7 @@ class ProductScreen extends StatelessWidget {
       child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
         switch (state) {
           case ProductLoading():
-            return const Center(child: CircularProgressIndicator());
+            return Scaffold(body: Center(child: CircularProgressIndicator()));
           case ProductLoaded():
             return Scaffold(
               body: Column(
@@ -94,8 +94,8 @@ class ProductScreen extends StatelessWidget {
                 ],
               ),
               bottomNavigationBar: Container(
-                height: 100, 
-                color: isDark? CustomColors.cardColorDark : CustomColors.cardColorLight,
+                height: 110, 
+                color: isDark? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40.0),
                   child: Row(
@@ -114,13 +114,41 @@ class ProductScreen extends StatelessWidget {
               ),
             );
           case ProductError():
-            return Scaffold(body: const Text('Something went wrong!'));
+            return ErrorComponent(productId: productId, errorText: "Product not found.");
           case ProductInitial():
             return const Center(child: Text("Initial"));
           default:
             return const Placeholder();
         }
       })
+    );
+  }
+}
+
+class ErrorComponent extends StatelessWidget {
+  final String productId;
+  final String errorText;
+  const ErrorComponent({super.key, required this.productId, required this.errorText});
+
+  @override
+  Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("We're unable to retrive this product, report to us this issue or try again some time later.", textAlign: TextAlign.center),
+              SizedBox(height: 5),
+              Text("[$productId]", textAlign: TextAlign.center),
+              SizedBox(height: 20),
+              CircleActionButton(isDark: isDark, icon: Iconsax.arrow_left, onTap: () { Navigator.pop(context); },),
+            ],
+          ),
+        ),
+      )
     );
   }
 }

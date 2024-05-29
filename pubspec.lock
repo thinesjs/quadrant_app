@@ -193,6 +193,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  fading_edge_scrollview:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4581c8ab365f4ffeb0a84f1c95257debbd3a2c25"
+      url: "https://github.com/thinesjs/fading_edge_scrollview"
+    source: git
+    version: "4.1.1"
   fake_async:
     dependency: transitive
     description:
@@ -845,6 +854,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  slide_to_act:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "669f33118177d205d796afd18cfbb35a6e149dbe"
+      url: "https://github.com/muhammadtalhasultan/flutter-slide-to-act"
+    source: git
+    version: "2.0.4"
   smooth_page_indicator:
     dependency: "direct main"
     description:
@@ -1062,6 +1080,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  web_socket:
+    dependency: transitive
+    description:
+      name: web_socket
+      sha256: "217f49b5213796cb508d6a942a5dc604ce1cb6a0a6b3d8cb3f0c314f0ecea712"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
+  web_socket_channel:
+    dependency: "direct main"
+    description:
+      name: web_socket_channel
+      sha256: a2d56211ee4d35d9b344d9d4ce60f362e4f5d1aafb988302906bd732bc731276
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   win32:
     dependency: transitive
     description:

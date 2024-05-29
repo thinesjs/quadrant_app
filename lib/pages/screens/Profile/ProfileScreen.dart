@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(25.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                       child: Container(
                         decoration: BoxDecoration(
                           color: isDark ? CustomColors.cardColorDark:CustomColors.cardColorLight,

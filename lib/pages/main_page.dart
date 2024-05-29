@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/pages/ewallet/EwalletScreen.dart';
 import 'package:quadrant_app/pages/screens/Cart/CartScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
@@ -28,6 +29,7 @@ class _MainPageState extends State<MainPage> {
   List<List<dynamic>> screensList = [
     [const HomeScreen(), 'Home', Iconsax.home5],
     [const SearchScreen(), 'Browse', Iconsax.search_status],
+    [const EwalletScreen(), 'Q-Wallet', Iconsax.wallet],
     [const CartScreen(), 'Cart', Iconsax.shopping_cart],
     [const ProfileScreen(), 'Profile', Iconsax.user]
   ];

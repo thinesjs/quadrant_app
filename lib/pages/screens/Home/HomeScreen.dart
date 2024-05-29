@@ -8,11 +8,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
+import 'package:quadrant_app/pages/components/category_button.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
+import 'package:quadrant_app/pages/components/product_card.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/main_page.dart';
+import 'package:quadrant_app/pages/screens/Category/CategoryScreen.dart';
 import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/repositories/BillboardRepository/billboard_repository.dart';
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'https://live.staticflickr.com/4475/37095348433_626859af3c_b.jpg'),
                       fit: BoxFit.fill,
                       opacity: .5),
-                  color: Colors.black),
+                  color: Colors.black87),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                 child: Column(
@@ -271,29 +274,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          categories[index].icon,
-                          color: isDark ? CustomColors.primaryDark : CustomColors.primaryLight,
-                          size: 24,
-                        ),
+                  return CategoryButton(category: categories[index], isDark: isDark, onTap: () { 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryScreen(categoryName: categories[index].name),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        categories[index].name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-                      ),
-                    ],
-                  );
+                    );
+                   },);
                 },
               ),
             ),
@@ -476,6 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
 
 class CustomCarouselController extends CarouselControllerImpl {
   CarouselState? _state;

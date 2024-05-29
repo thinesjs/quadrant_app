@@ -59,6 +59,13 @@ dependencies:
   firebase_core: ^2.31.1
   firebase_analytics: ^10.10.6
   flutter_local_notifications: ^17.1.2
+  fading_edge_scrollview:
+    git:
+      url: https://github.com/thinesjs/fading_edge_scrollview
+  web_socket_channel: ^3.0.0
+  slide_to_act:
+    git:
+      url: https://github.com/muhammadtalhasultan/flutter-slide-to-act
   
 
 dev_dependencies:
@@ -87,7 +94,7 @@ flutter:
   assets:
     - assets/logos/
     - assets/placeholders/
-    # - images/a_dot_ham.jpeg
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -107,6 +114,6 @@ flutter:
        - asset: assets/fonts/Poppins-Medium.ttf
        - asset: assets/fonts/Poppins-Italic.ttf
          style: italic
-  #
+         
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -33,11 +33,11 @@ class AppTextField extends StatelessWidget {
               hintText: placeholder,
               hintStyle: TextStyle(color: isDark ? CustomColors.placeholderTextColorDark : CustomColors.placeholderTextColorLight),
               enabledBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(CustomSize.cardRadiusMd)),
+                borderRadius: const BorderRadius.all(Radius.circular(CustomSizes.cardRadiusMd)),
                 borderSide: BorderSide(color: isDark ? CustomColors.outlinedButtonColorDark : CustomColors.outlinedButtonColorLight, width: 1.0),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(CustomSize.cardRadiusMd)),
+                borderRadius: BorderRadius.all(Radius.circular(CustomSizes.cardRadiusMd)),
                 borderSide: BorderSide(color: CustomColors.primaryDark, width: 2.0),
               ),
             ),

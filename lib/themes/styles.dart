@@ -27,6 +27,7 @@ class Styles {
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         foregroundColor: isDarkTheme ? CustomColors.textColorDark : CustomColors.textColorLight,
+        backgroundColor: isDarkTheme ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
         // surfaceTintColor: CommonColors.lightColor,
       ), 
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(background: isDarkTheme ? Colors.black : Colors.white),
