@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:quadrant_app/pages/ewallet/EwalletScreen.dart';
+import 'package:quadrant_app/pages/screens/ewallet/EwalletScreen.dart';
 import 'package:quadrant_app/pages/screens/Cart/CartScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';

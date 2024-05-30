@@ -277,15 +277,15 @@ class Voucher {
 
 class Meta {
   double? subtotal;
-  int? discount;
+  double? discount;
   double? total;
 
   Meta({this.subtotal, this.discount, this.total});
 
   Meta.fromJson(Map<String, dynamic> json) {
-    subtotal = json['subtotal'];
-    discount = json['discount'];
-    total = json['total'];
+    subtotal = json['subtotal']?.toDouble();
+    discount = json['discount']?.toDouble();
+    total = json['total']?.toDouble();
   }
 
   Map<String, dynamic> toJson() {

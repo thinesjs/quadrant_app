@@ -21,7 +21,6 @@ class EwalletBloc extends Bloc<EwalletEvent, EwalletState> {
     emit(EwalletLoading());
     try {
       final response = await _ewalletRepository.fetchWallet();
-      await Future.delayed(const Duration(seconds: 5));
       emit(EwalletLoaded(wallet: response!));
     } catch (_) {
       emit(EwalletError());

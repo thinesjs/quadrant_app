@@ -66,7 +66,6 @@ class CartRepository {
 
     if (response.statusCode == HttpStatus.ok) {
       UserCartResponse jsonResponse = UserCartResponse.fromJson(response.data);
-
       return jsonResponse;
     } else {
       throw Exception('Failed to load cart');
@@ -77,11 +76,8 @@ class CartRepository {
     log("requesting cart checkout", name: "CartRepository");
     var response = await dioManager.dio.post("/v1/cart/checkout");
 
-    print(response.data);
-
     if (response.statusCode == HttpStatus.ok) {
       CartCheckoutResponse jsonResponse = CartCheckoutResponse.fromJson(response.data);
-
       return jsonResponse;
     } else {
       throw Exception('Failed to load checkout');

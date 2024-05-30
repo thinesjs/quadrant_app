@@ -26,14 +26,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>take pic</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>get location</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>record vid</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>select image</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -58,5 +50,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+    <string>camera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Need location when in use</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Always and when in use!</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Older devices need location.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Can I have location always?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>select image</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>microphone</string>
+
 </dict>
 </plist>

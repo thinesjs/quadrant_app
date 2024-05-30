@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(25.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                       child: Container(
                         decoration: BoxDecoration(
                           color: isDark ? CustomColors.cardColorDark:CustomColors.cardColorLight,
@@ -85,6 +85,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => {Navigator.push(context, EditProfileScreen.route())}, 
                               isDark: isDark
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? CustomColors.cardColorDark:CustomColors.cardColorLight,
+                          borderRadius: BorderRadius.circular(CustomPadding.tRoundEdgePadding)
+                        ),
+                        child: Column(
+                          children: [
+                            ProfileButton(
+                              title: "Orders", 
+                              caption: "Manage your orders and payments.", 
+                              icon: Iconsax.box,
+                              onTap: () => {Navigator.push(context, AddressesScreen.route())}, 
+                              isDark: isDark
+                            ),
                             ProfileButton(
                               title: "Addresses", 
                               caption: "Manage your profiles and addresses", 
@@ -92,6 +112,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => {Navigator.push(context, AddressesScreen.route())}, 
                               isDark: isDark
                             ),
+                            
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? CustomColors.cardColorDark:CustomColors.cardColorLight,
+                          borderRadius: BorderRadius.circular(CustomPadding.tRoundEdgePadding)
+                        ),
+                        child: Column(
+                          children: [
                             ProfileButton(
                               title: "Security", 
                               caption: "Change your password and setup 2FA", 

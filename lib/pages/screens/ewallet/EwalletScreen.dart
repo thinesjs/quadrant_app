@@ -10,7 +10,7 @@ import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
-import 'package:quadrant_app/pages/ewallet/EwalletTransactionsScreen.dart';
+import 'package:quadrant_app/pages/screens/ewallet/EwalletTransactionsScreen.dart';
 import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';

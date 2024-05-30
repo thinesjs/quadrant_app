@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:quadrant_app/blocs/cart/bloc/cart_bloc.dart';
 import 'package:quadrant_app/pages/components/cart_item.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
@@ -35,7 +36,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     PaymentMethod('Google Pay', 'assets/icons/gpay.svg'),
     PaymentMethod('Apple Pay', 'assets/icons/applepay.svg'),
     PaymentMethod('Online Banking', 'assets/icons/online1.svg'),
-    PaymentMethod('Q-Wallet', 'assets/icons/online1.svg'),
+    PaymentMethod('Q-Wallet', 'assets/icons/qpay.svg'),
   ];
 
   late PaymentMethod selectedPaymentMethod;
@@ -53,24 +54,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _showPaymentMethodSelection(BuildContext context) {
-    showModalBottomSheet(
+    showBarModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return Wrap(
           children: [
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 12.0, bottom: 8.0),
-                  child: Container(
-                    width: 30,
-                    height: 5,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12.0))),
-                  ),
-                ),
                 Wrap(
                   children: paymentMethods.map((method) {
                     return ListTile(
@@ -99,7 +89,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _checkout(BuildContext context) {
-    // context.read<CartBloc>().add(CartCheckout());
+    if (selectedPaymentMethod == paymentMethods[2]) {
+      context.read<CartBloc>().add(CartCheckout());
+    } else if (selectedPaymentMethod == paymentMethods[3]) {
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${selectedPaymentMethod.name} is not available yet!'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
 
     Future.delayed(
       Duration(seconds: 10),
@@ -121,11 +121,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         body: BlocListener<CartBloc, CartState>(
           listener: (context, state) {
             if (state is CartCheckoutCallback) {
-            // Navigate to the WebViewScreen with the payment URL
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PaymentWebViewScreen(url: state.cartCheckout.redirectUrl!),
+                  builder: (context) => PaymentWebViewScreen(
+                      url: state.cartCheckout.redirectUrl!),
                 ),
               );
             }
@@ -141,7 +141,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       builder: (context, state) {
                         switch (state) {
                           case CartLoading():
-                            return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
                           case CartLoaded():
                             return Container(
                               padding: EdgeInsets.symmetric(vertical: 8),
@@ -172,7 +177,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           case CartInitial():
                             return const Center(child: Text("Loading"));
                           default:
-                            return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
                         }
                       },
                     ),
@@ -183,7 +193,165 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           text: "Offers & Benefits",
                           size: 20.0,
                           bold: true),
-                    )
+                    ),
+                    BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        switch (state) {
+                          case CartLoading():
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
+                          case CartLoaded():
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 20),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? CustomColors.secondaryDark
+                                    : CustomColors.secondaryLight,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                        CustomSizes.borderRadiusLg)),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SideSectionText(
+                                      isDark: isDark,
+                                      text: "Add Voucher",
+                                      color: isDark
+                                          ? CustomColors.textColorDark
+                                          : CustomColors.textColorLight),
+                                  Icon(
+                                    Iconsax.arrow_right_3,
+                                    color: isDark
+                                        ? CustomColors.textColorDark
+                                        : CustomColors.textColorLight,
+                                    size: 16,
+                                  )
+                                ],
+                              ),
+                            );
+                          default:
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
+                        }
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SectionText(
+                          isDark: isDark,
+                          text: "Order Summary",
+                          size: 20.0,
+                          bold: true),
+                    ),
+                    BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        switch (state) {
+                          case CartLoading():
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
+                          case CartLoaded():
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 20),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? CustomColors.secondaryDark
+                                    : CustomColors.secondaryLight,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                        CustomSizes.borderRadiusLg)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SideSectionText(
+                                          isDark: isDark,
+                                          text: "Subtotal",
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight),
+                                      SideSectionText(
+                                          isDark: isDark,
+                                          text:
+                                              "RM ${state.meta.subtotal?.toStringAsFixed(2)}",
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SideSectionText(
+                                          isDark: isDark,
+                                          text: "Discount & Rebates",
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight),
+                                      SideSectionText(
+                                          isDark: isDark,
+                                          text:
+                                              "- RM ${state.meta.discount?.toStringAsFixed(2)}",
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SideSectionText(
+                                          isDark: isDark,
+                                          text: "Total",
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight,
+                                          bold: true),
+                                      SideSectionText(
+                                        isDark: isDark,
+                                        text:
+                                            "RM ${state.meta.total?.toStringAsFixed(2)}",
+                                        color: isDark
+                                            ? CustomColors.textColorDark
+                                            : CustomColors.textColorLight,
+                                        bold: true,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+
+                          default:
+                            return Center(
+                                child: LoadingAnimationWidget.waveDots(
+                                    color: isDark
+                                        ? CustomColors.primaryLight
+                                        : CustomColors.textColorLight,
+                                    size: 24));
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -297,7 +465,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   builder: (context, state) {
                     switch (state) {
                       case CartLoading():
-                        return Center(child: LoadingAnimationWidget.threeArchedCircle(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                        return Center(
+                            child: LoadingAnimationWidget.threeArchedCircle(
+                                color: isDark
+                                    ? CustomColors.primaryLight
+                                    : CustomColors.textColorLight,
+                                size: 24));
                       case CartLoaded():
                         return SlideAction(
                           key: _slideToActKey,
@@ -308,7 +481,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ? CustomColors.primaryDark
                               : CustomColors.primaryDark,
                           sliderButtonIcon: Icon(Iconsax.arrow_right_3),
-                          text: 'Slide to Pay | RM ${state.meta.total?.toStringAsFixed(2)}',
+                          text:
+                              'Slide to Pay | RM ${state.meta.total?.toStringAsFixed(2)}',
                           textStyle: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -321,12 +495,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           trigger: 0.99,
                           animationDuration: Duration(milliseconds: 450),
                           onSubmit: () {
-                            context.read<CartBloc>().add(CartCheckout());
+                            _checkout(context);
                           },
                         );
 
                       default:
-                        return Center(child: LoadingAnimationWidget.threeArchedCircle(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
+                        return Center(
+                            child: LoadingAnimationWidget.threeArchedCircle(
+                                color: isDark
+                                    ? CustomColors.primaryLight
+                                    : CustomColors.textColorLight,
+                                size: 24));
                     }
                   },
                 )

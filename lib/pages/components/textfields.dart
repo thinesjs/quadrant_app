@@ -24,7 +24,7 @@ class AppTextField extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(label,
             style: const TextStyle(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.normal,
             ),),
           ),
           TextField(

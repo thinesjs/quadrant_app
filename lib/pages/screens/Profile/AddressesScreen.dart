@@ -3,12 +3,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/profile/bloc/profile_bloc.dart';
 import 'package:quadrant_app/pages/components/add_card.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/list_card.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Profile/AddAddressScreen.dart';
 import 'package:quadrant_app/repositories/ProfileRepository/profile_repository.dart';
+import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class AddressesScreen extends StatefulWidget {
@@ -60,7 +63,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 isDark: isDark,
                 text: 'Update and manage your shipping and billing addresses.'),
             AddCardComponent(
-                isDark: isDark, text: "Add New Address", onTap: () { log("message");}),
+                isDark: isDark, text: "Add New Address", onTap: () { 
+                  Navigator.push(context, AddAddressScreen.route());
+                }),
             BlocProvider(
                 create: (context) =>
                     ProfileBloc(profileRepository: _profileRepository)
@@ -69,7 +74,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   builder: (context, state) {
                     switch (state) {
                       case ProfileLoading():
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24),
+                        );
                       case ProfileLoaded():
                         return ListView.builder(
                             shrinkWrap: true,
