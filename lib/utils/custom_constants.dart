@@ -10,7 +10,7 @@ class CustomPadding {
 }
 class CustomColors {
   CustomColors._();
-  static const Color backgroundLight = Color.fromARGB(255, 238, 236, 239);
+  static const Color backgroundLight = Color.fromARGB(255, 246, 247, 254);
   static const Color backgroundDark = Color(0xFF141215);
 
   static const Color primaryLight = Color(0xFF7E7E7E);

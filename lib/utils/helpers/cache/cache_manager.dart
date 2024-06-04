@@ -5,10 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class CacheManager {
   const CacheManager._();
 
-  static const _androidOptions =
-      AndroidOptions(encryptedSharedPreferences: true);
-  static const _iosOptions =
-      IOSOptions(accessibility: KeychainAccessibility.first_unlock);
+  static const _androidOptions = AndroidOptions(encryptedSharedPreferences: true);
+  static const _iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
 
   static const FlutterSecureStorage _secureStorage =
       FlutterSecureStorage(iOptions: _iosOptions, aOptions: _androidOptions);

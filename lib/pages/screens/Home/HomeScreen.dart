@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: () => {},
+                            onTap: ()=> mainPageKey.currentState?.switchToScreen(4),
                             child: CircleAvatar(
                               backgroundImage: (user.avatar != "")
                                   ? NetworkImage(user.avatar)

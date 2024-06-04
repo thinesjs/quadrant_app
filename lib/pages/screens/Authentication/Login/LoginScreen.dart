@@ -136,8 +136,9 @@ class _UsernameInput extends StatelessWidget {
                 const SizedBox(width: 15),
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController()..text = "tt@t.com",
                     key: const Key('loginForm_usernameInput_textField'),
-                    onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+                    onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged("tt@t.com")),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Email',
@@ -179,8 +180,9 @@ class _PasswordInput extends StatelessWidget {
                 const SizedBox(width: 15),
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController()..text = "account123",
                     key: const Key('loginForm_passwordInput_textField'),
-                    onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+                    onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged("account123")),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Password',

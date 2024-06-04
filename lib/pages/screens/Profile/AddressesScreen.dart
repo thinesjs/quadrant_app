@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -37,39 +38,52 @@ class _AddressesScreenState extends State<AddressesScreen> {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    var displayHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
-        child: ListView(
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleActionButton(
+      body: BlocProvider(
+        create: (context) => ProfileBloc(profileRepository: _profileRepository)
+          ..add(FetchProfiles()),
+        child: Padding(
+          padding: EdgeInsets.only(top: displayHeight * 0.084, left: 20, right: 19),
+          child: Column(
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleActionButton(
+                    isDark: isDark,
+                    icon: Iconsax.arrow_left,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SectionText(
+                      isDark: isDark,
+                      text: 'Addresses',
+                      size: 32.0,
+                      bold: true),
+                ],
+              ),
+              SectionHelperText(
                   isDark: isDark,
-                  icon: Iconsax.arrow_left,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                SectionText(
-                    isDark: isDark, text: 'Addresses', size: 32.0, bold: true),
-              ],
-            ),
-            SectionHelperText(
-                isDark: isDark,
-                text: 'Update and manage your shipping and billing addresses.'),
-            AddCardComponent(
-                isDark: isDark, text: "Add New Address", onTap: () { 
-                  Navigator.push(context, AddAddressScreen.route());
-                }),
-            BlocProvider(
-                create: (context) =>
-                    ProfileBloc(profileRepository: _profileRepository)
-                      ..add(FetchProfiles()),
+                  text:
+                      'Update and manage your shipping and billing addresses.'),
+              AddCardComponent(
+                        isDark: isDark,
+                        text: "Add New Address",
+                        onTap: () {
+                          Navigator.push(
+                                  context, AddAddressScreen.route())
+                              .then((returnedData) {
+                            context
+                                .read<ProfileBloc>()
+                                .add(FetchProfiles());
+                          });
+                        }),
+              Expanded(
                 child: BlocBuilder<ProfileBloc, ProfileState>(
                   builder: (context, state) {
                     switch (state) {
@@ -82,33 +96,41 @@ class _AddressesScreenState extends State<AddressesScreen> {
                               size: 24),
                         );
                       case ProfileLoaded():
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ClampingScrollPhysics(),
-                            itemCount: state.profiles!.length,
-                            itemBuilder: (context, index) {
-                              final profile = state.profiles![index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: ListCardComponent(
-                                  isDark: isDark,
-                                  onTap: (val) {
-                                    if(val) BlocProvider.of<ProfileBloc>(context).add(SetDefaultProfile(profile.id ?? ''));
-                                  },
-                                  type: profile.type ?? '', 
-                                  name: profile.name ?? '', 
-                                  phone: profile.phone ?? '',
-                                  address1: profile.address1 ?? '', 
-                                  address2: profile.address2 ?? '', 
-                                  address3: profile.address3, 
-                                  zipcode: profile.zipcode ?? '', 
-                                  city: profile.city ?? '', 
-                                  state: profile.state ?? '', 
-                                  country: profile.country ?? '',
-                                  isDefault: profile.isDefault ?? false,
-                                ),
-                              );
-                            });
+                        return FadingEdgeScrollView.fromScrollView(
+                          child: ListView.builder(
+                              controller: ScrollController(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: state.profiles!.length,
+                              itemBuilder: (context, index) {
+                                final profile = state.profiles![index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: ListCardComponent(
+                                    isDark: isDark,
+                                    onTap: (val) {
+                                      if (val) {
+                                        context.read<ProfileBloc>().add(
+                                            SetDefaultProfile(profile.id!));
+                                      }
+                                    },
+                                    type: profile.type ?? '',
+                                    name: profile.name ?? '',
+                                    phone: profile.phone ?? '',
+                                    address1: profile.address1 ?? '',
+                                    address2: profile.address2 ?? '',
+                                    address3: profile.address3,
+                                    zipcode: profile.zipcode ?? '',
+                                    city: profile.city ?? '',
+                                    state: profile.state ?? '',
+                                    country: profile.country ?? '',
+                                    isDefault: profile.isDefault ?? false,
+                                  ),
+                                );
+                              }),
+                        );
                       case ProfileError():
                         return const Text('Something went wrong!');
                       case ProfileInitial():
@@ -117,8 +139,10 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         return const Placeholder();
                     }
                   },
-                ))
-          ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

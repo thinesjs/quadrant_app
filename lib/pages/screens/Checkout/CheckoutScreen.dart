@@ -92,6 +92,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (selectedPaymentMethod == paymentMethods[2]) {
       context.read<CartBloc>().add(CartCheckout());
     } else if (selectedPaymentMethod == paymentMethods[3]) {
+      
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,12 +100,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           duration: const Duration(seconds: 3),
         ),
       );
+      Future.delayed(
+        Duration(seconds: 1),
+        () => {_slideToActKey.currentState!.reset()},
+      );
     }
-
-    Future.delayed(
-      Duration(seconds: 10),
-      () => {_slideToActKey.currentState!.reset()},
-    );
   }
 
   @override

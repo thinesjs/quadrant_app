@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +10,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quadrant_app/blocs/profile/bloc/profile_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/textfields.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/repositories/ProfileRepository/profile_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AddAddressScreen extends StatefulWidget {
@@ -30,11 +34,35 @@ class AddAddressScreen extends StatefulWidget {
 class _AddAddressScreenState extends State<AddAddressScreen> {
   late GoogleMapController _controller;
   late PanelController _panelController;
+  late ProfileType selectedProfileType;
   TextEditingController _searchController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   LocationAddress? _locationAddress;
   LatLng? _currentPosition;
   Marker? _marker;
   bool _loading = true;
+
+  List<ProfileType> predefinedProfileTypes = [
+    ProfileType(name: 'Home'),
+    ProfileType(name: 'Work'),
+  ];
+
+  void _addProfileType(String name) {
+    setState(() {
+      ProfileType newType = ProfileType(name: name);
+      if (!predefinedProfileTypes.contains(newType)) {
+        predefinedProfileTypes.add(newType);
+        selectedProfileType = newType;
+      }
+    });
+  }
+
+  void _changeProfileType(ProfileType type) {
+    setState(() {
+      selectedProfileType = type;
+    });
+  }
 
   Future<void> _getUserLocation() async {
     // Request location permissions
@@ -91,119 +119,234 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     }
   }
 
-  void _confirmLocation() {
+  void _confirmLocation(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     double displayWidth = MediaQuery.of(context).size.width;
     double displayHeight = MediaQuery.of(context).size.height;
     showBarModalBottomSheet(
       context: context,
-      backgroundColor: isDark
-          ? CustomColors.cardColorDark
-          : CustomColors.cardColorLight,
+      backgroundColor:
+          isDark ? CustomColors.cardColorDark : CustomColors.cardColorLight,
       builder: (BuildContext context) {
-        return Container(
-          height: displayHeight * 0.65,
-          child: Wrap(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        return BlocProvider(
+          create: (context) =>
+                    ProfileBloc(profileRepository: ProfileRepository(DioManager.instance)),
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            return Container(
+              height: displayHeight * 0.65,
+              child: Wrap(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 25.0, horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SectionText(
-                                  isDark: isDark,
-                                  bold: true,
-                                  size: 20,
-                                  text: "Address Details"),
-                              SideSectionText(
-                                  isDark: isDark,
-                                  text:
-                                      "Complete address would assist better us in serving you"),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: isDark
-                                    ? CustomColors.borderDark
-                                    : CustomColors.borderLight,
-                                width: 1,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 25.0, horizontal: 25.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SectionText(
+                                      isDark: isDark,
+                                      bold: true,
+                                      size: 20,
+                                      text: "Address Details"),
+                                  SideSectionText(
+                                      isDark: isDark,
+                                      text:
+                                          "Complete address would assist better us in serving you"),
+                                ],
                               ),
                             ),
-                            child: Icon(Icons.close,
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: isDark
+                                        ? CustomColors.borderDark
+                                        : CustomColors.borderLight,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(Icons.close,
+                                    color: isDark
+                                        ? CustomColors.textColorDark
+                                        : CustomColors.textColorLight),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        color: isDark
+                            ? CustomColors.borderDark
+                            : CustomColors.borderLight,
+                        thickness: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 25.0, horizontal: 25.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SideSectionText(
+                                isDark: isDark,
+                                text: "Select Address Type",
                                 color: isDark
                                     ? CustomColors.textColorDark
                                     : CustomColors.textColorLight),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    color: isDark
-                        ? CustomColors.borderDark
-                        : CustomColors.borderLight,
-                    thickness: 1,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 25.0, horizontal: 25.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SideSectionText(
-                            isDark: isDark, text: "Select Address Type", color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),
-                        SizedBox(height: 8),
-                        Row(
-                          children: [
-                            AppOutlinedButton(isDark: isDark, text: "Home", onTap: () {}),
-                            SizedBox(width: 10),
-                            AppOutlinedButton(isDark: isDark, text: "Office", onTap: () {}),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                AppOutlinedIconButton(
+                                    isDark: isDark,
+                                    icon: Iconsax.add,
+                                    onTap: () {
+                                      _showAddProfileTypeDialog(
+                                          context, setModalState);
+                                    }),
+                                ...predefinedProfileTypes.map((type) {
+                                  return AppOutlinedToggleButton(
+                                      isDark: isDark,
+                                      text: type.name,
+                                      selected: selectedProfileType.name,
+                                      onTap: () {
+                                        setModalState(() {
+                                          _changeProfileType(type);
+                                        });
+                                      });
+                                }).toList(),
+                              ],
+                            ),
+                            AppTextField(
+                                label: "Receiver's Name",
+                                placeholder: "John Doe",
+                                controller: _nameController,
+                                isDark: isDark),
+                            AppTextField(
+                                label: "Receiver's Phone",
+                                placeholder: "+6 012 345 6789",
+                                controller: _phoneController,
+                                isDark: isDark),
+                            SizedBox(height: 20),
+                            AppFilledButton(
+                                isDark: isDark,
+                                text: "Save Address",
+                                onTap: () {
+                                  _addProfile(context);
+                                })
                           ],
                         ),
-                        AppTextField(
-                            label: "Receiver's Name",
-                            placeholder: "John Doe",
-                            controller: TextEditingController(),
-                            isDark: isDark),
-                        AppTextField(
-                            label: "Receiver's Phone",
-                            placeholder: "+6 012 345 6789",
-                            controller: TextEditingController(),
-                            isDark: isDark),
-                        SizedBox(height: 20),
-                        AppFilledButton(
-                            isDark: isDark, text: "Save Address", onTap: () {})
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            );
+          }),
         );
       },
     );
   }
 
+  void _showAddProfileTypeDialog(
+      BuildContext context, StateSetter setModalState) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    TextEditingController profileTypeController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor:
+              isDark ? CustomColors.cardColorDark : CustomColors.cardColorLight,
+          title: Text(
+            'Add Profile Type',
+            style: TextStyle(
+              color: isDark
+                  ? CustomColors.textColorDark
+                  : CustomColors.textColorLight,
+            ),
+          ),
+          content: TextField(
+            controller: profileTypeController,
+            decoration: InputDecoration(
+              hintText: 'Enter profile type name',
+              border: InputBorder.none,
+              hintStyle: TextStyle(
+                color: isDark
+                    ? CustomColors.textColorDark.withOpacity(0.5)
+                    : CustomColors.textColorLight.withOpacity(0.5),
+              ),
+            ),
+            style: TextStyle(
+              color: isDark
+                  ? CustomColors.textColorDark
+                  : CustomColors.textColorLight,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: isDark
+                      ? CustomColors.primaryLight
+                      : CustomColors.primaryDark,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (profileTypeController.text.isNotEmpty) {
+                  setModalState(() {
+                    _addProfileType(profileTypeController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text(
+                'Add',
+                style: TextStyle(
+                  color: isDark
+                      ? CustomColors.primaryLight
+                      : CustomColors.primaryDark,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addProfile(BuildContext context) {
+    BlocProvider.of<ProfileBloc>(context).add(AddProfile(
+      selectedProfileType.name,
+      _nameController.text,
+      _phoneController.text,
+      _locationAddress!,
+    ));
+    Navigator.pop(context, true);
+    Navigator.pop(context, true);
+  }
+
   @override
   void initState() {
     super.initState();
+    selectedProfileType = predefinedProfileTypes[0];
     _getUserLocation();
     _panelController = PanelController();
   }
@@ -304,7 +447,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             isDark: isDark,
                             text: "Confirm & Add Details",
                             onTap: () {
-                              _confirmLocation();
+                              _confirmLocation(context);
                             })
                       ],
                     ),
@@ -429,4 +572,20 @@ class LocationAddress {
     required this.line2,
     required this.line3,
   });
+}
+
+class ProfileType {
+  final String name;
+
+  ProfileType({required this.name});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProfileType &&
+          runtimeType == other.runtimeType &&
+          name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
 }

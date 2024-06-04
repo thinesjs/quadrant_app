@@ -5,10 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:quadrant_app/pages/screens/Orders/OrdersScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/AddressesScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/NotificationScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/SecurityScreen.dart';
+import 'package:quadrant_app/pages/screens/Q-Entry/QEntrySettings.dart';
 import 'package:quadrant_app/pages/screens/Support/SupportScreen.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
@@ -102,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: "Orders", 
                               caption: "Manage your orders and payments.", 
                               icon: Iconsax.box,
-                              onTap: () => {Navigator.push(context, AddressesScreen.route())}, 
+                              onTap: () => {Navigator.push(context, OrdersScreen.route())}, 
                               isDark: isDark
                             ),
                             ProfileButton(
@@ -126,6 +128,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
+                            ProfileButton(
+                              title: "Q-Entry", 
+                              caption: "Setup Quadrant's smart entrance", 
+                              icon: Iconsax.security_card,
+                              onTap: () => {Navigator.push(context, QEntrySettingsScreen.route())}, 
+                              isDark: isDark
+                            ),
                             ProfileButton(
                               title: "Security", 
                               caption: "Change your password and setup 2FA", 
