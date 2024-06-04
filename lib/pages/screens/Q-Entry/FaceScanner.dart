@@ -1,12 +1,10 @@
 import 'dart:developer';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
-import 'package:quadrant_app/pages/screens/Q-Entry/translator.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/face_recognition/embedding.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -65,8 +63,13 @@ class _FaceScannerState extends State<FaceScanner> {
       return const Center(child: Text('Camera is not initialized'));
     }
 
+    final Size imageSize = Size(
+      _controller!.value.previewSize!.width,
+      _controller!.value.previewSize!.height,
+    );
 
-    CustomPainter painter = FacePainter(faces, _controller!, size);
+
+    CustomPainter painter = FacePainter(imageSize, _controller!, faces, camDirec);
     return CustomPaint(
       painter: painter,
     );
@@ -313,17 +316,18 @@ class _FaceScannerState extends State<FaceScanner> {
 }
 
 class FacePainter extends CustomPainter {
-  FacePainter(this.faces, this.controller, this.absoluteImageSize);
+  FacePainter(this.absoluteImageSize, this.controller, this.faces, this.camDiretion);
 
   final Size absoluteImageSize;
   final List<Face> faces;
   final CameraController controller;
-  final CameraLensDirection camDiretion = CameraLensDirection.back;
+  final CameraLensDirection camDiretion;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final scaleX = size.width / absoluteImageSize.width;
-    final scaleY = size.height / absoluteImageSize.height;
+    final double scaleX = size.height / absoluteImageSize.width;
+    final double scaleY = size.height / absoluteImageSize.height;
+
 
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
@@ -335,9 +339,9 @@ class FacePainter extends CustomPainter {
 
       // Adjust bounding box coordinates based on camera direction
       double left = boundingBox.left;
-      double top = boundingBox.top;
+      double top = boundingBox.top - 150;
       double right = boundingBox.right;
-      double bottom = boundingBox.bottom;
+      double bottom = boundingBox.bottom - 150;
 
       if (camDiretion == CameraLensDirection.front) {
         // If using front camera, flip horizontally
@@ -348,10 +352,10 @@ class FacePainter extends CustomPainter {
       // Draw rectangle over the detected face
       canvas.drawRect(
         Rect.fromLTRB(
-          translateX(face.boundingBox.left, size, absoluteImageSize),
-          translateY(face.boundingBox.top, size, absoluteImageSize),
-          translateX(face.boundingBox.right, size, absoluteImageSize),
-          translateY(face.boundingBox.bottom, size, absoluteImageSize),
+          left * scaleX,
+          top * scaleY,
+          right * scaleX,
+          bottom * scaleY,
         ),
         paint,
       );
