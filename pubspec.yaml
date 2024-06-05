@@ -76,7 +76,7 @@ dependencies:
   tflite_flutter: ^0.10.4
   image: ^4.2.0
   google_mlkit_face_detection: ^0.11.0
-  camera: ^0.11.0+1
+  camera: ^0.10.5+9
   lottie: ^3.1.2
   
 
@@ -108,6 +108,7 @@ flutter:
     - assets/placeholders/
     - assets/icons/
     - assets/models/
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

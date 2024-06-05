@@ -9,7 +9,7 @@ class DioManager {
     return _instance!;
   }
 
-  final String _baseUrl = 'https://api.thinesjaishankar.com';
+  final String _baseUrl = 'https://api.thinesjs.com';
   // final String _baseUrl = 'http://localhost:8800';
   late final Dio dio;
 
