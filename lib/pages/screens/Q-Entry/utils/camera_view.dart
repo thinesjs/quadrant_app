@@ -4,6 +4,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quadrant_app/utils/custom_constants.dart';
 
 class CameraView extends StatefulWidget {
   CameraView(
@@ -76,23 +78,32 @@ class _CameraViewState extends State<CameraView> {
     if (_cameras.isEmpty) return Container();
     if (_controller == null) return Container();
     if (_controller?.value.isInitialized == false) return Container();
+    var size = MediaQuery.of(context).size.width;
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return ColoredBox(
       color: Colors.black,
       child: Stack(
-        fit: StackFit.expand,
+        // fit: StackFit.expand,
         children: <Widget>[
           Center(
             child: _changingCameraLens
-                ? const Center(
-                    child: Text('Changing camera lens'),
-                  )
-                : CameraPreview(
-                    _controller!,
-                    child: widget.customPaint,
-                  ),
+                ? Center(
+                      child: LoadingAnimationWidget.waveDots(
+                          color: isDark
+                              ? CustomColors.primaryLight
+                              : CustomColors.textColorLight,
+                          size: 24))
+                : Container(
+                  width: size,
+                  // height: size / _controller!.value.aspectRatio,
+                  child: CameraPreview(
+                      _controller!,
+                      child: widget.customPaint,
+                    ),
+                ),
           ),
           
-          _backButton(),
+          // _backButton(),
           _switchLiveCameraToggle(),
           // _exposureControl(),
         ],
@@ -122,8 +133,8 @@ class _CameraViewState extends State<CameraView> {
         bottom: 8,
         right: 8,
         child: SizedBox(
-          height: 50.0,
-          width: 50.0,
+          height: 40.0,
+          width: 40.0,
           child: FloatingActionButton(
             heroTag: Object(),
             onPressed: _switchLiveCamera,
@@ -132,7 +143,7 @@ class _CameraViewState extends State<CameraView> {
               Platform.isIOS
                   ? Icons.flip_camera_ios_outlined
                   : Icons.flip_camera_android_outlined,
-              size: 25,
+              size: 20,
             ),
           ),
         ),

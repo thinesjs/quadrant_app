@@ -9,6 +9,8 @@ import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Q-Entry/FaceScanner.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
+import 'testframe.dart';
+
 class QEntrySettingsScreen extends StatefulWidget {
   const QEntrySettingsScreen({super.key});
 
@@ -68,7 +70,7 @@ class _QEntrySettingsScreenState extends State<QEntrySettingsScreen> {
                         caption: "Setup & Register Q-Entry",
                         icon: Iconsax.security_card,
                         onTap: () => {
-                              Navigator.push(context, FaceScanner.route())
+                              Navigator.push(context, FacialCaptureScreen.route())
                             },
                         isDark: isDark),
                   ],
