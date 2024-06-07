@@ -1,23 +1,34 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quadrant_app/repositories/QEntryRepository/models/qentryregister_response.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
+import 'package:path/path.dart' as path;
+import 'package:http_parser/http_parser.dart';
 
 class CameraView extends StatefulWidget {
   CameraView(
       {Key? key,
       required this.customPaint,
       required this.onImage,
+      required this.faces,
       this.onCameraFeedReady,
       this.onDetectorViewModeChanged,
       this.onCameraLensDirectionChanged,
       this.initialCameraLensDirection = CameraLensDirection.back})
       : super(key: key);
 
+  final List<Face> faces;
   final CustomPaint? customPaint;
   final Function(InputImage inputImage) onImage;
   final VoidCallback? onCameraFeedReady;
@@ -40,6 +51,14 @@ class _CameraViewState extends State<CameraView> {
   double _maxAvailableExposureOffset = 0.0;
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
+  String _text = "Position your face within the frame";
+
+  int _captureCount = 0;
+  final List<String> _captureInstructions = [
+    "Position your face within the frame",
+    "Move your face slightly to the left",
+    "Move your face slightly to the right"
+  ];
 
   @override
   void initState() {
@@ -60,6 +79,51 @@ class _CameraViewState extends State<CameraView> {
     }
     if (_cameraIndex != -1) {
       _startLiveFeed();
+    }
+  }
+
+  Future<void> _captureImage() async {
+    if (widget.faces.isNotEmpty && widget.faces.length == 1) {
+      // final faceImage = widget.faces.first;
+
+      final image = await _controller!.takePicture();
+
+      List<int> imageBytes = await image.readAsBytes();
+
+      final MultipartFile file = MultipartFile.fromBytes(
+        imageBytes,
+        filename: path.basename(image.path),
+        contentType: MediaType('image', 'jpeg')
+      );
+
+      var response = await DioManager.instance.dio.post("/v1/qentry/create",
+          data: FormData.fromMap({
+            "image": file,
+          }));
+
+      if (response.statusCode == HttpStatus.created) {
+        log(response.data.toString(), name: "qentry-post image");
+        QEntryRegister jsonResponse = QEntryRegister.fromJson(response.data);
+        if(jsonResponse.success ?? false){
+          setState(() {
+            _captureCount++;
+            if (_captureCount >= 3) {
+              _text = "Captures complete. Processing...";
+            } else {
+              _text = _captureInstructions[_captureCount];
+            }
+          });
+        }else{
+          setState(() {
+            _text = "We're having trouble registering you. Try again later.";
+          });
+        }
+
+      } else {
+        throw Exception('Failed to process qentry');
+      }
+
+
     }
   }
 
@@ -88,21 +152,68 @@ class _CameraViewState extends State<CameraView> {
           Center(
             child: _changingCameraLens
                 ? Center(
-                      child: LoadingAnimationWidget.waveDots(
-                          color: isDark
-                              ? CustomColors.primaryLight
-                              : CustomColors.textColorLight,
-                          size: 24))
-                : Container(
-                  width: size,
-                  // height: size / _controller!.value.aspectRatio,
-                  child: CameraPreview(
-                      _controller!,
-                      child: widget.customPaint,
+                    child: LoadingAnimationWidget.waveDots(
+                        color: isDark
+                            ? CustomColors.primaryLight
+                            : CustomColors.textColorLight,
+                        size: 24))
+                : Scaffold(
+                    body: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 20.0),
+                            child: Text(
+                              _text,
+                              style: TextStyle(fontSize: 18.0),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                            decoration: BoxDecoration(boxShadow: [
+                              BoxShadow(
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.2)
+                                    : CustomColors.primaryLight
+                                        .withOpacity(0.2),
+                                spreadRadius: 5,
+                                blurRadius: 100,
+                                offset: const Offset(0, 3),
+                              )
+                            ]),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Container(
+                                  width: 300,
+                                  height: 300,
+                                  child: AspectRatio(
+                                    aspectRatio: _controller!.value.aspectRatio,
+                                    child: CameraPreview(
+                                      _controller!,
+                                      child: widget.customPaint,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 20.0),
+                            child: ElevatedButton(
+                              onPressed:
+                                  _captureCount < 3 ? _captureImage : null,
+                              child: Icon(Iconsax.camera),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                ),
+                  ),
           ),
-          
+
           // _backButton(),
           _switchLiveCameraToggle(),
           // _exposureControl(),
@@ -144,55 +255,6 @@ class _CameraViewState extends State<CameraView> {
                   ? Icons.flip_camera_ios_outlined
                   : Icons.flip_camera_android_outlined,
               size: 20,
-            ),
-          ),
-        ),
-      );
-
-  Widget _zoomControl() => Positioned(
-        bottom: 16,
-        left: 0,
-        right: 0,
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            width: 250,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _currentZoomLevel,
-                    min: _minAvailableZoom,
-                    max: _maxAvailableZoom,
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.white30,
-                    onChanged: (value) async {
-                      setState(() {
-                        _currentZoomLevel = value;
-                      });
-                      await _controller?.setZoomLevel(value);
-                    },
-                  ),
-                ),
-                Container(
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        '${_currentZoomLevel.toStringAsFixed(1)}x',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         ),
