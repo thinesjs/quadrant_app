@@ -125,9 +125,27 @@ flutter:
   fonts:
    - family: Poppins
      fonts:
-       - asset: assets/fonts/Poppins-Regular.ttf
-       - asset: assets/fonts/Poppins-Medium.ttf
-       - asset: assets/fonts/Poppins-Italic.ttf
+       - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+       - asset: assets/fonts/Poppins/Poppins-Medium.ttf
+       - asset: assets/fonts/Poppins/Poppins-Italic.ttf
+         style: italic
+   - family: Lato
+     fonts:
+       - asset: assets/fonts/Lato/Lato-Regular.ttf
+       - asset: assets/fonts/Lato/Lato-Medium.ttf
+       - asset: assets/fonts/Lato/Lato-Italic.ttf
+         style: italic
+   - family: Roboto
+     fonts:
+       - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+       - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+       - asset: assets/fonts/Roboto/Roboto-Italic.ttf
+         style: italic
+   - family: Open Sans
+     fonts:
+       - asset: assets/fonts/Open_Sans/OpenSans_Condensed-Regular.ttf
+       - asset: assets/fonts/Open_Sans/OpenSans_Condensed-Medium.ttf
+       - asset: assets/fonts/Open_Sans/OpenSans_Condensed-Italic.ttf
          style: italic
          
   # For details regarding fonts from package dependencies,

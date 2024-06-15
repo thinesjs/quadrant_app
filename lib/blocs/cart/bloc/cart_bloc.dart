@@ -89,6 +89,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(CartLoading());
     try {
       final response = await _cartRepository.requestCheckout();
+      // add(CartLoaded(event.productId));
       emit(CartCheckoutCallback(cartCheckout: response));
       // emit(currentState);
     } catch (_) {
