@@ -43,9 +43,6 @@ class AuthCacheManager {
       if (token != null) {
         DioManager.instance.dio.options
             .headers[(MapEntry('Authorization', 'token $token'))];
-
-        /// Actually, we will not need it for this application.
-        /// But I've included it here for instructive purposes.
       }
     }
   }
