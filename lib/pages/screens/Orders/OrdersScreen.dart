@@ -1,5 +1,6 @@
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -176,7 +177,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     //   );
                                     // }
                                   },
-                                );
+                                ).animate().fade();
                               }),
                         );
                       case OrderError():

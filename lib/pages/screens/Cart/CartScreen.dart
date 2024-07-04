@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/cart/bloc/cart_bloc.dart';
@@ -56,13 +57,6 @@ class _CartScreenState extends State<CartScreen> {
                       case CartLoaded():
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? CustomColors.secondaryDark
-                                : CustomColors.secondaryLight,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(CustomSizes.borderRadiusLg)),
-                          ),
                           child: Container(
                             height: displayHeight / 1.6,
                             child: ListView.builder(
@@ -109,7 +103,7 @@ class _CartScreenState extends State<CartScreen> {
                                   );
                                 }),
                           ),
-                        );
+                        ).animate().fade();
                       case CartError():
                         return const Text('Something went wrong!');
                       case CartInitial():

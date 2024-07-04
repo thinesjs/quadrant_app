@@ -72,8 +72,8 @@ class CartRepository {
     }
   }
 
-  Future<CartCheckoutResponse> requestCheckout() async {
-    log("requesting cart checkout", name: "CartRepository");
+  Future<CartCheckoutResponse> requestCheckout(String paymentMethodId) async {
+    log("requesting cart checkout with $paymentMethodId", name: "CartRepository");
     var response = await dioManager.dio.post("/v1/cart/checkout");
 
     if (response.statusCode == HttpStatus.ok) {

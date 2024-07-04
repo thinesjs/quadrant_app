@@ -39,6 +39,10 @@ class RemoveProductFromCart extends CartEvent {
 }
 
 final class CartCheckout extends CartEvent {
+  final String paymentMethodId;
+
+  const CartCheckout({required this.paymentMethodId});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [paymentMethodId];
 }

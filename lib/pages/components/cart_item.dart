@@ -37,15 +37,11 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
-        // border: Border.symmetric(horizontal: BorderSide(color: isDark ? CustomColors.borderDark : CustomColors.borderLight)),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: isDark? Colors.black.withOpacity(1) :Colors.grey.withOpacity(0.2),
-        //     spreadRadius: 1,
-        //     blurRadius: 10,
-        //   ),
-        // ],
+        border: Border.all(
+          color: isDark ? CustomColors.navBorderDark : CustomColors.navBorderLight,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(CustomSizes.borderRadiusMd),
       ),
       child: Row(
         children: [

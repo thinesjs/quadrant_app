@@ -28,11 +28,15 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    double displayWidth = MediaQuery.of(context).size.width;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double displayWidth = MediaQuery.of(context).size.width;
     double displayHeight = MediaQuery.of(context).size.height;
-    User user =
-        context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
+    User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
+
+    double textHeight1 = 24;
+    double textHeight2 = 14;
+    double padding = 16;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -40,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             pinned: true,
             snap: false,
             floating: true,
-            expandedHeight: displayHeight / 5.673,
+            expandedHeight: displayHeight / 6,
             backgroundColor: isDark
                 ? CustomColors.backgroundDark
                 : CustomColors.backgroundLight,
@@ -57,6 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
+                    height: displayHeight / 4,
                     padding: EdgeInsets.only(top: displayHeight / 14),
                     decoration: BoxDecoration(
                         image: DecorationImage(

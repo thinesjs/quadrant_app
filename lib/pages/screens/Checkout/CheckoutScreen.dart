@@ -3,6 +3,7 @@
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
@@ -90,9 +91,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   void _checkout(BuildContext context) {
     if (selectedPaymentMethod == paymentMethods[2]) {
-      context.read<CartBloc>().add(CartCheckout());
+      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '2'));
     } else if (selectedPaymentMethod == paymentMethods[3]) {
-      
+      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '3'));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -171,7 +172,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ShoppingCartItem(cartItem: cartItem),
                                     );
                                   }),
-                            );
+                            ).animate().fade();
                           case CartError():
                             return const Text('Something went wrong!');
                           case CartInitial():
