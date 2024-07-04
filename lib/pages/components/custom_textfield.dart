@@ -29,7 +29,7 @@ class CustomTextFieldComponent extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(1),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withOpacity(.2) : Colors.white.withOpacity(.8),
+              color: isDark ? CustomColors.secondaryDark : CustomColors.secondaryLight,
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(

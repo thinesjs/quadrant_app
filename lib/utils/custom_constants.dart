@@ -10,13 +10,13 @@ class CustomPadding {
 }
 class CustomColors {
   CustomColors._();
-  static const Color backgroundLight = Color.fromARGB(255, 246, 247, 254);
+  static const Color backgroundLight = Color(0xFFFFFFFF);
   static const Color backgroundDark = Color(0xFF141215);
 
   static const Color primaryLight = Color(0xFF7E7E7E);
   static const Color primaryDark = Color(0xFFD6354D);
 
-  static const Color secondaryLight = Color(0xFFFFFFFF);
+  static const Color secondaryLight = Color(0xFFF5F5F5);
   static const Color secondaryDark = Color(0xFF1D1B1E);
 
   static const Color navBarBackgroundLight = Color(0xFFFFFFFF);
@@ -42,6 +42,9 @@ class CustomColors {
 
   static const Color borderDark = Colors.white12;
   static const Color borderLight = Colors.black26;
+
+  static const Color navBorderDark = Color(0xFFF5F5F5);
+  static const Color navBorderLight = Color(0xFFF5F5F5);
 
   // static const Color  = Color(0xFFD6354D);
 }

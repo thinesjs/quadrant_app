@@ -85,59 +85,29 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.only(top: displayHeight / 14),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          'https://live.staticflickr.com/4475/37095348433_626859af3c_b.jpg'),
-                      fit: BoxFit.fill,
-                      opacity: .5),
-                  color: Colors.black87),
+              padding: EdgeInsets.only(top: displayHeight / 17),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    Expanded(
+                      flex: 8,
+                      child: CustomTextFieldComponent(
+                        hint: 'Search for groceries, and more...',
+                        txtController: usernameController,
+                        isLoading: false,
+                        onChange: (String val) {},
+                      ),
+                    ),
+                    Expanded(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
-                            onTap: ()=> mainPageKey.currentState?.switchToScreen(4),
-                            child: CircleAvatar(
-                              backgroundImage: (user.avatar != "")
-                                  ? NetworkImage(user.avatar)
-                                  : AssetImage(
-                                          'assets/placeholders/placeholder-user.jpg')
-                                      as ImageProvider<Object>,
-                            ),
-                          ),
-                          CircleActionButton(isDark: isDark, icon: Iconsax.notification, onTap: () {  },)
+                          Icon(Iconsax.more, color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight),
                         ],
-                      ),
+                      )
                     ),
-                    Text(
-                      "Hey, ${context.select<AuthenticationBloc, String?>((bloc) => bloc.state.user.name)} 👋🏽",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: CustomColors.textColorDark),
-                    ),
-                    Text(
-                      "Discover what's happening around you",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: CustomColors.textColorDark
-                      ),
-                    ),
-                    CustomTextFieldComponent(
-                      hint: 'Search for groceries, and more...',
-                      txtController: usernameController,
-                      isLoading: false,
-                      onChange: (String val) {},
-                    )
                   ],
                 ),
               ),

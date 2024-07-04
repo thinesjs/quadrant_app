@@ -33,11 +33,14 @@ class ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(CustomSizes.md),
-                child: (image != "")
-                    ? Image.network(image)
-                    : Image.asset('assets/placeholders/placeholder-user.jpg')),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(CustomSizes.md),
+                  child: (image != "")
+                      ? Image.network(image)
+                      : Image.asset('assets/placeholders/placeholder-user.jpg')),
+            ),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(

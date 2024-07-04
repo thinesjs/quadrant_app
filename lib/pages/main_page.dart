@@ -59,25 +59,31 @@ class _MainPageState extends State<MainPage> {
       resizeToAvoidBottomInset: false,
       extendBody: true,
       body: screensList[currentIndex][0],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex,
-        onTap: onTap,
-        elevation: 0.0,
-        enableFeedback: true,
-        selectedItemColor: const Color(0xFFD6354D),
-        unselectedItemColor: const Color(0xFF7E7E7E),
-        backgroundColor: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
-        items: 
-          screensList.map((page) {
-            return BottomNavigationBarItem(
-              label: page[1],
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(page[2]),
-              ),
-            );
-          }).toList(),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBorderDark, width: 1.0))),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: currentIndex,
+          onTap: onTap,
+          elevation: 0.0,
+          enableFeedback: true,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          selectedItemColor: const Color(0xFFD6354D),
+          unselectedItemColor: const Color(0xFF7E7E7E),
+          backgroundColor: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
+          items: 
+            screensList.map((page) {
+              return BottomNavigationBarItem(
+                label: page[1],
+                icon: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(page[2]),
+                ),
+              );
+            }).toList(),
+        ),
       ),
     );
   }
