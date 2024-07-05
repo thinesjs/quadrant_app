@@ -214,13 +214,14 @@ class _AppOutlinedToggleButtonState extends State<AppOutlinedToggleButton> {
 }
 
 class AppFilledButton extends StatefulWidget {
-  const AppFilledButton({super.key, required this.isDark, required this.text, required this.onTap, this.isBlock = false, this.isLoading = false});
+  const AppFilledButton({super.key, required this.isDark, required this.text, required this.onTap, this.borderRadius = 10, this.isBlock = false, this.isLoading = false});
 
   final bool isDark;
   final String text;
   final VoidCallback onTap;
   final bool isBlock;
   final bool isLoading;
+  final double borderRadius;
 
   @override
   State<AppFilledButton> createState() => _AppFilledButtonState();
@@ -260,7 +261,7 @@ class _AppFilledButtonState extends State<AppFilledButton> {
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: !widget.isLoading ? _isPressed ? widget.isDark ? Colors.white70 : Colors.black54 : widget.isDark ? Colors.white : Colors.black87 : widget.isDark ? Colors.white70 : Colors.black54,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
         child: Center(
           child: widget.isLoading ?

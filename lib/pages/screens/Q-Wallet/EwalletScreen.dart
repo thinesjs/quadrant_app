@@ -11,9 +11,11 @@ import 'package:quadrant_app/blocs/ewallet/bloc/ewallet_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
+import 'package:quadrant_app/pages/components/floating_sheet.dart';
 import 'package:quadrant_app/pages/components/quick_actions_widget.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/EwalletTransactionsScreen.dart';
+import 'package:quadrant_app/pages/screens/Q-Wallet/ReloadModals/ReloadModalComponents.dart';
 import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -30,7 +32,6 @@ class _EwalletScreenState extends State<EwalletScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _ewalletRepository = EwalletRepository(DioManager.instance);
   }
@@ -142,7 +143,13 @@ class _EwalletScreenState extends State<EwalletScreen> {
                       children: [
                         QuickActionsWidget(text: 'Reload', icon: Iconsax.wallet_add_1, onTap: () {  },).animate().fade(),
                         QuickActionsWidget(text: 'Scan', icon: Iconsax.scanner, onTap: () {  },),
-                        QuickActionsWidget(text: 'Transfer', icon: Iconsax.send_2, onTap: () {  },),
+                        QuickActionsWidget(text: 'Transfer', icon: Iconsax.send_2, onTap: () { 
+                          Navigator.of(context).push(
+                            FloatingSheetRoute<void>(
+                              builder: (BuildContext context) => const ReloadModal1(),
+                            ),
+                          );
+                        },),
                       ].animate(interval: .5.milliseconds).fade().slideY(begin: -0.2),
                     ),
                   ],

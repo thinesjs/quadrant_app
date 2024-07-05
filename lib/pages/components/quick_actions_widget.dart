@@ -15,6 +15,7 @@ class QuickActionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return GestureDetector(
+      onTap: onTap,
       child: Container(
         width: MediaQuery.sizeOf(context).width * 0.24,
         decoration: BoxDecoration(

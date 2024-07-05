@@ -112,7 +112,7 @@
 //   }
 // }
 
-// class LottieOverlay extends StatelessWidget {
+// class Overlay extends StatelessWidget {
 //   final Face face;
 //   final Size imageSize;
 //   final Size screenSize;

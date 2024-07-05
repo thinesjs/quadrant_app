@@ -34,6 +34,9 @@ class CustomColors {
   static const Color textColorDark =  Color(0xFFFEFDFE);
   static const Color textColorLight =  Color(0xFF1E1E1E);
 
+  static const Color subTextColorDark =  Color.fromARGB(255, 221, 221, 221);
+  static const Color subTextColorLight =  Color.fromARGB(255, 52, 52, 52);
+
   static const Color outlinedButtonColorDark = Color.fromARGB(255, 51, 51, 51);
   static const Color outlinedButtonColorLight = Color.fromARGB(255, 203, 203, 203);
 
