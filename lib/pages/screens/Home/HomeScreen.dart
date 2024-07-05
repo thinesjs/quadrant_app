@@ -7,6 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:popover/popover.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:quadrant_app/pages/components/promo_image.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Category/CategoryScreen.dart';
+import 'package:quadrant_app/pages/screens/Home/QuickAccessWidget.dart';
 import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/repositories/BillboardRepository/billboard_repository.dart';
@@ -75,7 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
+    User user =
+        context.select<AuthenticationBloc, User>((bloc) => bloc.state.user);
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     double displayWidth = MediaQuery.of(context).size.width;
     double displayHeight = MediaQuery.of(context).size.height;
@@ -104,15 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Expanded(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(Iconsax.more,
-                            color: isDark
-                                ? CustomColors.primaryLight
-                                : CustomColors.textColorLight),
-                      ],
-                    )),
+                        child: QuickAccessButton(isDark: isDark)),
                   ],
                 ),
               ),
@@ -345,7 +340,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       SheetRoute<void>(
                                         builder: (context) => ProductScreen(
                                             productId:
-                                                state.products?[index].id ?? ''),
+                                                state.products?[index].id ??
+                                                    ''),
                                       ));
                                 },
                               ).animate().fade(),
@@ -519,6 +515,47 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: displayHeight / 7),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class QuickAccessButton extends StatelessWidget {
+  const QuickAccessButton({
+    super.key,
+    required this.isDark,
+  });
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double displayWidth = MediaQuery.of(context).size.width;
+    double displayHeight = MediaQuery.of(context).size.height;
+    return GestureDetector(
+      onTap: () {
+        showPopover(
+          context: context,
+          bodyBuilder: (context) => const QuickAccessWidget(),
+          onPop: () => print('Popover was popped!'),
+          direction: PopoverDirection.bottom,
+          arrowHeight: 0,
+          arrowWidth: 0,
+          radius: 25,
+          width: displayWidth,
+          height: displayHeight / 4,
+          contentDxOffset: 100
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(Iconsax.more,
+              color: isDark
+                  ? CustomColors.primaryLight
+                  : CustomColors.textColorLight),
+        ],
       ),
     );
   }
