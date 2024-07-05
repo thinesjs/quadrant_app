@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
@@ -132,7 +133,7 @@ class ProductsGrid extends StatelessWidget {
                       ),
                     );
                     },
-                );
+                ).animate().fade();
               },
             );
           case ProductError():

@@ -17,7 +17,6 @@ class ProductRepository {
     
     if (response.statusCode == HttpStatus.ok) {
       ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
-
       return jsonResponse.message?.products;
     } else {
       throw Exception('Failed to load products');

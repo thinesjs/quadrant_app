@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -252,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) => CategoryScreen(categoryName: categories[index].name),
                       ),
                     );
-                   },);
+                   },).animate().fade().slideY(begin: -0.2);
                 },
               ),
             ),
@@ -265,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
                 ],
               ),
-            ),
+            ).animate().fade().slideY(begin: -0.2),
             BlocProvider(
               create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchFeaturedProduct()),
               child: Padding(
@@ -298,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 },
-                              ),
+                              ).animate().fade(),
                             );
                           },
                         ),
@@ -322,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
                 ],
               ),
-            ),
+            ).animate().fade().slideY(begin: -0.2),
             BlocProvider(
               create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchNewArrivalsProduct()),
               child: Padding(
@@ -355,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 },
-                              ),
+                              ).animate().fade(),
                             );
                           },
                         ),
@@ -379,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SideSectionText(isDark: isDark, text: "See all", size: 16.0, onTap: ()=> mainPageKey.currentState?.switchToScreen(1)),
                 ],
               ),
-            ),
+            ).animate().fade().slideY(begin: -0.2),
             BlocProvider(
               create: (context) => ProductBloc(productRepository: _productRepository)..add(FetchForYouProduct()),
               child: Padding(
@@ -412,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 },
-                              ),
+                              ).animate().fade(),
                             );
                           },
                         ),
