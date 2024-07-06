@@ -1068,10 +1068,11 @@ packages:
   popover:
     dependency: "direct main"
     description:
-      name: popover
-      sha256: "5cba40e04115cbbf15c35e00767b91e8bf3f769763a34beb2f8a1b9e8b5fc876"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "67f3cba5b21c5fe720b64b33ea93b5fae3633709"
+      url: "https://github.com/thinesjs/popover.git"
+    source: git
     version: "0.3.0+1"
   provider:
     dependency: transitive
@@ -1188,7 +1189,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "669f33118177d205d796afd18cfbb35a6e149dbe"
-      url: "https://github.com/muhammadtalhasultan/flutter-slide-to-act"
+      url: "https://github.com/thinesjs/flutter-slide-to-act"
     source: git
     version: "2.0.4"
   sliding_up_panel:

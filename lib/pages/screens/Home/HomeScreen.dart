@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart'
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
 import 'package:quadrant_app/pages/components/category_button.dart';
-import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/product_card.dart';
 import 'package:quadrant_app/pages/components/promo_image.dart';
@@ -21,7 +19,6 @@ import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Category/CategoryScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/QuickAccessWidget.dart';
 import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
-import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/repositories/BillboardRepository/billboard_repository.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
@@ -545,7 +542,10 @@ class QuickAccessButton extends StatelessWidget {
           radius: 25,
           width: displayWidth,
           height: displayHeight / 4,
-          contentDxOffset: 100
+          transition: PopoverTransition.scale,
+          backgroundColor: isDark
+              ? CustomColors.cardColorDark
+              : CustomColors.cardColorLight,
         );
       },
       child: Row(

@@ -65,7 +65,7 @@ dependencies:
   web_socket_channel: ^3.0.0
   slide_to_act:
     git:
-      url: https://github.com/muhammadtalhasultan/flutter-slide-to-act
+      url: https://github.com/thinesjs/flutter-slide-to-act
   webview_flutter: ^4.8.0
   google_maps_flutter: ^2.6.1
   geolocator: ^12.0.0
@@ -82,7 +82,9 @@ dependencies:
   flutter_animate: ^4.5.0
   sheet: ^1.0.0
   mobile_scanner: ^5.1.1
-  popover: ^0.3.0+1
+  popover:
+    git:
+      url: https://github.com/thinesjs/popover.git
   
 
 dev_dependencies:
