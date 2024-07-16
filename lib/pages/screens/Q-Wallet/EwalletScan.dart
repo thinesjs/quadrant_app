@@ -44,10 +44,64 @@ class _EwalletScannerState extends State<EwalletScanner> {
                 ],
               ),
             ),
-            body: const TabBarView(
+            body: TabBarView(
               children: [
-                Icon(Icons.directions_car),
-                Icon(Icons.directions_transit),
+                // TODO:: Split into widgets
+                // Pay
+                const Icon(Icons.directions_car),
+                // Scan QR
+                Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Center(
+                      child: MobileScanner(
+                        fit: BoxFit.contain,
+                        controller: controller,
+                        scanWindow: scanWindow,
+                        errorBuilder: (context, error, child) {
+                          return ScannerErrorWidget(error: error);
+                        },
+                        overlayBuilder: (context, constraints) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: ScannedBarcodeLabel(
+                                  barcodes: controller.barcodes),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: controller,
+                      builder: (context, value, child) {
+                        if (!value.isInitialized ||
+                            !value.isRunning ||
+                            value.error != null) {
+                          return const SizedBox();
+                        }
+
+                        return CustomPaint(
+                          painter: ScannerOverlay(scanWindow: scanWindow),
+                        );
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ToggleFlashlightButton(controller: controller),
+                            SwitchCameraButton(controller: controller),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

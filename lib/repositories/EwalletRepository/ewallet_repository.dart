@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_response.dart';
+import 'package:quadrant_app/repositories/EwalletRepository/models/wallettransaction_reponse.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class EwalletRepository {
@@ -20,17 +21,16 @@ class EwalletRepository {
     }
   }
 
-  // Future<Product?> fetchProduct(String productId) async {
-  //   log("getting product: $productId", name: "ProductRepository");
-  //   var response = await dioManager.dio.get("/v1/products/$productId");
+  Future<WalletTransactionsData>? fetchWalletTransactions() async {
+    log("getting user's wallet transactions", name: "EwalletRepository");
+    var response = await dioManager.dio.get("/v1/wallet/transactions");
     
-  //   if (response.statusCode == HttpStatus.ok) {
-  //     ProductResponse jsonResponse = ProductResponse.fromJson(response.data);
-  //     return jsonResponse.message?.product;
-  //   } else {
-  //     throw Exception('Failed to load products');
-  //   }
-  // }
+    if (response.statusCode == HttpStatus.ok) {
+      WalletTransactionsResponse jsonResponse = WalletTransactionsResponse.fromJson(response.data);
 
- 
+      return jsonResponse.data!;
+    } else {
+      throw Exception('Failed to load wallet transactions');
+    }
+  }
 }

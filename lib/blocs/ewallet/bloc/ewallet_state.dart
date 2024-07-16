@@ -21,7 +21,7 @@ class EwalletLoaded extends EwalletState {
 }
 
 class EwalletTransactionsLoaded extends EwalletState {
-  final Data transactions;
+  final WalletTransactionsData transactions;
 
   const EwalletTransactionsLoaded({required this.transactions});
 

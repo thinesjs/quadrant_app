@@ -152,17 +152,16 @@ class _UserAvatarComponentState extends State<UserAvatarComponent> {
             Row(
               children: [
                 AppOutlinedButton(
-                    isDark: widget.isDark,
                     text: "Change",
                     onTap: () {
                       _uploadImage();
-                      if (_imageFile != null)
+                      if (_imageFile != null) {
                         BlocProvider.of<AuthenticationBloc>(context).add(
                             ProfileAvatarUpdateRequested(_imageFile!.path));
+                      }
                     }),
                 const SizedBox(width: 5),
                 AppOutlinedButton(
-                    isDark: widget.isDark,
                     text: "Remove",
                     onTap: () {
                       BlocProvider.of<AuthenticationBloc>(context)

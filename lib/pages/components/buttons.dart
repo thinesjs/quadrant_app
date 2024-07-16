@@ -3,9 +3,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class AppOutlinedButton extends StatefulWidget {
-  const AppOutlinedButton({super.key, required this.isDark, required this.text, required this.onTap, this.isLoading = false});
+  const AppOutlinedButton({super.key, required this.text, required this.onTap, this.isLoading = false});
 
-  final bool isDark;
   final String text;
   final VoidCallback onTap;
   final bool isLoading;
@@ -38,6 +37,7 @@ class _AppOutlinedButtonState extends State<AppOutlinedButton> {
 
   @override
   Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: GestureDetector(
@@ -49,7 +49,7 @@ class _AppOutlinedButtonState extends State<AppOutlinedButton> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           decoration: BoxDecoration(
             border: Border.all(
-              color: _isPressed ? CustomColors.primaryDark : widget.isDark ? CustomColors.outlinedButtonColorDark : CustomColors.outlinedButtonColorLight,
+              color: _isPressed ? CustomColors.primaryDark : isDark ? CustomColors.outlinedButtonColorDark : CustomColors.outlinedButtonColorLight,
               width: 1,
             ),
             // color: isDark ? Colors.white : Colors.black87,
@@ -58,7 +58,7 @@ class _AppOutlinedButtonState extends State<AppOutlinedButton> {
           child: Center(
             child: widget.isLoading ?
               LoadingAnimationWidget.staggeredDotsWave(
-                color: widget.isDark ? Colors.black87 : Colors.white,
+                color: isDark ? Colors.black87 : Colors.white,
                 size: 21,
               )
               : Text(

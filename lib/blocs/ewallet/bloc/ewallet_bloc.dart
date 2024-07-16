@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
 import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_response.dart';
+import 'package:quadrant_app/repositories/EwalletRepository/models/wallettransaction_reponse.dart';
 
 part 'ewallet_event.dart';
 part 'ewallet_state.dart';
@@ -33,7 +34,7 @@ class EwalletBloc extends Bloc<EwalletEvent, EwalletState> {
   ) async {
     emit(EwalletLoading());
     try {
-      final response = await _ewalletRepository.fetchWallet();
+      final response = await _ewalletRepository.fetchWalletTransactions();
       emit(EwalletTransactionsLoaded(transactions: response!));
     } catch (_) {
       emit(EwalletError());

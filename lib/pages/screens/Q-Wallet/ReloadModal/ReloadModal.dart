@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
+import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:sheet/sheet.dart';
 
@@ -138,8 +140,8 @@ class ReloadModel1 extends StatelessWidget {
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 25, 25, 12),
-                                child: TitleTextWidget(
-                                    text: "Enter the Amount"),
+                                child:
+                                    TitleTextWidget(text: "Enter the Amount"),
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 0, 25, 12),
@@ -149,8 +151,8 @@ class ReloadModel1 extends StatelessWidget {
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                                child:
-                                    TitleTextWidget(text: "Choose a Payment Method"),
+                                child: TitleTextWidget(
+                                    text: "Choose a Payment Method"),
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 0, 25, 12),
@@ -171,8 +173,8 @@ class ReloadModel1 extends StatelessWidget {
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                                child:
-                                    TitleTextWidget(text: "Complete the Transaction"),
+                                child: TitleTextWidget(
+                                    text: "Complete the Transaction"),
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(25, 0, 25, 12),
@@ -227,19 +229,15 @@ class _ReloadModel2State extends State<ReloadModel2> {
   bool isLoading = false;
   TextEditingController walletIdTxt = TextEditingController();
 
-  void pushRoute(BuildContext context, BuildContext modalContext) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext newContext) => Scaffold(
-          appBar: AppBar(
-            title: Text('New Page'),
-          ),
-          body: ListView(
-            shrinkWrap: true,
-            children: [Text("data")],
-          ),
-        ),
-      ),
+  void pushRoute(BuildContext context, BuildContext modalContext, String amount) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double displayWidth = MediaQuery.of(context).size.width;
+    double displayHeight = MediaQuery.of(context).size.height;
+
+    // link to reloadmodal3
+    Navigator.of(context).pushAndRemoveUntil(
+      ReloadModal3.route(amount),
+      (route) => false,
     );
   }
 
@@ -381,15 +379,13 @@ class _ReloadModel2State extends State<ReloadModel2> {
                                         // onChanged: onChange,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText:
-                                              "100",
+                                          hintText: "100",
                                           hintStyle: TextStyle(
-                                            color: isDark
-                                                ? const Color.fromARGB(
-                                                    255, 147, 147, 147)
-                                                : Colors.black54,
-                                                fontSize: 15
-                                          ),
+                                              color: isDark
+                                                  ? const Color.fromARGB(
+                                                      255, 147, 147, 147)
+                                                  : Colors.black54,
+                                              fontSize: 15),
                                           prefixIcon: Align(
                                             widthFactor: 1.0,
                                             heightFactor: 1.0,
@@ -399,18 +395,20 @@ class _ReloadModel2State extends State<ReloadModel2> {
                                                         ? const Color(
                                                             0xFFFEFDFE)
                                                         : Colors.black87,
-                                                    fontWeight:
-                                                        FontWeight.bold,
-                                                        fontSize: 17)
-                                                        ),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 17)),
                                           ),
                                           suffixIcon: GestureDetector(
                                             onTap: () async {
-                                              final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-                                              String? clipboardText = clipboardData?.text;
+                                              final clipboardData =
+                                                  await Clipboard.getData(
+                                                      Clipboard.kTextPlain);
+                                              String? clipboardText =
+                                                  clipboardData?.text;
 
                                               setState(() {
-                                                walletIdTxt.text = clipboardText ?? "";
+                                                walletIdTxt.text =
+                                                    clipboardText ?? "";
                                               });
                                             },
                                             child: Align(
@@ -418,11 +416,14 @@ class _ReloadModel2State extends State<ReloadModel2> {
                                                 heightFactor: 1.0,
                                                 child: !isLoading
                                                     ? Icon(
-                                                        Iconsax.clipboard_import,
-                                                        color: isDark
-                                                            ? const Color(
-                                                                0xFFFEFDFE)
-                                                            : Colors.black87)
+                                                        Iconsax
+                                                            .clipboard_import,
+                                                        color:
+                                                            isDark
+                                                                ? const Color(
+                                                                    0xFFFEFDFE)
+                                                                : Colors
+                                                                    .black87)
                                                     : LoadingAnimationWidget
                                                         .inkDrop(
                                                         color: isDark
@@ -443,17 +444,135 @@ class _ReloadModel2State extends State<ReloadModel2> {
                                 ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.fromLTRB(25, 25, 25, 12),
-                                child: TitleTextWidget(
-                                    text: "Quick Amounts"),
+                                padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
+                                child: TitleTextWidget(text: "Quick Amounts"),
+                              ),
+                              FadingEdgeScrollView.fromSingleChildScrollView(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  controller: ScrollController(),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            25, 0, 5, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 10",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "10";
+                                              });
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 5, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 20",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "20";
+                                              });
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 5, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 30",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "30";
+                                              });
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 5, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 50",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "50";
+                                              });
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 5, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 100",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "100";
+                                              });
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 25, 12),
+                                        child: AppOutlinedButton(
+                                            text: "RM 200",
+                                            onTap: () {
+                                              setState(() {
+                                                walletIdTxt.text = "200";
+                                              });
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.fromLTRB(25, 0, 25, 12),
-                                child: SubtitleTextWidget(
-                                    text:
-                                        "Provide the recipient's information, such as their name and account details. Make sure the details are accurate."),
+                                padding: EdgeInsets.fromLTRB(25, 0, 25, 10),
+                                child: TitleTextWidget(text: "Payment Method"),
                               ),
-                              
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(25, 0, 25, 10),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 12, 0),
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: isDark
+                                                ? CustomColors.borderDark
+                                                : CustomColors.borderLight,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SvgPicture.asset(
+                                            'assets/icons/online1.svg',
+                                            height: 30,
+                                            colorFilter: ColorFilter.mode(
+                                                isDark
+                                                    ? CustomColors.textColorDark
+                                                    : CustomColors
+                                                        .textColorLight,
+                                                BlendMode.srcIn),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SideSectionText(
+                                        isDark: isDark,
+                                        text: "Online Banking",
+                                        bold: false,
+                                        color: isDark
+                                            ? CustomColors.textColorDark
+                                            : CustomColors.textColorLight)
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -466,7 +585,7 @@ class _ReloadModel2State extends State<ReloadModel2> {
                           text: "Next",
                           borderRadius: 50,
                           onTap: () {
-                            pushRoute(newContext, context);
+                            pushRoute(newContext, context, walletIdTxt.text);
                           }),
                     )
                   ],
@@ -475,6 +594,41 @@ class _ReloadModel2State extends State<ReloadModel2> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ReloadModal3 extends StatefulWidget {
+  final String walletId;
+  const ReloadModal3({super.key, required this.walletId});
+
+  static Route<void> route(String walletId) {
+    return MaterialPageRoute<void>(builder: (_) => ReloadModal3(walletId: walletId));
+  }
+
+  @override
+  State<ReloadModal3> createState() => _ReloadModal3State();
+}
+
+class _ReloadModal3State extends State<ReloadModal3> {
+  @override
+  Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double displayWidth = MediaQuery.of(context).size.width;
+    double displayHeight = MediaQuery.of(context).size.height;
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: LoadingAnimationWidget.waveDots(
+                color: isDark
+                    ? CustomColors.primaryLight
+                    : CustomColors.textColorLight,
+                size: 24),
+          )
+        ],
       ),
     );
   }

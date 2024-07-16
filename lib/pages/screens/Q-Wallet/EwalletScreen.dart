@@ -19,7 +19,7 @@ import 'package:quadrant_app/pages/screens/Q-Wallet/TransferModal/TransferModal.
 import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
-import 'package:sheet/route.dart';
+import 'package:intl/intl.dart';
 
 class EwalletScreen extends StatefulWidget {
   const EwalletScreen({super.key});
@@ -35,6 +35,11 @@ class _EwalletScreenState extends State<EwalletScreen> {
   void initState() {
     super.initState();
     _ewalletRepository = EwalletRepository(DioManager.instance);
+  }
+
+  String formatDate(String dateString) {
+    DateTime dateTime = DateTime.parse(dateString);
+    return DateFormat('MMM d, yyyy HH:mm').format(dateTime);
   }
 
   @override
@@ -79,8 +84,8 @@ class _EwalletScreenState extends State<EwalletScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       "Total Balance",
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                      style: TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.normal),
                     ),
                   ),
                   BlocProvider(
@@ -161,7 +166,8 @@ class _EwalletScreenState extends State<EwalletScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialSheetRoute<void>(
-                                  builder: (BuildContext context) => const EwalletScanner(),
+                                  builder: (BuildContext context) =>
+                                      const EwalletScanner(),
                                 ),
                               );
                             },
@@ -186,8 +192,8 @@ class _EwalletScreenState extends State<EwalletScreen> {
                     ],
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 2.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 0, vertical: 2.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -205,12 +211,83 @@ class _EwalletScreenState extends State<EwalletScreen> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      "You currently have no transactions.",
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                  BlocProvider(
+                    create: (context) => EwalletBloc(
+                        ewalletRepository:
+                            EwalletRepository(DioManager.instance))
+                      ..add(FetchWalletTransaction()),
+                    child: BlocBuilder<EwalletBloc, EwalletState>(
+                      builder: (context, state) {
+                        switch (state) {
+                          case EwalletLoading():
+                            return Center(
+                              child: LoadingAnimationWidget.waveDots(
+                                  color: isDark
+                                      ? CustomColors.textColorDark
+                                      : CustomColors.textColorLight,
+                                  size: 24),
+                            );
+                          case EwalletTransactionsLoaded():
+                            if (state.transactions.transactions?.isNotEmpty ?? false) {
+                              return ListView.builder(
+                                itemCount: (state.transactions.transactions!.length >= 10) ? 10 : state.transactions.transactions?.length,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemBuilder: (context, index) {
+                                  final transaction = state.transactions.transactions?[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: isDark
+                                          ? CustomColors.backgroundDark
+                                          : CustomColors.backgroundLight,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        transaction?.transactionType == 'CREDIT'
+                                            ? Iconsax.money_recive
+                                            : Iconsax.money_send,
+                                        color: transaction?.transactionType == 'CREDIT'
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                      title: Text(
+                                        transaction?.description ?? '',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        transaction?.createdAt != null ? formatDate(transaction!.createdAt!) : '',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight,
+                                        ),
+                                      ),
+                                      trailing: Text(
+                                        'RM ${transaction?.amount?.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? CustomColors.textColorDark
+                                              : CustomColors.textColorLight,
+                                        ),
+                                      ),
+                                    )
+                                  );
+                                },
+                              ).animate().fade().slideY(begin: -0.2);
+                            } else {
+                              return const Text('No transactions found');
+                            }
+                          case EwalletError():
+                            return const Text('Something went wrong!');
+                          default:
+                            return Container();
+                        }
+                      },
                     ),
                   ),
                 ],
