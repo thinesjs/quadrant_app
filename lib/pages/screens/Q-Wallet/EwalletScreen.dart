@@ -12,6 +12,7 @@ import 'package:quadrant_app/pages/components/floating_sheet.dart';
 import 'package:quadrant_app/pages/components/material_sheet.dart';
 import 'package:quadrant_app/pages/components/quick_actions_widget.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Checkout/GatewayWebviewScreen.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/EwalletScan.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/EwalletTransactionsScreen.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/ReloadModal/ReloadModal.dart';
@@ -151,13 +152,22 @@ class _EwalletScreenState extends State<EwalletScreen> {
                           QuickActionsWidget(
                             text: 'Reload',
                             icon: Iconsax.wallet_add_1,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                FloatingSheetRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      const ReloadModel1(),
-                                ),
+                            onTap: () async {
+                              final redirectUrl = await Navigator.of(context).push(
+                                FloatingSheetRoute(builder: (BuildContext context) => const ReloadModel1()),
                               );
+                              if (!context.mounted) return;
+                              if (redirectUrl != null) {
+                                final status = await Navigator.of(context).push(MaterialSheetRoute(
+                                  builder: (context) => PaymentWebViewScreen(url: redirectUrl!),
+                                ));
+                                if (!context.mounted) return;
+                                if (status != null) {
+                                  if (status) {
+                                    context.read<EwalletBloc>().add(FetchWallet());
+                                  }
+                                }
+                              }
                             },
                           ).animate().fade(),
                           QuickActionsWidget(
@@ -268,7 +278,7 @@ class _EwalletScreenState extends State<EwalletScreen> {
                                         ),
                                       ),
                                       trailing: Text(
-                                        'RM ${transaction?.amount?.toStringAsFixed(2)}',
+                                        '${transaction?.transactionType == 'CREDIT' ? '+':'-' }RM ${transaction?.amount?.toStringAsFixed(2)}',
                                         style: TextStyle(
                                           color: isDark
                                               ? CustomColors.textColorDark

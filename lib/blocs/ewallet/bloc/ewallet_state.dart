@@ -29,6 +29,14 @@ class EwalletTransactionsLoaded extends EwalletState {
   List<Object> get props => [transactions];
 }
 
+class EwalletReloadCallbackLoaded extends EwalletState {
+  final EwalletReloadResponse data;
+
+  const EwalletReloadCallbackLoaded({required this.data});
+
+  @override
+  List<Object> get props => [data];
+}
 
 class EwalletError extends EwalletState {}
 

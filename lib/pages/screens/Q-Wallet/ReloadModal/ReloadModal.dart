@@ -5,14 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
+import 'package:quadrant_app/blocs/ewallet/bloc/ewallet_bloc.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Checkout/GatewayWebviewScreen.dart';
+import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:sheet/sheet.dart';
 
 class ReloadModel1 extends StatelessWidget {
@@ -20,7 +25,7 @@ class ReloadModel1 extends StatelessWidget {
 
   void pushRoute(BuildContext context, BuildContext modalContext) {
     Navigator.of(context).push(
-      ReloadModel2.route(),
+      ReloadModel2.route(modalContext),
     );
   }
 
@@ -215,10 +220,11 @@ class ReloadModel1 extends StatelessWidget {
 }
 
 class ReloadModel2 extends StatefulWidget {
-  const ReloadModel2({super.key});
+  final BuildContext modalContext;
+  const ReloadModel2({super.key, required this.modalContext});
 
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const ReloadModel2());
+  static Route<void> route(BuildContext modalContext) {
+    return MaterialPageRoute<void>(builder: (_) => ReloadModel2(modalContext: modalContext));
   }
 
   @override
@@ -230,14 +236,11 @@ class _ReloadModel2State extends State<ReloadModel2> {
   TextEditingController walletIdTxt = TextEditingController();
 
   void pushRoute(BuildContext context, BuildContext modalContext, String amount) {
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    double displayWidth = MediaQuery.of(context).size.width;
-    double displayHeight = MediaQuery.of(context).size.height;
 
     // link to reloadmodal3
-    Navigator.of(context).pushAndRemoveUntil(
-      ReloadModal3.route(amount),
-      (route) => false,
+    Navigator.of(context).push(
+      ReloadModal3.route(modalContext, amount),
+      // (route) => false,
     );
   }
 
@@ -585,7 +588,7 @@ class _ReloadModel2State extends State<ReloadModel2> {
                           text: "Next",
                           borderRadius: 50,
                           onTap: () {
-                            pushRoute(newContext, context, walletIdTxt.text);
+                            pushRoute(newContext, widget.modalContext, walletIdTxt.text);
                           }),
                     )
                   ],
@@ -600,11 +603,13 @@ class _ReloadModel2State extends State<ReloadModel2> {
 }
 
 class ReloadModal3 extends StatefulWidget {
+  final BuildContext modalContext;
   final String walletId;
-  const ReloadModal3({super.key, required this.walletId});
+  const ReloadModal3({super.key, required this.walletId, required this.modalContext});
 
-  static Route<void> route(String walletId) {
-    return MaterialPageRoute<void>(builder: (_) => ReloadModal3(walletId: walletId));
+  static Route<void> route(BuildContext modalContext, String walletId) {
+    return MaterialPageRoute<void>(
+        builder: (_) => ReloadModal3(modalContext: modalContext, walletId: walletId));
   }
 
   @override
@@ -615,18 +620,44 @@ class _ReloadModal3State extends State<ReloadModal3> {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    double displayWidth = MediaQuery.of(context).size.width;
-    double displayHeight = MediaQuery.of(context).size.height;
+    // double displayWidth = MediaQuery.of(context).size.width;
+    // double displayHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(
-            child: LoadingAnimationWidget.waveDots(
-                color: isDark
-                    ? CustomColors.primaryLight
-                    : CustomColors.textColorLight,
-                size: 24),
+          BlocProvider(
+            create: (context) => EwalletBloc(
+                        ewalletRepository:
+                            EwalletRepository(DioManager.instance))
+                      ..add(ReloadWallet(widget.walletId)),
+            child: BlocBuilder<EwalletBloc, EwalletState>(
+              builder: (context, state) {
+                if (state is EwalletLoading) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    child: Center(
+                      child: LoadingAnimationWidget.waveDots(
+                        color: isDark
+                            ? CustomColors.primaryLight
+                            : CustomColors.textColorLight,
+                        size: 24,
+                      ),
+                    ),
+                  );
+                } else if (state is EwalletReloadCallbackLoaded) {
+                  Future.microtask(() {
+                    Navigator.pop(widget.modalContext, state.data.redirectUrl!);
+                  });
+                  return Center(child: Text(state.data.orderId ?? "null"));
+                } else if (state is EwalletError) {
+                  return const Center(child: Text('We have encountered an error trying to process your request. Please try again later.'));
+                }
+                return Container();
+              },
+            ),
           )
         ],
       ),
