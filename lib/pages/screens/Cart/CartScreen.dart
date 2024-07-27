@@ -9,6 +9,7 @@ import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/screens/Checkout/CheckoutScreen.dart';
 import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/enums/cart_type.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class CartScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
     double displayHeight = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (context) =>
-          CartBloc(cartRepository: _cartRepository)..add(FetchCart()),
+          CartBloc(cartRepository: _cartRepository)..add(const FetchCart(CartType.ONLINE)),
       child: Stack(
         children: [
           Padding(

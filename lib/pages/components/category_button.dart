@@ -3,23 +3,25 @@ import 'package:quadrant_app/pages/screens/Category/CategoryScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
-class CategoryButton extends StatefulWidget {
-  const CategoryButton({
+class ItemGridButton extends StatefulWidget {
+  const ItemGridButton({
     super.key,
-    required this.category,
+    required this.context,
+    required this.items,
     required this.isDark, 
     required this.onTap,
   });
 
-  final Category category;
+  final BuildContext context;
+  final Item items;
   final bool isDark;
   final VoidCallback onTap;
 
   @override
-  State<CategoryButton> createState() => _CategoryButtonState();
+  State<ItemGridButton> createState() => _ItemGridButtonState();
 }
 
-class _CategoryButtonState extends State<CategoryButton> {
+class _ItemGridButtonState extends State<ItemGridButton> {
   bool _isPressed = false;
 
   void _onTapDown(TapDownDetails details) {
@@ -57,14 +59,14 @@ class _CategoryButtonState extends State<CategoryButton> {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              widget.category.icon,
+              widget.items.icon,
               color: widget.isDark ? _isPressed ? CustomColors.primaryLight : CustomColors.primaryDark : _isPressed ? CustomColors.primaryDark : CustomColors.primaryLight,
               size: 24,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            widget.category.name,
+            widget.items.name,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
           ),

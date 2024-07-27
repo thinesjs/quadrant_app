@@ -2,7 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/blocs/qentry/bloc/qentry_bloc.dart';
+import 'package:quadrant_app/pages/components/expandable_fab.dart';
+import 'package:quadrant_app/pages/components/material_sheet.dart';
+import 'package:quadrant_app/pages/screens/Product/ProductUPCScanner.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/EwalletScreen.dart';
 import 'package:quadrant_app/pages/screens/Cart/CartScreen.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
@@ -13,7 +19,7 @@ import 'package:quadrant_app/utils/custom_constants.dart';
 final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key); 
+  const MainPage({Key? key}) : super(key: key);
 
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => MainPage(key: mainPageKey));
@@ -49,42 +55,75 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(selectedIndex != null) {
+    if (selectedIndex != null) {
       currentIndex = selectedIndex!;
     }
-    
+
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBody: true,
-      body: screensList[currentIndex][0],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBorderDark, width: 1.0))),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: currentIndex,
-          onTap: onTap,
-          elevation: 0.0,
-          enableFeedback: true,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: const Color(0xFFD6354D),
-          unselectedItemColor: const Color(0xFF7E7E7E),
-          backgroundColor: isDark ? CustomColors.navBarBackgroundDark : CustomColors.navBarBackgroundLight,
-          items: 
-            screensList.map((page) {
-              return BottomNavigationBarItem(
-                label: page[1],
-                icon: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(page[2]),
-                ),
-              );
-            }).toList(),
-        ),
-      ),
+    return BlocBuilder<QentryBloc, QentryState>(
+      builder: (context, state) {
+        bool isFloatingActionBarVisible = state is QentryVerified;
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          extendBody: true,
+          body: screensList[currentIndex][0],
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                        color: isDark
+                            ? CustomColors.navBarBackgroundDark
+                            : CustomColors.navBorderDark,
+                        width: 1.0))),
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              currentIndex: currentIndex,
+              onTap: onTap,
+              elevation: 0.0,
+              enableFeedback: true,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              selectedItemColor: const Color(0xFFD6354D),
+              unselectedItemColor: const Color(0xFF7E7E7E),
+              backgroundColor: isDark
+                  ? CustomColors.navBarBackgroundDark
+                  : CustomColors.navBarBackgroundLight,
+              items: screensList.map((page) {
+                return BottomNavigationBarItem(
+                  label: page[1],
+                  icon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(page[2]),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          floatingActionButton: isFloatingActionBarVisible && mainPageKey.currentState?.currentIndex != 3
+            ? ExpandableFab(
+                distance: 70,
+                children: [
+                  ActionButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialSheetRoute<void>(
+                          builder: (BuildContext context) =>
+                              const ProductUPCScanner(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Iconsax.barcode, color: CustomColors.subTextColorDark),
+                  ),
+                  ActionButton(
+                    // onPressed: () => _showAction(context, 0),
+                    icon: Icon(Iconsax.bag_tick_2, color: CustomColors.subTextColorDark),
+                  ),
+                ],
+              )
+            : null,
+        );
+      },
     );
   }
 }

@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             pinned: true,
             snap: false,
             floating: true,
-            expandedHeight: displayHeight / 6,
+            expandedHeight: displayHeight / 5.356,
             backgroundColor: isDark
                 ? CustomColors.backgroundDark
                 : CustomColors.backgroundLight,

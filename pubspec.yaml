@@ -62,7 +62,7 @@ dependencies:
   fading_edge_scrollview:
     git:
       url: https://github.com/thinesjs/fading_edge_scrollview
-  web_socket_channel: ^3.0.0
+  web_socket_channel: ^3.0.1
   slide_to_act:
     git:
       url: https://github.com/thinesjs/flutter-slide-to-act
@@ -86,6 +86,7 @@ dependencies:
     git:
       url: https://github.com/thinesjs/popover.git
   intl: ^0.19.0
+  text_scroll: ^0.2.0
   
 
 dev_dependencies:

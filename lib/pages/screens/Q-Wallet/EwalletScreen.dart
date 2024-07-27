@@ -68,13 +68,13 @@ class _EwalletScreenState extends State<EwalletScreen> {
                             colorFilter: ColorFilter.mode(
                                 isDark ? Colors.white : Colors.black,
                                 BlendMode.srcIn)),
-                        Icon(
-                          Iconsax.setting_4,
-                          color: isDark
-                              ? CustomColors.textColorDark
-                              : CustomColors.textColorLight,
-                          size: 30,
-                        )
+                        // Icon(
+                        //   Iconsax.setting_4,
+                        //   color: isDark
+                        //       ? CustomColors.textColorDark
+                        //       : CustomColors.textColorLight,
+                        //   size: 30,
+                        // )
                       ],
                     ),
                   ),
@@ -105,7 +105,7 @@ class _EwalletScreenState extends State<EwalletScreen> {
                                 style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: CustomColors.textColorDark),
+                                    color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),
                               ),
                               SizedBox(
                                 width: 5,

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,49 +7,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:quadrant_app/blocs/qentry/bloc/qentry_bloc.dart';
 import 'package:quadrant_app/firebase_options.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Authentication/Login/LoginScreen.dart';
 import 'package:quadrant_app/pages/splash/SplashPage.dart';
 import 'package:quadrant_app/repositories/AuthRepository/auth_repository.dart';
+import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/repositories/UserRepository/user_repository.dart';
+import 'package:quadrant_app/utils/helpers.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:quadrant_app/themes/styles.dart';
 import 'package:quadrant_app/utils/notification_service.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  local_notification_service.initialize();
-  
-  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+  // local_notification_service.initialize();
 
-  await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  log(fcmToken.toString(), name: 'FCM Token');
+  // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
 
+  // await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  // final fcmToken = await FirebaseMessaging.instance.getToken();
+  // log(fcmToken.toString(), name: 'FCM Token');
 
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   RemoteNotification? notification = message.notification;
+  //   // AndroidNotification? android = message.notification?.android;
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    RemoteNotification? notification = message.notification;
-    // AndroidNotification? android = message.notification?.android;
+  //   print('Got a message whilst in the foreground!');
+  //   print('Message data: ${notification}');
 
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${notification}');
+  //   if (notification != null) {
+  //     local_notification_service.createNotification(message);
+  //   }
+  // });
 
-    if (notification != null) {
-      local_notification_service.createNotification(message);
-    }
-  });
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -62,24 +65,75 @@ class _MyAppState extends State<MyApp> {
   late final AuthenticationBloc _authenticationBloc;
   late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
+  late final QentryBloc _qentryBloc;
+  late WebSocketChannel channel;
+  bool isFloatingActionBarVisible = false;
 
   @override
   void initState() {
     super.initState();
     _authenticationRepository = AuthenticationRepository(DioManager.instance);
     _userRepository = UserRepository(DioManager.instance);
-
+    _qentryBloc = QentryBloc();
     _authenticationBloc = AuthenticationBloc(
       authenticationRepository: _authenticationRepository,
       userRepository: _userRepository,
     );
     _authenticationBloc.add(AppStarted()); // Trigger AppStarted event
+
+    initializeFirebase();
+    initializeWebSocket();
+  }
+
+  void initializeFirebase() async {
+    local_notification_service.initialize();
+
+    final notificationSettings =
+        await FirebaseMessaging.instance.requestPermission(provisional: true);
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    log(fcmToken.toString(), name: 'FCM Token');
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${notification}');
+
+      if (notification != null) {
+        local_notification_service.createNotification(message);
+      }
+    });
+  }
+
+  void initializeWebSocket() {
+    channel = WebSocketChannel.connect(
+      Uri.parse('ws://localhost:8080/qentry-listen'),
+    );
+
+    channel.stream.listen((message) async {
+      if (isRecognitionNotification(message)) {
+        try {
+          var data = jsonDecode(message);
+          _qentryBloc.add(WebSocketMessageReceived(data));
+        } catch (e) {
+          log('Error parsing message: $e');
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
-    _authenticationRepository.dispose();
     super.dispose();
+    _authenticationRepository.dispose();
+    channel.sink.close();
   }
 
   @override
@@ -89,7 +143,10 @@ class _MyAppState extends State<MyApp> {
       value: _authenticationRepository,
       child: BlocProvider(
         create: (context) => _authenticationBloc,
-        child: AppView(isDark: isDark),
+        child: BlocProvider(
+          create: (context) => _qentryBloc,
+          child: AppView(isDark: isDark),
+        ),
       ),
     );
   }

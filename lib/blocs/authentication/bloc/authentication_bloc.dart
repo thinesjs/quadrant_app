@@ -47,6 +47,7 @@ class AuthenticationBloc
   ) async {
     log("app started", name: "AuthenticationRepository");
     final isLoggedIn = await _authenticationRepository.isLoggedIn();
+    log(isLoggedIn.toString(), name: "AuthenticationRepository");
     if(isLoggedIn){
       await _authenticationRepository.updateTokenFromStorage();
 

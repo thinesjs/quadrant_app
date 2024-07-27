@@ -9,8 +9,8 @@ class DioManager {
     return _instance!;
   }
 
-  final String _baseUrl = 'https://quadrant-api.thinesjs.com';
-  // final String _baseUrl = 'http://192.168.0.171:8800';
+  // final String _baseUrl = 'https://quadrant-api.thinesjs.com';
+  final String _baseUrl = 'http://localhost:8800';
   late final Dio dio;
 
   DioManager._init() {

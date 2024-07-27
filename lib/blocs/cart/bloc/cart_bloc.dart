@@ -6,13 +6,14 @@ import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
 import 'package:quadrant_app/repositories/CartRepository/models/cartcheckout_response.dart';
 import 'package:quadrant_app/repositories/CartRepository/models/response.dart';
 import 'package:quadrant_app/repositories/CartRepository/models/productincart_response.dart' as PICR;
+import 'package:quadrant_app/utils/enums/cart_type.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({ required CartRepository cartRepository }) : _cartRepository = cartRepository, super(CartLoading()) {
-    on<FetchCart>(_onFetchProduct);
+    on<FetchCart>(_onFetchCart);
     on<FetchProductIsInCart>(_onFetchProductIsInCart);
     on<AddProductToCart>(_onAddProductToCart);
     on<RemoveProductFromCart>(_onRemoveProductFromCart);
@@ -21,13 +22,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   final CartRepository _cartRepository;
 
-  Future<void> _onFetchProduct(
+  Future<void> _onFetchCart(
     FetchCart event,
     Emitter<CartState> emit,
   ) async {
     emit(CartLoading());
     try {
-      final response = await _cartRepository.fetchCart();
+      final response = await _cartRepository.fetchCart(event.cartType);
       emit(CartLoaded(cart: response.data!.items!, meta: response.meta!));
     } catch (_) {
       emit(CartError());
@@ -40,7 +41,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   ) async {
     emit(CartLoading());
     try {
-      final response = await _cartRepository.checkProductInCart(event.productId);
+      final response = await _cartRepository.checkProductInCart(event.productId, event.cartType);
       if(response == null){
         emit(const ProductIsInCartLoaded(data: null));
         return;
@@ -55,9 +56,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     AddProductToCart event, 
     Emitter<CartState> emit) async {
     try {
-      final response = await _cartRepository.addProductToCart(event.productId);
+      final response = await _cartRepository.addProductToCart(event.productId, event.cartType);
       if(event.refreshStatus){
-        add(FetchProductIsInCart(event.productId));
+        add(FetchProductIsInCart(event.productId, event.cartType));
       }else{
         emit(CartLoaded(cart: response.data!.items!, meta: response.meta!));
       }
@@ -70,9 +71,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     RemoveProductFromCart event, 
     Emitter<CartState> emit) async {
     try {
-      final response = await _cartRepository.removeProductToCart(event.productId);
+      final response = await _cartRepository.removeProductToCart(event.productId, event.cartType);
       if(event.refreshStatus){
-        add(FetchProductIsInCart(event.productId));
+        add(FetchProductIsInCart(event.productId, event.cartType));
       }else{
         emit(CartLoaded(cart: response.data!.items!, meta: response.meta!));
       }
@@ -88,7 +89,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     final currentState = state;
     emit(CartLoading());
     try {
-      final response = await _cartRepository.requestCheckout(event.paymentMethodId);
+      final response = await _cartRepository.requestCheckout(event.paymentMethodId, event.cartType);
       // add(CartLoaded(event.productId));
       emit(CartCheckoutCallback(cartCheckout: response));
       // emit(currentState);

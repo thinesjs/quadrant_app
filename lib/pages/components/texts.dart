@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class SectionText extends StatelessWidget {
   const SectionText({super.key, 
@@ -25,6 +26,35 @@ class SectionText extends StatelessWidget {
     );
   }
 }
+
+
+class ScrollingSectionText extends StatelessWidget {
+  const ScrollingSectionText({super.key, 
+    required this.isDark, required this.text, this.size = 14, this.bold = false
+  });
+
+  final bool isDark;
+  final double size;
+  final bool bold;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: TextScroll(
+        text,
+        pauseBetween: const Duration(milliseconds: 3000),
+        delayBefore: const Duration(milliseconds: 1500),
+        style: TextStyle(
+          fontSize: size,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+}
+
 
 class SideSectionText extends StatelessWidget {
   const SideSectionText({super.key, 
@@ -92,6 +122,26 @@ class NormalText extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: size,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+}
+
+class DescriptionText extends StatelessWidget {
+  const DescriptionText({super.key, this.bold = false, required this.text});
+
+  final bool bold;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Text(
+        text,
+        style: TextStyle(
           fontWeight: bold ? FontWeight.bold : FontWeight.normal,
         ),
       ),

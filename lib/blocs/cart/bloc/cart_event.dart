@@ -5,14 +5,19 @@ abstract class CartEvent extends Equatable {
 }
 
 final class FetchCart extends CartEvent {
+  final CartType cartType;
+
+  const FetchCart(this.cartType);
+  
   @override
-  List<Object> get props => [];
+  List<Object> get props => [cartType];
 }
 
 final class FetchProductIsInCart extends CartEvent {
   final String productId;
+  final CartType cartType;
 
-  const FetchProductIsInCart(this.productId);
+  const FetchProductIsInCart(this.productId, this.cartType);
 
   @override
   List<Object> get props => [productId];
@@ -20,9 +25,10 @@ final class FetchProductIsInCart extends CartEvent {
 
 class AddProductToCart extends CartEvent {
   final String productId;
+  final CartType cartType;
   final bool refreshStatus;
 
-  const AddProductToCart({required this.productId, this.refreshStatus = false});
+  const AddProductToCart({required this.productId, this.cartType = CartType.ONLINE, this.refreshStatus = false});
 
   @override
   List<Object> get props => [productId, refreshStatus];
@@ -30,9 +36,10 @@ class AddProductToCart extends CartEvent {
 
 class RemoveProductFromCart extends CartEvent {
   final String productId;
+  final CartType cartType;
   final bool refreshStatus;
 
-  const RemoveProductFromCart({required this.productId, this.refreshStatus = false});
+  const RemoveProductFromCart({required this.productId, this.cartType = CartType.ONLINE, this.refreshStatus = false});
 
   @override
   List<Object> get props => [productId, refreshStatus];
@@ -40,8 +47,9 @@ class RemoveProductFromCart extends CartEvent {
 
 final class CartCheckout extends CartEvent {
   final String paymentMethodId;
+  final CartType cartType;
 
-  const CartCheckout({required this.paymentMethodId});
+  const CartCheckout({required this.paymentMethodId, this.cartType = CartType.ONLINE});
 
   @override
   List<Object> get props => [paymentMethodId];

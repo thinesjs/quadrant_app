@@ -6,10 +6,10 @@ import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
-import 'package:quadrant_app/pages/screens/Q-Entry/FaceScanner.dart';
+import 'package:quadrant_app/pages/screens/Q-Entry/FaceCaptureScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
-import 'testframe.dart';
+import 'FaceCaptureScreen.dart';
 
 class QEntrySettingsScreen extends StatefulWidget {
   const QEntrySettingsScreen({super.key});

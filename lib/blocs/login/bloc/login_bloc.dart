@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
@@ -62,9 +64,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
 
         if (response != null) {
+          await _authenticationRepository.updateLoggedIn(true);
           await _authenticationRepository.updateToken(response);
           await _authenticationRepository.registerFcmToken();
-          await _authenticationRepository.updateLoggedIn(true);
 
           emit(state.copyWith(status: FormzSubmissionStatus.success));
         } else {

@@ -15,6 +15,7 @@ import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/screens/Checkout/GatewayWebviewScreen.dart';
 import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/enums/cart_type.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -114,7 +115,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return BlocProvider(
       create: (context) =>
           CartBloc(cartRepository: CartRepository(DioManager.instance))
-            ..add(FetchCart()),
+            ..add(FetchCart(CartType.ONLINE)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Checkout'),

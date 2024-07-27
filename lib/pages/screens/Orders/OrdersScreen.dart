@@ -216,7 +216,7 @@ class ErrorComponent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-                "We're unable to retrive this product, report to us this issue or try again some time later.",
+                "We're unable to retrive your order history, report to us this issue or try again some time later.",
                 textAlign: TextAlign.center),
             const SizedBox(height: 20),
             CircleActionButton(

@@ -28,11 +28,11 @@ import 'package:sheet/route.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Category {
+class Item {
   final String name;
   final IconData icon;
 
-  Category({required this.name, required this.icon});
+  Item({required this.name, required this.icon});
 }
 
 class HomeScreen extends StatefulWidget {
@@ -60,15 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
     _productRepository = ProductRepository(DioManager.instance);
   }
 
-  final List<Category> categories = [
-    Category(name: 'Grocery', icon: Iconsax.tree),
-    Category(name: 'Household', icon: Iconsax.lamp),
-    Category(name: 'Health & Beauty', icon: Iconsax.health),
-    Category(name: 'Appliances', icon: Iconsax.mobile),
-    Category(name: 'Pets', icon: Iconsax.pet),
-    Category(name: 'Bakery', icon: Iconsax.cake),
-    Category(name: 'Fresh Produce', icon: Iconsax.milk),
-    Category(name: 'More', icon: Iconsax.more),
+  final List<Item> categories = [
+    Item(name: 'Grocery', icon: Iconsax.tree),
+    Item(name: 'Household', icon: Iconsax.lamp),
+    Item(name: 'Health & Beauty', icon: Iconsax.health),
+    Item(name: 'Appliances', icon: Iconsax.mobile),
+    Item(name: 'Pets', icon: Iconsax.pet),
+    Item(name: 'Bakery', icon: Iconsax.cake),
+    Item(name: 'Fresh Produce', icon: Iconsax.milk),
+    Item(name: 'More', icon: Iconsax.more),
   ];
   final _controller = ScrollController();
 
@@ -265,8 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  return CategoryButton(
-                    category: categories[index],
+                  return ItemGridButton(
+                    context: context,
+                    items: categories[index],
                     isDark: isDark,
                     onTap: () {
                       Navigator.push(
@@ -334,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      SheetRoute<void>(
+                                      MaterialPageRoute<void>(
                                         builder: (context) => ProductScreen(
                                             productId:
                                                 state.products?[index].id ??
@@ -534,14 +535,14 @@ class QuickAccessButton extends StatelessWidget {
       onTap: () {
         showPopover(
           context: context,
-          bodyBuilder: (context) => const QuickAccessWidget(),
+          bodyBuilder: (context) => QuickAccessWidget(),
           onPop: () => print('Popover was popped!'),
           direction: PopoverDirection.bottom,
           arrowHeight: 0,
           arrowWidth: 0,
           radius: 25,
           width: displayWidth,
-          height: displayHeight / 4,
+          height: displayHeight / 4.2,
           transition: PopoverTransition.scale,
           backgroundColor: isDark
               ? CustomColors.cardColorDark

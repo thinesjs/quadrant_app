@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:quadrant_app/pages/components/category_button.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
+import 'package:quadrant_app/pages/main_page.dart';
+import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class QuickAccessWidget extends StatelessWidget {
-  const QuickAccessWidget({Key? key}) : super(key: key);
+  QuickAccessWidget({Key? key}) : super(key: key);
+
+  final List<Item> items = [
+    Item(name: 'Price Check', icon: Iconsax.barcode),
+    Item(name: 'Vouchers', icon: Iconsax.discount_circle),
+    Item(name: 'Q-Wallet', icon: Iconsax.wallet),
+    Item(name: 'Help', icon: Iconsax.info_circle),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +34,39 @@ class QuickAccessWidget extends StatelessWidget {
                 child: Icon(Iconsax.close_square, size: 30,
                 color: isDark ? CustomColors.textColorDark : CustomColors.textColorLight),)
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 19),
+            child: GridView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 0.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return ItemGridButton(
+                  context: context,
+                  items: items[index],
+                  isDark: isDark,
+                  onTap: () {
+                    mainPageKey.currentState?.switchToScreen(2);
+                    Navigator.pop(context); 
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => CategoryScreen(
+                    //         categoryName: categories[index].name),
+                    //   ),
+                    // );
+                  },
+                ).animate().fade().slideY(begin: -0.2);
+              },
+            ),
           ),
         ],
       ),

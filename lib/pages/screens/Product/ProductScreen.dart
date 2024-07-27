@@ -12,6 +12,7 @@ import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
 import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/enums/cart_type.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -104,12 +105,15 @@ class ProductScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                SectionText(
-                                    isDark: isDark,
-                                    text: state.product.name!,
-                                    size: 20.0,
-                                    bold: true),
+                                Expanded(
+                                  child: ScrollingSectionText(
+                                      isDark: isDark,
+                                      text: state.product.name!,
+                                      size: 20.0,
+                                      bold: true),
+                                ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Icon(Iconsax.star1, color: Colors.amber),
@@ -122,8 +126,7 @@ class ProductScreen extends StatelessWidget {
                                 isDark: isDark,
                                 text: 'Description',
                                 bold: true),
-                            NormalText(
-                                isDark: isDark, text: state.product.desc!),
+                            DescriptionText(text: state.product.desc!),
                           ],
                         ),
                       ),
@@ -131,10 +134,24 @@ class ProductScreen extends StatelessWidget {
                   ],
                 ),
                 bottomNavigationBar: Container(
-                  height: 110,
-                  color: isDark
+                  height: displayHeight / 10,
+                  decoration: BoxDecoration(
+                    color: isDark
                       ? CustomColors.navBarBackgroundDark
                       : CustomColors.navBarBackgroundLight,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: Row(
@@ -145,13 +162,13 @@ class ProductScreen extends StatelessWidget {
                             isDark: isDark,
                             text:
                                 "RM ${state.product.price?.toStringAsFixed(2)}",
-                            size: 27.0,
+                            size: 20.0,
                             bold: true),
                         BlocProvider(
                           create: (_) => CartBloc(
                               cartRepository:
                                   CartRepository(DioManager.instance))
-                            ..add(FetchProductIsInCart(productId)),
+                            ..add(FetchProductIsInCart(productId, CartType.ONLINE)),
                           child: BlocBuilder<CartBloc, CartState>(
                             builder: (context, state) {
                               switch (state) {

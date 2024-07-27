@@ -48,4 +48,18 @@ class UserRepository {
       }
     }
   }
+
+  // Future<void> setUserId(String? userId) async {
+  //   if(userId != null){
+  //     await CacheManager.setString("user_id", userId);
+  //     // _controller.add(AuthenticationStatus.authenticated);
+  //   }else{
+  //     if(await CacheManager.containsKey("access_token")){
+  //       await CacheManager.remove("access_token");
+  //       await CacheManager.clearAll();
+  //       DioManager.instance.dio.options.headers.clear();
+  //       _controller.add(AuthenticationStatus.unauthenticated);
+  //     }
+  //   }
+  // }
 }
