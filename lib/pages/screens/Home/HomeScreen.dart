@@ -542,7 +542,7 @@ class QuickAccessButton extends StatelessWidget {
           arrowWidth: 0,
           radius: 25,
           width: displayWidth,
-          height: displayHeight / 4.2,
+          height: displayHeight / 4.7,
           transition: PopoverTransition.scale,
           backgroundColor: isDark
               ? CustomColors.cardColorDark

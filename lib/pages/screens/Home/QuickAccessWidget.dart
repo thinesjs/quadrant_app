@@ -5,13 +5,14 @@ import 'package:quadrant_app/pages/components/category_button.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/main_page.dart';
 import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
+import 'package:quadrant_app/pages/screens/Support/SupportScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 
 class QuickAccessWidget extends StatelessWidget {
   QuickAccessWidget({Key? key}) : super(key: key);
 
   final List<Item> items = [
-    Item(name: 'Price Check', icon: Iconsax.barcode),
+    Item(name: 'Q-Scan', icon: Iconsax.barcode),
     Item(name: 'Vouchers', icon: Iconsax.discount_circle),
     Item(name: 'Q-Wallet', icon: Iconsax.wallet),
     Item(name: 'Help', icon: Iconsax.info_circle),
@@ -21,8 +22,9 @@ class QuickAccessWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +38,7 @@ class QuickAccessWidget extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 19),
+            padding: const EdgeInsets.only(top: 0),
             child: GridView.builder(
               shrinkWrap: true,
               padding: EdgeInsets.zero,
@@ -54,15 +56,24 @@ class QuickAccessWidget extends StatelessWidget {
                   items: items[index],
                   isDark: isDark,
                   onTap: () {
-                    mainPageKey.currentState?.switchToScreen(2);
-                    Navigator.pop(context); 
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CategoryScreen(
-                    //         categoryName: categories[index].name),
-                    //   ),
-                    // );
+                    switch(index){
+                      case 0:
+                        mainPageKey.currentState?.switchToScreen(1);
+                        Navigator.pop(context); 
+                        break;
+                      case 1:
+                        mainPageKey.currentState?.switchToScreen(1);
+                        Navigator.pop(context); 
+                        break;
+                      case 2:
+                        mainPageKey.currentState?.switchToScreen(2);
+                        Navigator.pop(context); 
+                        break;
+                      case 3:
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportScreen()));
+                        // Navigator.pop(context); 
+                        break;
+                    }
                   },
                 ).animate().fade().slideY(begin: -0.2);
               },

@@ -1,7 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_qr_response.dart';
 import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_reload_response.dart';
-import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_response.dart';
+import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_response.dart' as wallet;
 import 'package:quadrant_app/repositories/EwalletRepository/models/wallet_transaction_reponse.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
@@ -9,12 +10,12 @@ class EwalletRepository {
   final DioManager dioManager;
   EwalletRepository(this.dioManager);
 
-  Future<Data>? fetchWallet() async {
+  Future<wallet.Data>? fetchWallet() async {
     log("getting user's wallet", name: "EwalletRepository");
     var response = await dioManager.dio.get("/v1/wallet");
     
     if (response.statusCode == HttpStatus.ok) {
-      WalletResponse jsonResponse = WalletResponse.fromJson(response.data);
+      wallet.WalletResponse jsonResponse = wallet.WalletResponse.fromJson(response.data);
 
       return jsonResponse.data!;
     } else {
@@ -48,12 +49,25 @@ class EwalletRepository {
     }
   }
 
-  Future<EwalletReloadResponse>? generateQr() async {
+  Future<EwalletQrResponse>? generateQr(String? amount) async {
     log("getting qr/barcode for user's wallet", name: "EwalletRepository");
-    var response = await dioManager.dio.get("/v1/wallet/qr/generate");
+    var response = await dioManager.dio.post("/v1/wallet/qr/generate", data: {"amount": amount});
 
     if (response.statusCode == HttpStatus.ok) {
-      EwalletReloadResponse jsonResponse = EwalletReloadResponse.fromJson(response.data);
+      EwalletQrResponse jsonResponse = EwalletQrResponse.fromJson(response.data);
+
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load wallet qr');
+    }
+  }
+
+  Future<EwalletQrResponse>? validateQr(String ewalletQr) async {
+    log("validating scanned qr/barcode $ewalletQr", name: "EwalletRepository");
+    var response = await dioManager.dio.post("/v1/wallet/qr/validate", data: {"qr_id": ewalletQr});
+
+    if (response.statusCode == HttpStatus.ok) {
+      EwalletQrResponse jsonResponse = EwalletQrResponse.fromJson(response.data);
 
       return jsonResponse;
     } else {

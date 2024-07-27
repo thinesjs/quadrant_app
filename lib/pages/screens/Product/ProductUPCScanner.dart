@@ -18,7 +18,7 @@ class _ProductUPCScannerState extends State<ProductUPCScanner> {
   @override
   Widget build(BuildContext context) {
     final scanWindow = Rect.fromCenter(
-      center: MediaQuery.sizeOf(context).center(Offset.zero),
+      center: MediaQuery.sizeOf(context).center(const Offset(0, -100)),
       width: 200,
       height: 200,
     );

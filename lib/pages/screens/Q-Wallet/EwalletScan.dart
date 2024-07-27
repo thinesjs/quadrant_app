@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:quadrant_app/blocs/ewallet/qr/ewallet_qr_bloc.dart';
+import 'package:quadrant_app/pages/components/buttons.dart';
+import 'package:quadrant_app/repositories/EwalletRepository/ewallet_repository.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:sheet/sheet.dart';
 
 class EwalletScanner extends StatefulWidget {
@@ -11,98 +18,71 @@ class EwalletScanner extends StatefulWidget {
 }
 
 class _EwalletScannerState extends State<EwalletScanner> {
+  late final EwalletRepository _ewalletRepository;
   final MobileScannerController controller = MobileScannerController(
     formats: const [BarcodeFormat.qrCode],
+    detectionSpeed: DetectionSpeed.noDuplicates
   );
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _ewalletRepository = EwalletRepository(DioManager.instance);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final scanWindow = Rect.fromCenter(
-      center: MediaQuery.sizeOf(context).center(Offset.zero),
-      width: 200,
-      height: 200,
-    );
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    double displayWidth = MediaQuery.of(context).size.width;
 
-    return Material(
-      child: SheetMediaQuery(
-        child: DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Q-ExpressPay'),
-              leading: IconButton(
-                icon: const Icon(Iconsax.arrow_down_1),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+    return BlocProvider(
+      create: (context) => EwalletQrBloc(ewalletRepository: _ewalletRepository),
+      child: BlocListener<EwalletQrBloc, EwalletQrState>(
+        listener: (context, state) {
+          if(state is EwalletQrValidated){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('QR Code Validated'),
+                duration: const Duration(seconds: 2),
               ),
-              bottom: const TabBar(
-                dividerHeight: 0,
-                tabs: [
-                  Tab(text: 'Pay'),
-                  Tab(text: 'Scan QR'),
-                ],
-              ),
-            ),
-            body: TabBarView(
-              children: [
-                // TODO:: Split into widgets
-                // Pay
-                const Icon(Icons.directions_car),
-                // Scan QR
-                Stack(
-                  fit: StackFit.expand,
+            );
+          }
+        },
+        child: Material(
+          child: SheetMediaQuery(
+            child: DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text('Q-ExpressPay'),
+                  leading: IconButton(
+                    icon: const Icon(Iconsax.arrow_down_1),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  bottom: TabBar(
+                    dividerHeight: 0,
+                    indicatorColor: isDark ? Colors.white : Colors.black,
+                    unselectedLabelColor:
+                        isDark ? Colors.white54 : Colors.black54,
+                    labelColor: isDark ? Colors.white : Colors.black,
+                    tabs: const [
+                      Tab(text: 'Pay'),
+                      Tab(text: 'Scan QR'),
+                    ],
+                  ),
+                ),
+                body: TabBarView(
                   children: [
-                    Center(
-                      child: MobileScanner(
-                        fit: BoxFit.contain,
-                        controller: controller,
-                        scanWindow: scanWindow,
-                        errorBuilder: (context, error, child) {
-                          return ScannerErrorWidget(error: error);
-                        },
-                        overlayBuilder: (context, constraints) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: ScannedBarcodeLabel(
-                                  barcodes: controller.barcodes),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: controller,
-                      builder: (context, value, child) {
-                        if (!value.isInitialized ||
-                            !value.isRunning ||
-                            value.error != null) {
-                          return const SizedBox();
-                        }
-
-                        return CustomPaint(
-                          painter: ScannerOverlay(scanWindow: scanWindow),
-                        );
-                      },
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ToggleFlashlightButton(controller: controller),
-                            SwitchCameraButton(controller: controller),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // Pay
+                    const PayTab(),
+                    // Scan QR
+                    ScanQrTab(controller: controller),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -117,6 +97,176 @@ class _EwalletScannerState extends State<EwalletScanner> {
   }
 }
 
+class ScanQrTab extends StatelessWidget {
+  const ScanQrTab({
+    super.key,
+    required this.controller,
+  });
+
+  final MobileScannerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final scanWindow = Rect.fromCenter(
+      center: MediaQuery.sizeOf(context).center(const Offset(0, -100)),
+      width: 200,
+      height: 200,
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Center(
+          child: MobileScanner(
+            fit: BoxFit.fitHeight,
+            controller: controller,
+            scanWindow: scanWindow,
+            
+            errorBuilder: (context, error, child) {
+              return ScannerErrorWidget(error: error);
+            },
+            overlayBuilder: (context, constraints) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ScannedBarcodeLabel(barcodes: controller.barcodes),
+                ),
+              );
+            },
+            onDetect: (captures) {
+              final barcodes = captures.barcodes;
+              if (barcodes.isNotEmpty) {
+                final barcode = barcodes.first;
+                context
+                    .read<EwalletQrBloc>()
+                    .add(ValidateWalletQr(ewalletQrId: barcode.displayValue!));
+              }
+            },
+          ),
+        ),
+        ValueListenableBuilder(
+          valueListenable: controller,
+          builder: (context, value, child) {
+            if (!value.isInitialized ||
+                !value.isRunning ||
+                value.error != null) {
+              return const SizedBox();
+            }
+
+            return CustomPaint(
+              painter: ScannerOverlay(scanWindow: scanWindow),
+            );
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ToggleFlashlightButton(controller: controller),
+                SwitchCameraButton(controller: controller),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PayTab extends StatefulWidget {
+  const PayTab({
+    super.key,
+  });
+
+  @override
+  State<PayTab> createState() => _PayTabState();
+}
+
+class _PayTabState extends State<PayTab> {
+  late final EwalletRepository _ewalletRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _ewalletRepository = EwalletRepository(DioManager.instance);
+    context.read<EwalletQrBloc>().add(const FetchWalletQr());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: BlocBuilder<EwalletQrBloc, EwalletQrState>(
+          builder: (context, state) {
+            if (state is EwalletQrLoading) {
+              return const CircularProgressIndicator();
+            } else if (state is EwalletQrLoaded &&
+                state.walletQr.data != null) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QrImageView(
+                    data: state.walletQr.data!.id!,
+                    size: 230.0,
+                    eyeStyle: QrEyeStyle(
+                      eyeShape: QrEyeShape.square,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    dataModuleStyle: QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.square,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  CountdownTimer(
+                    endTime: DateTime.parse(state.walletQr.data!.expiresAt!)
+                        .millisecondsSinceEpoch,
+                    widgetBuilder: (_, time) {
+                      if (time == null) {
+                        return Column(
+                          children: [
+                            const Text(
+                              'QR EXPIRED',
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 20),
+                            AppFilledButton(
+                                isDark: isDark,
+                                text: "Refresh QR",
+                                onTap: () {
+                                  context
+                                      .read<EwalletQrBloc>()
+                                      .add(const FetchWalletQr());
+                                })
+                          ],
+                        );
+                      }
+                      return Text(
+                        'EXPIRES IN ${time.sec ?? 0}s',
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      );
+                    },
+                  )
+                ],
+              );
+            } else {
+              return const Text("Error loading QR");
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class ScannerOverlay extends CustomPainter {
   const ScannerOverlay({
     required this.scanWindow,
@@ -128,8 +278,6 @@ class ScannerOverlay extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: use `Offset.zero & size` instead of Rect.largest
-    // we need to pass the size to the custom paint widget
     final backgroundPath = Path()..addRect(Rect.largest);
 
     final cutoutPath = Path()
@@ -166,10 +314,6 @@ class ScannerOverlay extends CustomPainter {
       bottomLeft: Radius.circular(borderRadius),
       bottomRight: Radius.circular(borderRadius),
     );
-
-    // First, draw the background,
-    // with a cutout area that is a bit larger than the scan window.
-    // Finally, draw the scan window itself.
     canvas.drawPath(backgroundWithCutout, backgroundPaint);
     canvas.drawRRect(borderRect, borderPaint);
   }
