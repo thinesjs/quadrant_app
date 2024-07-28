@@ -30,9 +30,6 @@ class _ExpressCartScreenState extends State<ExpressCartScreen> {
   void initState() {
     super.initState();
     _cartRepository = CartRepository(DioManager.instance);
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   context.read<CartBloc>().add(const FetchCart(CartType.IN_STORE));
-    // });
   }
 
   @override

@@ -21,7 +21,7 @@ class _EwalletScannerState extends State<EwalletScanner> {
   late final EwalletRepository _ewalletRepository;
   final MobileScannerController controller = MobileScannerController(
     formats: const [BarcodeFormat.qrCode],
-    detectionSpeed: DetectionSpeed.noDuplicates
+    detectionSpeed: DetectionSpeed.normal
   );
 
   @override
@@ -96,13 +96,20 @@ class _EwalletScannerState extends State<EwalletScanner> {
   }
 }
 
-class ScanQrTab extends StatelessWidget {
+class ScanQrTab extends StatefulWidget {
   const ScanQrTab({
     super.key,
     required this.controller,
   });
 
   final MobileScannerController controller;
+
+  @override
+  State<ScanQrTab> createState() => _ScanQrTabState();
+}
+
+class _ScanQrTabState extends State<ScanQrTab> {
+  bool isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +125,7 @@ class ScanQrTab extends StatelessWidget {
         Center(
           child: MobileScanner(
             fit: BoxFit.fitHeight,
-            controller: controller,
+            controller: widget.controller,
             scanWindow: scanWindow,
             
             errorBuilder: (context, error, child) {
@@ -129,23 +136,29 @@ class ScanQrTab extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: ScannedBarcodeLabel(barcodes: controller.barcodes),
+                  child: ScannedBarcodeLabel(barcodes: widget.controller.barcodes),
                 ),
               );
             },
-            onDetect: (captures) {
+            onDetect: (captures) async {
+              if (isProcessing) return;
+              isProcessing = true;
+
               final barcodes = captures.barcodes;
               if (barcodes.isNotEmpty) {
                 final barcode = barcodes.first;
                 context
                     .read<EwalletQrBloc>()
                     .add(ValidateWalletQr(ewalletQrId: barcode.displayValue!));
+
+                await Future.delayed(const Duration(seconds: 5));
               }
+              isProcessing = false;
             },
           ),
         ),
         ValueListenableBuilder(
-          valueListenable: controller,
+          valueListenable: widget.controller,
           builder: (context, value, child) {
             if (!value.isInitialized ||
                 !value.isRunning ||
@@ -165,8 +178,8 @@ class ScanQrTab extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ToggleFlashlightButton(controller: controller),
-                SwitchCameraButton(controller: controller),
+                ToggleFlashlightButton(controller: widget.controller),
+                SwitchCameraButton(controller: widget.controller),
               ],
             ),
           ),
