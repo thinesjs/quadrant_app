@@ -1,14 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/pages/components/buttons.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
+import 'package:quadrant_app/pages/components/textfields.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 
 class SecurityScreen extends StatefulWidget {
   const SecurityScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const SecurityScreen());
+    return CupertinoPageRoute<void>(builder: (_) => const SecurityScreen());
   }
 
   @override
@@ -16,6 +18,10 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
+  final TextEditingController _currentPwdController = TextEditingController();
+  final TextEditingController _newPwdController = TextEditingController();
+  final TextEditingController _newPwd2Controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -34,16 +40,38 @@ class _SecurityScreenState extends State<SecurityScreen> {
               ],
             ),
             SectionHelperText(isDark: isDark, text: 'Manage your password and enhance account protection with 2FA settings.'),
-            // SectionText(isDark: isDark, text: "Basic Information", size: 20, bold: true),
+            AppTextField(
+                label: "Current Password",
+                placeholder: "",
+                controller: _currentPwdController,
+                isDark: isDark),
+            AppTextField(
+                label: "New Password",
+                placeholder: "",
+                controller: _newPwdController,
+                isDark: isDark),
+            AppTextField(
+                label: "Repeat New Password",
+                placeholder: "",
+                controller: _newPwd2Controller,
+                isDark: isDark),
           ],
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // floatingActionButton: Container(
-      //   height: 50,
-      //   margin: const EdgeInsets.all(10),
-      //   child: AppFilledButton(isDark: isDark, text: "Save", onTap: () { }, isBlock: true)
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+          height: 50,
+          margin: const EdgeInsets.all(10),
+          child: AppFilledButton(
+              isDark: isDark,
+              text: "Save",
+              onTap: () {
+                // BlocProvider.of<AuthenticationBloc>(context).add(
+                //     ProfileUpdateRequested(
+                //         _usernameController.text, _emailController.text));
+              },
+              isBlock: true,
+              isLoading: false)),
     );
   }
 }

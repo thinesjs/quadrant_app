@@ -16,7 +16,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<FetchCart>(_onFetchCart);
     on<FetchProductIsInCart>(_onFetchProductIsInCart);
     on<AddProductToCart>(_onAddProductToCart);
-    on<RemoveProductFromCart>(_onRemoveProductFromCart);
+    on<AddProductQtyFromCart>(_onAddProductQtyFromCart);
+    on<RemoveProductQtyFromCart>(_onRemoveProductQtyFromCart);
     on<CartCheckout>(_onCartCheckout);
   }
 
@@ -56,7 +57,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     AddProductToCart event, 
     Emitter<CartState> emit) async {
     try {
-      final response = await _cartRepository.addProductToCart(event.productId, event.cartType);
+      final response = await _cartRepository.addProductToCart(event.productId, event.qty, event.cartType);
       if(event.refreshStatus){
         add(FetchProductIsInCart(event.productId, event.cartType));
       }else{
@@ -67,11 +68,27 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  Future<void> _onRemoveProductFromCart(
-    RemoveProductFromCart event, 
+   Future<void> _onAddProductQtyFromCart(
+    AddProductQtyFromCart event, 
     Emitter<CartState> emit) async {
     try {
-      final response = await _cartRepository.removeProductToCart(event.productId, event.cartType);
+      final response = await _cartRepository.addProductToCart(event.productId, event.qty, event.cartType);
+      if(event.refreshStatus){
+        add(FetchProductIsInCart(event.productId, event.cartType));
+      }else{
+        emit(CartLoaded(cart: response.data!.items!, meta: response.meta!));
+      }
+    } catch (e) {
+      emit(CartError());
+    }
+  }
+
+
+  Future<void> _onRemoveProductQtyFromCart(
+    RemoveProductQtyFromCart event, 
+    Emitter<CartState> emit) async {
+    try {
+      final response = await _cartRepository.removeProductToCart(event.productId, event.qty, event.cartType);
       if(event.refreshStatus){
         add(FetchProductIsInCart(event.productId, event.cartType));
       }else{

@@ -1,6 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
+import 'package:quadrant_app/pages/screens/Product/ProductScreen.dart';
+import 'package:quadrant_app/repositories/ProductRepository/product_repository.dart';
+import 'package:quadrant_app/utils/enums/cart_type.dart';
+import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:sheet/sheet.dart';
 
 class ProductUPCScanner extends StatefulWidget {
@@ -12,8 +19,16 @@ class ProductUPCScanner extends StatefulWidget {
 
 class _ProductUPCScannerState extends State<ProductUPCScanner> {
   final MobileScannerController controller = MobileScannerController(
-    formats: const [BarcodeFormat.upcA],
-  );
+      formats: const [BarcodeFormat.upcA],
+      detectionSpeed: DetectionSpeed.normal);
+  late final ProductRepository _productRepository;
+  bool isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _productRepository = ProductRepository(DioManager.instance);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,70 +38,106 @@ class _ProductUPCScannerState extends State<ProductUPCScanner> {
       height: 200,
     );
 
-    return Material(
-      child: SheetMediaQuery(
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Q-PriceChecker'),
-            leading: IconButton(
-              icon: const Icon(Iconsax.arrow_down_1),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              Center(
-                child: MobileScanner(
-                  fit: BoxFit.fitHeight,
-                  controller: controller,
-                  scanWindow: scanWindow,
-                  errorBuilder: (context, error, child) {
-                    return ScannerErrorWidget(error: error);
-                  },
-                  overlayBuilder: (context, constraints) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: ScannedBarcodeLabel(barcodes: controller.barcodes),
-                      ),
-                    );
-                  },
+    return BlocProvider(
+      create: (context) => ProductBloc(productRepository: _productRepository),
+      child: BlocConsumer<ProductBloc, ProductState>(
+        listener: (context, state) {
+          if (state is ProductLoaded) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => ProductScreen(
+                  productId: state.product.id!,
+                  cartType: CartType.IN_STORE,
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (context, value, child) {
-                  if (!value.isInitialized ||
-                      !value.isRunning ||
-                      value.error != null) {
-                    return const SizedBox();
-                  }
-          
-                  return CustomPaint(
-                    painter: ScannerOverlay(scanWindow: scanWindow),
-                  );
-                },
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ToggleFlashlightButton(controller: controller),
-                      SwitchCameraButton(controller: controller),
-                    ],
+            );
+          }
+        },
+        builder: (context, state) {
+          return Material(
+            child: SheetMediaQuery(
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text('Q-Product Scanner'),
+                  leading: IconButton(
+                    icon: const Icon(Iconsax.arrow_down_1),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
+                body: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Center(
+                      child: MobileScanner(
+                        fit: BoxFit.fitHeight,
+                        controller: controller,
+                        scanWindow: scanWindow,
+                        errorBuilder: (context, error, child) {
+                          return ScannerErrorWidget(error: error);
+                        },
+                        // overlayBuilder: (context, constraints) {
+                        //   return Padding(
+                        //     padding: const EdgeInsets.all(16.0),
+                        //     child: Align(
+                        //       alignment: Alignment.bottomCenter,
+                        //       child: ScannedBarcodeLabel(
+                        //           barcodes: controller.barcodes),
+                        //     ),
+                        //   );
+                        // },
+                        onDetect: (captures) async {
+                          if (isProcessing) return;
+                          isProcessing = true;
+
+                          final barcodes = captures.barcodes;
+                          if (barcodes.isNotEmpty) {
+                            final barcode = barcodes.first;
+                            context
+                                .read<ProductBloc>()
+                                .add(FetchProductByUPC(barcode.displayValue!));
+
+                            await Future.delayed(const Duration(seconds: 5));
+                          }
+                          isProcessing = false;
+                        },
+                      ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: controller,
+                      builder: (context, value, child) {
+                        if (!value.isInitialized ||
+                            !value.isRunning ||
+                            value.error != null) {
+                          return const SizedBox();
+                        }
+
+                        return CustomPaint(
+                          painter: ScannerOverlay(scanWindow: scanWindow),
+                        );
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ToggleFlashlightButton(controller: controller),
+                            SwitchCameraButton(controller: controller),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

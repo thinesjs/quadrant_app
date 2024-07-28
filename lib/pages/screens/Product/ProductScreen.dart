@@ -17,7 +17,8 @@ import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class ProductScreen extends StatelessWidget {
   final String productId;
-  const ProductScreen({super.key, required this.productId});
+  final CartType cartType;
+  const ProductScreen({super.key, required this.productId, this.cartType = CartType.ONLINE});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +169,7 @@ class ProductScreen extends StatelessWidget {
                           create: (_) => CartBloc(
                               cartRepository:
                                   CartRepository(DioManager.instance))
-                            ..add(FetchProductIsInCart(productId, CartType.ONLINE)),
+                            ..add(FetchProductIsInCart(productId, cartType)),
                           child: BlocBuilder<CartBloc, CartState>(
                             builder: (context, state) {
                               switch (state) {
@@ -189,7 +190,7 @@ class ProductScreen extends StatelessWidget {
                                               isDark: isDark,
                                               text: "Add to Cart",
                                               onTap: () {
-                                                context.read<CartBloc>().add(AddProductToCart(productId: productId, refreshStatus: true));
+                                                context.read<CartBloc>().add(AddProductToCart(productId: productId, cartType: cartType, refreshStatus: true));
                                               }))
                                       : SizedBox(
                                           height: 50,
@@ -198,7 +199,7 @@ class ProductScreen extends StatelessWidget {
                                               isDark: isDark,
                                               text: "Remove",
                                               onTap: () {
-                                                context.read<CartBloc>().add(RemoveProductFromCart(productId: productId, refreshStatus: true));
+                                                context.read<CartBloc>().add(RemoveProductQtyFromCart(productId: productId, cartType: cartType, refreshStatus: true));
                                               }));
                                 case CartError():
                                   return Container();

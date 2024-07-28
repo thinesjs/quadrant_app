@@ -26,7 +26,6 @@ class _EwalletScannerState extends State<EwalletScanner> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _ewalletRepository = EwalletRepository(DioManager.instance);
   }

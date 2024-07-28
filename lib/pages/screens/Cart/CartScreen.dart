@@ -58,7 +58,7 @@ class _CartScreenState extends State<CartScreen> {
                       case CartLoaded():
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Container(
+                          child: SizedBox(
                             height: displayHeight / 1.6,
                             child: ListView.builder(
                                 shrinkWrap: true,
@@ -71,9 +71,7 @@ class _CartScreenState extends State<CartScreen> {
                                     direction: DismissDirection.endToStart,
                                     onDismissed: (direction) {
                                       context.read<CartBloc>().add(
-                                          RemoveProductFromCart(
-                                              productId:
-                                                  cartItem.product!.id!));
+                                          RemoveProductQtyFromCart(productId:cartItem.product!.id!));
                                     },
                                     background: Container(
                                       color: Colors.redAccent,
@@ -99,7 +97,13 @@ class _CartScreenState extends State<CartScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 1),
                                       child:
-                                          ShoppingCartItem(cartItem: cartItem),
+                                          ShoppingCartItem(cartItem: cartItem, 
+                                          onIncrement: () { 
+                                            context.read<CartBloc>().add(AddProductQtyFromCart(productId:cartItem.product!.id!, qty: 1));
+                                          }, 
+                                          onDecrement: () { 
+                                            context.read<CartBloc>().add(RemoveProductQtyFromCart(productId:cartItem.product!.id!, qty: 1));
+                                          },),
                                     ),
                                   );
                                 }),

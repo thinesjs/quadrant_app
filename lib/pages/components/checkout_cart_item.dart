@@ -8,27 +8,21 @@ import 'package:quadrant_app/repositories/CartRepository/models/response.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:text_scroll/text_scroll.dart';
 
-class ShoppingCartItem extends StatefulWidget {
+class CheckoutCartItem extends StatefulWidget {
   final Items cartItem;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
-  const ShoppingCartItem({super.key, required this.cartItem, required this.onIncrement, required this.onDecrement});
+  const CheckoutCartItem({super.key, required this.cartItem});
 
   @override
-  _ShoppingCartItemState createState() => _ShoppingCartItemState();
+  _CheckoutCartItemState createState() => _CheckoutCartItemState();
 }
 
-class _ShoppingCartItemState extends State<ShoppingCartItem> {
+class _CheckoutCartItemState extends State<CheckoutCartItem> {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        // border: Border.all(
-        //   color: isDark ? CustomColors.navBorderDark : CustomColors.navBorderLight,
-        //   width: 1,
-        // ),
         borderRadius: BorderRadius.circular(CustomSizes.borderRadiusMd),
       ),
       child: Row(
@@ -86,21 +80,14 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
                       ),
                       child: Row(
                         children: [
-                          IconButton(
-                            onPressed: widget.onDecrement,
-                            icon: Icon(Icons.remove),
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                          Text(
-                            widget.cartItem.quantity.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text(
+                              "x ${widget.cartItem.quantity}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: widget.onIncrement,
-                            icon: Icon(Icons.add),
-                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ],
                       ),

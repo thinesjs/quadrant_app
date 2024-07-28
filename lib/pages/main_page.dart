@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -8,6 +9,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:quadrant_app/blocs/qentry/bloc/qentry_bloc.dart';
 import 'package:quadrant_app/pages/components/expandable_fab.dart';
 import 'package:quadrant_app/pages/components/material_sheet.dart';
+import 'package:quadrant_app/pages/screens/Checkout/CheckoutScreen.dart';
 import 'package:quadrant_app/pages/screens/Product/ProductUPCScanner.dart';
 import 'package:quadrant_app/pages/screens/Q-Wallet/EwalletScreen.dart';
 import 'package:quadrant_app/pages/screens/Cart/CartScreen.dart';
@@ -15,6 +17,7 @@ import 'package:quadrant_app/pages/screens/Home/HomeScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Search/SearchScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
+import 'package:quadrant_app/utils/enums/cart_type.dart';
 
 final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
 
@@ -116,8 +119,17 @@ class _MainPageState extends State<MainPage> {
                     icon: const Icon(Iconsax.barcode, color: CustomColors.subTextColorDark),
                   ),
                   ActionButton(
-                    // onPressed: () => _showAction(context, 0),
-                    icon: Icon(Iconsax.bag_tick_2, color: CustomColors.subTextColorDark),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const CheckoutScreen(
+                            cartType: CartType.IN_STORE,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Iconsax.bag_tick_2, color: CustomColors.subTextColorDark),
                   ),
                 ],
               )

@@ -1,4 +1,5 @@
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -72,9 +73,9 @@ class CategoryScreen extends StatelessWidget {
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2, // 2 columns
-                                crossAxisSpacing: 8.0,
-                                mainAxisSpacing: 8.0,
-                                childAspectRatio: 0.75,
+                                crossAxisSpacing: 5.0,
+                                mainAxisSpacing: 10.0,
+                                childAspectRatio: 0.675,
                               ),
                               itemCount: state.products?.length,
                               itemBuilder: (context, index) {
@@ -89,7 +90,7 @@ class CategoryScreen extends StatelessWidget {
                                   onTap: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(
+                                      CupertinoPageRoute(
                                         builder: (context) => ProductScreen(
                                             productId:
                                                 state.products?[index].id ??

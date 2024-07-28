@@ -18,6 +18,15 @@ final class FetchProduct extends ProductEvent {
   List<Object> get props => [productId];
 }
 
+final class FetchProductByUPC extends ProductEvent {
+  final String upcCode;
+
+  const FetchProductByUPC(this.upcCode);
+
+  @override
+  List<Object> get props => [upcCode];
+}
+
 final class FetchProductByCategory extends ProductEvent {
   final String category;
 

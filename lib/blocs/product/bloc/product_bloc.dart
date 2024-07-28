@@ -8,9 +8,10 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  ProductBloc({ required ProductRepository productRepository }) : _productRepository = productRepository, super(ProductLoading()) {
+  ProductBloc({ required ProductRepository productRepository }) : _productRepository = productRepository, super(ProductInitial()) {
     on<FetchProducts>(_onFetchProducts);
     on<FetchProduct>(_onFetchProduct);
+    on<FetchProductByUPC>(_onFetchProductByUPC);
     on<FetchProductByCategory>(_onFetchProductsByCategory);
     on<FetchFeaturedProduct>(_onFetchFeaturedProducts);
     on<FetchForYouProduct>(_onFetchForYouProducts);
@@ -53,6 +54,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
     try {
       final response = await _productRepository.fetchProduct(event.productId);
+      emit(ProductLoaded(product: response!));
+    } catch (_) {
+      emit(ProductError());
+    }
+  }
+
+  Future<void> _onFetchProductByUPC(
+    FetchProductByUPC event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final response = await _productRepository.fetchProductByUPC(event.upcCode);
       emit(ProductLoaded(product: response!));
     } catch (_) {
       emit(ProductError());

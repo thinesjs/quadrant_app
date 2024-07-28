@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const AddressesScreen());
+    return CupertinoPageRoute<void>(builder: (_) => const AddressesScreen());
   }
 
   @override

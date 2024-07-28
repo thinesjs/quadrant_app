@@ -60,6 +60,23 @@ class AuthenticationRepository {
     }
   }
 
+  Future<bool> checkFcmToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    var response = await dioManager.dio.get(
+      "/v1/user/fcm/$fcmToken",
+    );
+
+    if (response.statusCode == HttpStatus.ok) {
+      final success = FcmResponse.fromJson(response.data).success;
+      if (success == true){
+        log("fcm token is linked");
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
   Future<bool> registerFcmToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     var response = await dioManager.dio.post(
@@ -89,12 +106,6 @@ class AuthenticationRepository {
     if (response.statusCode == HttpStatus.ok) {
       log("fcm token unregistered");
       return true;
-      final success = FcmResponse.fromJson(response.data).success;
-      if (success == true){
-        log("fcm token unregistered");
-        return true;
-      }
-      return false;
     }
     return false;
   }

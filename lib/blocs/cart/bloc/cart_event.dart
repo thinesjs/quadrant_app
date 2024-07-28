@@ -25,21 +25,35 @@ final class FetchProductIsInCart extends CartEvent {
 
 class AddProductToCart extends CartEvent {
   final String productId;
+  final int qty;
   final CartType cartType;
   final bool refreshStatus;
 
-  const AddProductToCart({required this.productId, this.cartType = CartType.ONLINE, this.refreshStatus = false});
+  const AddProductToCart({required this.productId, this.qty = 1, this.cartType = CartType.ONLINE, this.refreshStatus = false});
 
   @override
   List<Object> get props => [productId, refreshStatus];
 }
 
-class RemoveProductFromCart extends CartEvent {
+class AddProductQtyFromCart extends CartEvent {
   final String productId;
+  final int? qty;
   final CartType cartType;
   final bool refreshStatus;
 
-  const RemoveProductFromCart({required this.productId, this.cartType = CartType.ONLINE, this.refreshStatus = false});
+  const AddProductQtyFromCart({required this.productId, this.qty, this.cartType = CartType.ONLINE, this.refreshStatus = false});
+
+  @override
+  List<Object> get props => [productId, refreshStatus];
+}
+
+class RemoveProductQtyFromCart extends CartEvent {
+  final String productId;
+  final int? qty;
+  final CartType cartType;
+  final bool refreshStatus;
+
+  const RemoveProductQtyFromCart({required this.productId, this.qty, this.cartType = CartType.ONLINE, this.refreshStatus = false});
 
   @override
   List<Object> get props => [productId, refreshStatus];

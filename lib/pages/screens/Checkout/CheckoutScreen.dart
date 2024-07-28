@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -11,6 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:quadrant_app/blocs/cart/bloc/cart_bloc.dart';
 import 'package:quadrant_app/pages/components/cart_item.dart';
+import 'package:quadrant_app/pages/components/checkout_cart_item.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/pages/screens/Checkout/GatewayWebviewScreen.dart';
 import 'package:quadrant_app/repositories/CartRepository/cart_repository.dart';
@@ -20,10 +22,11 @@ import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  final CartType cartType;
+  const CheckoutScreen({super.key, this.cartType = CartType.ONLINE});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const CheckoutScreen());
+    return CupertinoPageRoute<void>(builder: (_) => const CheckoutScreen());
   }
 
   @override
@@ -92,9 +95,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   void _checkout(BuildContext context) {
     if (selectedPaymentMethod == paymentMethods[2]) {
-      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '2'));
+      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '2', cartType: widget.cartType));
     } else if (selectedPaymentMethod == paymentMethods[3]) {
-      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '3'));
+      context.read<CartBloc>().add(CartCheckout(paymentMethodId: '3', cartType: widget.cartType));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -115,7 +118,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return BlocProvider(
       create: (context) =>
           CartBloc(cartRepository: CartRepository(DioManager.instance))
-            ..add(FetchCart(CartType.ONLINE)),
+            ..add(FetchCart(widget.cartType)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Checkout'),
@@ -125,7 +128,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             if (state is CartCheckoutCallback) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
+                CupertinoPageRoute(
                   builder: (context) => PaymentWebViewScreen(
                       url: state.cartCheckout.redirectUrl!),
                 ),
@@ -170,7 +173,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 1),
                                       child:
-                                          ShoppingCartItem(cartItem: cartItem),
+                                          CheckoutCartItem(cartItem: cartItem),
                                     );
                                   }),
                             ).animate().fade();

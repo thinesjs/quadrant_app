@@ -51,10 +51,14 @@ class CartRepository {
     }
   }
 
-  Future<UserCartResponse> addProductToCart(String productId, CartType cartType) async {
+  Future<UserCartResponse> addProductToCart(String productId, int? qty, CartType cartType) async {
     log("adding product to user's cart", name: "CartRepository");
     String cartTypeStr = getCartType(cartType);
-    var response = await dioManager.dio.post("/v1/cart/$cartTypeStr", data: {"productId": productId, "quantity": 1});
+    final data = {
+      "productId": productId,
+      if (qty != null) "quantity": qty,
+    };
+    var response = await dioManager.dio.post("/v1/cart/$cartTypeStr", data: data);
 
     if (response.statusCode == HttpStatus.ok) {
       UserCartResponse jsonResponse = UserCartResponse.fromJson(response.data);
@@ -65,10 +69,14 @@ class CartRepository {
     }
   }
 
-  Future<UserCartResponse> removeProductToCart(String productId, CartType cartType) async {
+  Future<UserCartResponse> removeProductToCart(String productId, int? qty, CartType cartType) async {
     log("remove product to user's cart", name: "CartRepository");
     String cartTypeStr = getCartType(cartType);
-    var response = await dioManager.dio.delete("/v1/cart/$cartTypeStr", data: {"productId": productId});
+    final data = {
+      "productId": productId,
+      if (qty != null) "quantity": qty,
+    };
+    var response = await dioManager.dio.delete("/v1/cart/$cartTypeStr", data: data);
 
     if (response.statusCode == HttpStatus.ok) {
       UserCartResponse jsonResponse = UserCartResponse.fromJson(response.data);

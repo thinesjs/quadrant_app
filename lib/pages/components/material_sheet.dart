@@ -13,7 +13,7 @@ class MaterialSheetRoute<T> extends SheetRoute<T> {
     super.animationCurve,
     super.barrierDismissible,
     bool enableDrag = true,
-    super.stops,
+    super.stops = const [1],
     double initialStop = 1,
     super.duration,
   }) : super(

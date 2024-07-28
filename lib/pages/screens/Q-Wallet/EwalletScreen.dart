@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -239,56 +240,61 @@ class _EwalletScreenState extends State<EwalletScreen> {
                             );
                           case EwalletTransactionsLoaded():
                             if (state.transactions.transactions?.isNotEmpty ?? false) {
-                              return ListView.builder(
-                                itemCount: (state.transactions.transactions!.length >= 10) ? 10 : state.transactions.transactions?.length,
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                itemBuilder: (context, index) {
-                                  final transaction = state.transactions.transactions?[index];
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: isDark
-                                          ? CustomColors.backgroundDark
-                                          : CustomColors.backgroundLight,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: ListTile(
-                                      leading: Icon(
-                                        transaction?.transactionType == 'CREDIT'
-                                            ? Iconsax.money_recive
-                                            : Iconsax.money_send,
-                                        color: transaction?.transactionType == 'CREDIT'
-                                            ? Colors.green
-                                            : Colors.red,
-                                      ),
-                                      title: Text(
-                                        transaction?.description ?? '',
-                                        style: TextStyle(
+                              return Expanded(
+                                child: FadingEdgeScrollView.fromScrollView(
+                                  child: ListView.builder(
+                                    itemCount: (state.transactions.transactions!.length >= 10) ? 5 : state.transactions.transactions?.length,
+                                    shrinkWrap: true,
+                                    controller: ScrollController(),
+                                    padding: EdgeInsets.zero,
+                                    itemBuilder: (context, index) {
+                                      final transaction = state.transactions.transactions?[index];
+                                      return Container(
+                                        decoration: BoxDecoration(
                                           color: isDark
-                                              ? CustomColors.textColorDark
-                                              : CustomColors.textColorLight,
+                                              ? CustomColors.backgroundDark
+                                              : CustomColors.backgroundLight,
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
-                                      ),
-                                      subtitle: Text(
-                                        transaction?.createdAt != null ? formatDate(transaction!.createdAt!) : '',
-                                        style: TextStyle(
-                                          color: isDark
-                                              ? CustomColors.textColorDark
-                                              : CustomColors.textColorLight,
-                                        ),
-                                      ),
-                                      trailing: Text(
-                                        '${transaction?.transactionType == 'CREDIT' ? '+':'-' }RM ${transaction?.amount?.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          color: isDark
-                                              ? CustomColors.textColorDark
-                                              : CustomColors.textColorLight,
-                                        ),
-                                      ),
-                                    )
-                                  );
-                                },
-                              ).animate().fade().slideY(begin: -0.2);
+                                        child: ListTile(
+                                          leading: Icon(
+                                            transaction?.transactionType == 'CREDIT'
+                                                ? Iconsax.money_recive
+                                                : Iconsax.money_send,
+                                            color: transaction?.transactionType == 'CREDIT'
+                                                ? Colors.green
+                                                : Colors.red,
+                                          ),
+                                          title: Text(
+                                            transaction?.description ?? '',
+                                            style: TextStyle(
+                                              color: isDark
+                                                  ? CustomColors.textColorDark
+                                                  : CustomColors.textColorLight,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            transaction?.createdAt != null ? formatDate(transaction!.createdAt!) : '',
+                                            style: TextStyle(
+                                              color: isDark
+                                                  ? CustomColors.textColorDark
+                                                  : CustomColors.textColorLight,
+                                            ),
+                                          ),
+                                          trailing: Text(
+                                            '${transaction?.transactionType == 'CREDIT' ? '+':'-' }RM ${transaction?.amount?.toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              color: isDark
+                                                  ? CustomColors.textColorDark
+                                                  : CustomColors.textColorLight,
+                                            ),
+                                          ),
+                                        )
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
                             } else {
                               return const Text('No transactions found');
                             }

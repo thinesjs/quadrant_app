@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -10,15 +11,12 @@ import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/textfields.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
-// import 'package:cloudinary_flutter/cloudinary_context.dart';
-// import 'package:cloudinary_flutter/image/cld_image.dart';
-// import 'package:cloudinary_url_gen/cloudinary.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const EditProfileScreen());
+    return CupertinoPageRoute<void>(builder: (_) => const EditProfileScreen());
   }
 
   @override

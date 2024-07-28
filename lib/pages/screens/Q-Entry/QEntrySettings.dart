@@ -8,14 +8,13 @@ import 'package:quadrant_app/pages/screens/Profile/EditProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Profile/ProfileScreen.dart';
 import 'package:quadrant_app/pages/screens/Q-Entry/FaceCaptureScreen.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
-
 import 'FaceCaptureScreen.dart';
 
 class QEntrySettingsScreen extends StatefulWidget {
   const QEntrySettingsScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(
+    return CupertinoPageRoute<void>(
         builder: (_) => const QEntrySettingsScreen());
   }
 
@@ -55,7 +54,7 @@ class _QEntrySettingsScreenState extends State<QEntrySettingsScreen> {
                 text:
                     'Manage your Q-Entry settings and enhance your shopping experiance.'),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
               child: Container(
                 decoration: BoxDecoration(
                     color: isDark

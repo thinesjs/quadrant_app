@@ -35,6 +35,18 @@ class ProductRepository {
     }
   }
 
+  Future<Product?> fetchProductByUPC(String upcCode) async {
+    log("getting product by upc: $upcCode", name: "ProductRepository");
+    var response = await dioManager.dio.get("/v1/products/upc/$upcCode");
+    
+    if (response.statusCode == HttpStatus.ok) {
+      ProductResponse jsonResponse = ProductResponse.fromJson(response.data);
+      return jsonResponse.message?.product;
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
+
   Future<picr.Data?> checkProductInCart(String productId) async {
     log("getting product: $productId", name: "ProductRepository");
     try {
