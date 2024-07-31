@@ -43,16 +43,19 @@ class _SecurityScreenState extends State<SecurityScreen> {
             AppTextField(
                 label: "Current Password",
                 placeholder: "",
+                obscureText: true,
                 controller: _currentPwdController,
                 isDark: isDark),
             AppTextField(
                 label: "New Password",
                 placeholder: "",
+                obscureText: true,
                 controller: _newPwdController,
                 isDark: isDark),
             AppTextField(
                 label: "Repeat New Password",
                 placeholder: "",
+                obscureText: true,
                 controller: _newPwd2Controller,
                 isDark: isDark),
           ],
@@ -66,6 +69,8 @@ class _SecurityScreenState extends State<SecurityScreen> {
               isDark: isDark,
               text: "Save",
               onTap: () {
+                Navigator.pop(context);
+                
                 // BlocProvider.of<AuthenticationBloc>(context).add(
                 //     ProfileUpdateRequested(
                 //         _usernameController.text, _emailController.text));

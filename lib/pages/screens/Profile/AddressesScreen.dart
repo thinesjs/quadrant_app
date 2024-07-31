@@ -29,6 +29,7 @@ class AddressesScreen extends StatefulWidget {
 }
 
 class _AddressesScreenState extends State<AddressesScreen> {
+  bool updatestate = false;
   late final ProfileRepository _profileRepository;
 
   @override
@@ -46,7 +47,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
         create: (context) => ProfileBloc(profileRepository: _profileRepository)
           ..add(FetchProfiles()),
         child: Padding(
-          padding: EdgeInsets.only(top: displayHeight * 0.084, left: 20, right: 19),
+          padding: EdgeInsets.only(
+              top: displayHeight * 0.084, left: 20, right: 19),
           child: Column(
             children: <Widget>[
               Row(
@@ -74,17 +76,16 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   text:
                       'Update and manage your shipping and billing addresses.'),
               AddCardComponent(
-                        isDark: isDark,
-                        text: "Add New Address",
-                        onTap: () {
-                          Navigator.push(
-                                  context, AddAddressScreen.route())
-                              .then((returnedData) {
-                            context
-                                .read<ProfileBloc>()
-                                .add(FetchProfiles());
-                          });
-                        }),
+                  isDark: isDark,
+                  text: "Add New Address",
+                  onTap: () {
+                    final result =
+                        Navigator.push(context, AddAddressScreen.route());
+                    if (!context.mounted) return;
+                    result.then((value) {
+                      Navigator.pop(context);
+                    });
+                  }),
               Expanded(
                 child: BlocBuilder<ProfileBloc, ProfileState>(
                   builder: (context, state) {
@@ -136,9 +137,21 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       case ProfileError():
                         return const Text('Something went wrong!');
                       case ProfileInitial():
-                        return const Center(child: Text("Loading"));
+                        return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24),
+                        );
                       default:
-                        return const Placeholder();
+                        return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24),
+                        );
                     }
                   },
                 ),

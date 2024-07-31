@@ -16,7 +16,7 @@ class QentryBloc extends Bloc<QentryEvent, QentryState> {
       log("checking if received data matches user", name: "Q-EntryRepository");
       UserRepository userRepository = UserRepository(DioManager.instance);
       User? user = await userRepository.getUser();
-      String userId = event.data['message']['userId'];
+      String userId = event.data['userId'];
       if (user!.id == userId) {
         log("user in store: $userId", name: "Q-EntryRepository");
         setQentryState(userId);

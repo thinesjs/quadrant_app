@@ -114,14 +114,16 @@ class _MyAppState extends State<MyApp> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8080/qentry-listen'),
-      // Uri.parse('ws://quadrant-ws.thinesjs.com/qentry-listen'),
+      // Uri.parse('ws://localhost:8080/qentry-listen'),
+      Uri.parse('ws://quadrant-ws.thinesjs.com/qentry-listen'),
     );
 
     channel.stream.listen((message) async {
+      print(message);
       if (isRecognitionNotification(message)) {
         try {
           var data = jsonDecode(message);
+          // log(data);
           _qentryBloc.add(WebSocketMessageReceived(data));
         } catch (e) {
           log('Error parsing message: $e');

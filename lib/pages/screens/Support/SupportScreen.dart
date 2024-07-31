@@ -19,6 +19,7 @@ class SupportScreen extends StatefulWidget {
 
 class _SupportScreenState extends State<SupportScreen> {
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -46,7 +47,7 @@ class _SupportScreenState extends State<SupportScreen> {
             AppLargeTextField(
                 label: "Issue Description",
                 placeholder: "",
-                controller: _titleController),
+                controller: _descController),
             SectionHelperText(isDark: isDark, text: "You will be contacted through your email hereinafter.", size: 14),
             SectionHelperText(isDark: isDark, text: "Make sure to check your inbox or spam in few working days.", size: 14, bold: true,),
           ],
@@ -60,6 +61,7 @@ class _SupportScreenState extends State<SupportScreen> {
               isDark: isDark,
               text: "Submit Ticket",
               onTap: () {
+                Navigator.pop(context);
                 // BlocProvider.of<AuthenticationBloc>(context).add(
                 //     ProfileUpdateRequested(
                 //         _usernameController.text, _emailController.text));

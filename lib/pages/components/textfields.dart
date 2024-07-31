@@ -6,9 +6,11 @@ class AppTextField extends StatelessWidget {
       {super.key,
       required this.label,
       required this.placeholder,
+      this.obscureText = false,
       required this.controller, required this.isDark});
 
   final bool isDark;
+  final bool obscureText;
   final String label;
   final String placeholder;
   final TextEditingController controller;
@@ -29,6 +31,7 @@ class AppTextField extends StatelessWidget {
           ),
           TextField(
             controller: controller,
+            obscureText: obscureText,
             decoration: InputDecoration(
               hintText: placeholder,
               hintStyle: TextStyle(color: isDark ? CustomColors.placeholderTextColorDark : CustomColors.placeholderTextColorLight),
