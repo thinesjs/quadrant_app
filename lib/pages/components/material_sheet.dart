@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sheet/route.dart';
 
 class MaterialSheetRoute<T> extends SheetRoute<T> {
+  final List<double> stops_values;
   MaterialSheetRoute({
     required WidgetBuilder builder,
     Color? backgroundColor,
@@ -13,7 +14,7 @@ class MaterialSheetRoute<T> extends SheetRoute<T> {
     super.animationCurve,
     super.barrierDismissible,
     bool enableDrag = true,
-    super.stops = const [1],
+    this.stops_values = const [0, 1],
     double initialStop = 1,
     super.duration,
   }) : super(
@@ -28,5 +29,6 @@ class MaterialSheetRoute<T> extends SheetRoute<T> {
           ),
           initialExtent: initialStop,
           draggable: enableDrag,
+          stops: stops_values,
         );
 }

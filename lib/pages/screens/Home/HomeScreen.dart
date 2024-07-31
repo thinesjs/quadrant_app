@@ -351,10 +351,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     case ProductError():
                       return const Text('Something went wrong!');
-                    case ProductInitial():
-                      return const Center(child: Text("Initial"));
                     default:
-                      return const Placeholder();
+                      return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24));
                   }
                 }),
               ),
@@ -429,10 +432,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     case ProductError():
                       return const Text('Something went wrong!');
-                    case ProductInitial():
-                      return const Center(child: Text("Initial"));
                     default:
-                      return const Placeholder();
+                      return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24));
                   }
                 }),
               ),
@@ -504,10 +510,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     case ProductError():
                       return const Text('Something went wrong!');
-                    case ProductInitial():
-                      return const Center(child: Text("Initial"));
                     default:
-                      return const Placeholder();
+                      return Center(
+                          child: LoadingAnimationWidget.waveDots(
+                              color: isDark
+                                  ? CustomColors.primaryLight
+                                  : CustomColors.textColorLight,
+                              size: 24));
                   }
                 }),
               ),

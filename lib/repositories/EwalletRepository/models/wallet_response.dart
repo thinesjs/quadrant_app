@@ -14,7 +14,7 @@ class WalletResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
-    new_user = this.new_user;
+    data['new_user'] = this.new_user;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }

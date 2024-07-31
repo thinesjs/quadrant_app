@@ -12,7 +12,7 @@ final class EwalletInitial extends EwalletState {}
 class EwalletLoading extends EwalletState {}
 
 class EwalletLoaded extends EwalletState {
-  final Data wallet;
+  final WalletResponse wallet;
 
   const EwalletLoaded({required this.wallet});
 

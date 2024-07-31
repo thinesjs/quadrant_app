@@ -153,7 +153,7 @@ class _EwalletTransactionsScreenState extends State<EwalletTransactionsScreen> {
                           return const Text('No transactions found');
                         }
                       case EwalletError():
-                        return const Text('Something went wrong!');
+                        return const Text('No transactions found');
                       default:
                         return Container();
                     }

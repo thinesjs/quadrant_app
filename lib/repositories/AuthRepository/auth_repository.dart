@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:quadrant_app/models/Authentication/LoginRespose.dart';
 import 'package:quadrant_app/repositories/AuthRepository/models/fcm_response.dart';
 import 'package:quadrant_app/repositories/AuthRepository/models/login_payload.dart';
+import 'package:quadrant_app/repositories/AuthRepository/models/register_payload.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user.dart';
 import 'package:quadrant_app/repositories/UserRepository/models/user_response.dart';
 import 'package:quadrant_app/utils/helpers/cache/cache_manager.dart';
@@ -55,6 +56,32 @@ class AuthenticationRepository {
       final access_token = LoginResponse.fromJson(response.data).message?.accessToken;
 
       if (access_token != null){
+        return access_token;
+      }
+    }
+  }
+
+  Future<String?> register({
+    required String name,
+    required String email,
+    required String password,
+    required String device_name
+  }) async {
+    
+    var response = await dioManager.dio.post(
+      "/v1/auth/register",
+      data: RegisterBody(
+        name: name,
+        email: email,
+        password: password,
+      ).toJson(),
+    );
+
+    if (response.statusCode == HttpStatus.created) {
+      final access_token = LoginResponse.fromJson(response.data).message?.accessToken;
+
+      if (access_token != null){
+        log("message");
         return access_token;
       }
     }

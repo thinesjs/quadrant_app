@@ -13,6 +13,8 @@ class EwalletBloc extends Bloc<EwalletEvent, EwalletState> {
     on<FetchWallet>(_onFetchWallet);
     on<FetchWalletTransaction>(_onFetchWalletTransaction);
     on<ReloadWallet>(_onReloadWallet);
+    on<RegisterPin>(_onRegisterPin);
+    on<VerifyPin>(_onVerifyPin);
   }
 
   final EwalletRepository _ewalletRepository;
@@ -51,6 +53,32 @@ class EwalletBloc extends Bloc<EwalletEvent, EwalletState> {
     try {
       final response = await _ewalletRepository.reloadWallet(event.reloadAmount);
       emit(EwalletReloadCallbackLoaded(data: response!));
+    } catch (_) {
+      emit(EwalletError());
+    }
+  }
+
+  Future<void> _onRegisterPin(
+    RegisterPin event,
+    Emitter<EwalletState> emit,
+  ) async {
+    emit(EwalletLoading());
+    try {
+      final response = await _ewalletRepository.registerPin(event.pinCode);
+      emit(EwalletLoaded(wallet: response!));
+    } catch (_) {
+      emit(EwalletError());
+    }
+  }
+
+  Future<void> _onVerifyPin(
+    VerifyPin event,
+    Emitter<EwalletState> emit,
+  ) async {
+    emit(EwalletLoading());
+    try {
+      final response = await _ewalletRepository.verifyPin(event.pinCode);
+      emit(EwalletLoaded(wallet: response!));
     } catch (_) {
       emit(EwalletError());
     }

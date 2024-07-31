@@ -3,8 +3,9 @@ import 'package:sheet/route.dart';
 import 'package:sheet/sheet.dart';
 
 class FloatingModal extends StatelessWidget {
-  const FloatingModal({super.key, required this.child, this.backgroundColor});
+  const FloatingModal({super.key, required this.child, this.backgroundColor, this.barrierDismissible = true});
   final Widget child;
+  final bool barrierDismissible;
   final Color? backgroundColor;
 
   @override
@@ -27,8 +28,10 @@ class FloatingModal extends StatelessWidget {
 }
 
 class FloatingSheetRoute<T> extends SheetRoute<T> {
+  final bool barrierDismissible;
   FloatingSheetRoute({
     required WidgetBuilder builder,
+    this.barrierDismissible = true
   }) : super(
           builder: (BuildContext context) {
             return FloatingModal(
@@ -37,5 +40,7 @@ class FloatingSheetRoute<T> extends SheetRoute<T> {
           },
           // initialExtent: 0.7,
           fit: SheetFit.loose,
+          barrierDismissible: barrierDismissible,
+          draggable: barrierDismissible
         );
 }

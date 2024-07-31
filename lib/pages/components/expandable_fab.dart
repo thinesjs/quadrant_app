@@ -142,7 +142,7 @@ class _ExpandableFabState extends State<ExpandableFab>
               onPressed: (){
                 Navigator.of(context).push(
                   MaterialSheetRoute(
-                    builder: (context) => const ExpressCartScreen(),
+                    builder: (context) => const ExpressCartScreen(), stops_values: [1]
                   ),
                 );
               },
