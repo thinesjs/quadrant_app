@@ -31,9 +31,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Item {
   final String name;
+  final String? urlString;
   final IconData icon;
 
-  Item({required this.name, required this.icon});
+  Item({required this.name, required this.icon, this.urlString});
 }
 
 class HomeScreen extends StatefulWidget {
@@ -62,14 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<Item> categories = [
-    Item(name: 'Grocery', icon: Iconsax.tree),
-    Item(name: 'Household', icon: Iconsax.lamp),
-    Item(name: 'Health & Beauty', icon: Iconsax.health),
-    Item(name: 'Appliances', icon: Iconsax.mobile),
-    Item(name: 'Pets', icon: Iconsax.pet),
-    Item(name: 'Bakery', icon: Iconsax.cake),
-    Item(name: 'Fresh Produce', icon: Iconsax.milk),
-    Item(name: 'More', icon: Iconsax.more),
+    Item(name: 'Grocery', urlString:'66447d5898ed0d0f236cfa6f', icon: Iconsax.tree),
+    Item(name: 'Household', urlString:'664750823cb1d589639bbf91', icon: Iconsax.lamp),
+    Item(name: 'Health & Beauty', urlString:'6647508f3cb1d589639bbf92', icon: Iconsax.health),
+    Item(name: 'Appliances', urlString:'6647509b3cb1d589639bbf93', icon: Iconsax.mobile),
+    Item(name: 'Pets', urlString:'664750cb3cb1d589639bbf96', icon: Iconsax.pet),
+    Item(name: 'Bakery', urlString:'664750f13cb1d589639bbf99', icon: Iconsax.cake),
+    Item(name: 'Fresh Produce', urlString:'664750dd3cb1d589639bbf98', icon: Iconsax.milk),
+    Item(name: 'More', urlString:'Grocery', icon: Iconsax.more),
   ];
   final _controller = ScrollController();
 
@@ -275,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         CupertinoPageRoute(
                           builder: (context) => CategoryScreen(
-                              categoryName: categories[index].name),
+                              categoryName: categories[index].name, categoryId: categories[index].urlString ?? ''),
                         ),
                       );
                     },

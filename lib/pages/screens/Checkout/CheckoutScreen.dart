@@ -126,13 +126,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         body: BlocListener<CartBloc, CartState>(
           listener: (context, state) {
             if (state is CartCheckoutCallback) {
-              Navigator.push(
+              final result = Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) => PaymentWebViewScreen(
                       url: state.cartCheckout.redirectUrl!),
                 ),
               );
+              if (!context.mounted) return;
+              result.then((value) {
+                // context.read<CartBloc>().add(FetchCart(widget.cartType));
+                Navigator.pop(context, true);
+              });
             }
           },
           child: Center(

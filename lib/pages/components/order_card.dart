@@ -57,7 +57,7 @@ class _OrderCardComponentState extends State<OrderCardComponent> {
         onTapUp: _onTapUp,
         onTapCancel: _onTapCancel,
         child: AnimatedContainer(
-          height: 210,
+          // height: 210,
           duration: const Duration(milliseconds: 100),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(

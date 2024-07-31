@@ -9,6 +9,7 @@ import 'package:quadrant_app/blocs/order/bloc/order_bloc.dart';
 import 'package:quadrant_app/pages/components/circle_action_button.dart';
 import 'package:quadrant_app/pages/components/order_card.dart';
 import 'package:quadrant_app/pages/components/texts.dart';
+import 'package:quadrant_app/pages/screens/Orders/OrderDetailsScreen.dart';
 import 'package:quadrant_app/repositories/OrderRepository/order_repository.dart';
 import 'package:quadrant_app/utils/custom_constants.dart';
 import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
@@ -32,79 +33,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     super.initState();
     _orderRepository = OrderRepository(DioManager.instance);
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-  //   return BlocProvider(
-  //     create: (context) =>
-  //         OrderBloc(orderRepository: _orderRepository)..add(FetchOrders()),
-  //     child: Scaffold(
-  //       body: Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
-  //         child: ListView(
-  //           physics: const ClampingScrollPhysics(),
-  //           children: <Widget>[
-  //             Row(
-  //               crossAxisAlignment: CrossAxisAlignment.center,
-  //               children: [
-  //                 CircleActionButton(
-  //                   isDark: isDark,
-  //                   icon: Iconsax.arrow_left,
-  //                   onTap: () {
-  //                     Navigator.pop(context);
-  //                   },
-  //                 ),
-  //                 const SizedBox(
-  //                   width: 10,
-  //                 ),
-  //                 SectionText(
-  //                     isDark: isDark, text: 'Orders', size: 32.0, bold: true),
-  //               ],
-  //             ),
-  //             SectionHelperText(
-  //                 isDark: isDark,
-  //                 text:
-  //                     'Manage your orders and keep track of your shopping experiances'),
-  //             BlocBuilder<OrderBloc, OrderState>(
-  //               builder: (context, state) {
-  //                 switch (state) {
-  //                   case OrderLoading():
-  //                     return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
-  //                   case OrdersLoaded():
-  //                     return Padding(
-  //                     padding: const EdgeInsets.symmetric(vertical: 10),
-  //                     child: Column(
-  //                       children: [
-  //                         ListView.builder(
-  //                           shrinkWrap: true,
-  //                           physics: const BouncingScrollPhysics(),
-  //                           itemCount: 10,
-  //                           itemBuilder: (context, index) {
-  //                             return OrderCardComponent(
-  //                               isDark: isDark,
-  //                               type: 'Order: di23dh38',
-  //                               name: 'Home',
-  //                               onTap: () {},
-  //                             );
-  //                           }
-  //                         )
-  //                       ],
-  //                     ),
-  //                   );
-  //                   case OrderError():
-  //                     return const ErrorComponent();
-  //                   default:
-  //                     return Center(child: LoadingAnimationWidget.waveDots(color: isDark ? CustomColors.primaryLight : CustomColors.textColorLight, size: 24));
-  //                 }
-  //               },
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -169,14 +97,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   orderNum: index + 1,
                                   order: order!,
                                   onTap: () {
-                                    // if (order.id != null){
-                                    //   Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => OrderScreen(orderId: order.id),
-                                    //     ),
-                                    //   );
-                                    // }
+                                    if (order.id != null){
+                                      Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => OrderDetailsScreen(orderId: order.id!),
+                                        ),
+                                      );
+                                    }
                                   },
                                 ).animate().fade();
                               }),

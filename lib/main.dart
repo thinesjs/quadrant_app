@@ -114,7 +114,8 @@ class _MyAppState extends State<MyApp> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8080/qentry-listen'),
+      // Uri.parse('ws://localhost:8080/qentry-listen'),
+      Uri.parse('ws://quadrant-ws.thinesjs.com/qentry-listen'),
     );
 
     channel.stream.listen((message) async {

@@ -301,8 +301,8 @@ class AuthenticationRepository {
   }
 
   Future<void> logOut() async {
-    await unregisterFcmToken();
     await CacheManager.clearAll();
+    await unregisterFcmToken();
     _controller.add(AuthenticationStatus.unauthenticated);
   }
 

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
@@ -11,7 +13,7 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const LoginScreen());
+    return CupertinoPageRoute<void>(builder: (_) => const LoginScreen());
   }
 
   @override
@@ -106,6 +108,18 @@ class LoginForm extends StatelessWidget {
                   child: const Text('Sign Up'),
                 ),
               ],
+            ),
+            Row(
+              children: [
+                const Text("Forgot password?"),
+                TextButton(
+                  key: const Key('loginForm_createAccount_raisedButton'),
+                  onPressed: () {
+                    Navigator.of(context).push<void>(RegisterScreen.route());
+                  },
+                  child: const Text('Reset Password'),
+                ),
+              ],
             )
           ],
         ),
@@ -136,12 +150,14 @@ class _UsernameInput extends StatelessWidget {
                 const SizedBox(width: 15),
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController()..text = "tt@t.com",
                     key: const Key('loginForm_usernameInput_textField'),
-                    onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged("tt@t.com")),
-                    decoration: const InputDecoration(
+                    onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+                    decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Email',
+                      hintStyle: TextStyle(
+                        color: !isDark ? Colors.black54 : Colors.white54
+                      ),
+                      hintText: 'johndoe@email.com',
                     ),
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
@@ -180,11 +196,13 @@ class _PasswordInput extends StatelessWidget {
                 const SizedBox(width: 15),
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController()..text = "account123",
                     key: const Key('loginForm_passwordInput_textField'),
-                    onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged("account123")),
-                    decoration: const InputDecoration(
+                    onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+                    decoration: InputDecoration(
                       border: InputBorder.none,
+                      hintStyle: TextStyle(
+                        color: !isDark ? Colors.black54 : Colors.white54
+                      ),
                       hintText: 'Password',
                     ),
                     style: const TextStyle(

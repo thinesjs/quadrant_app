@@ -71,12 +71,12 @@ class OrderResponseData {
         orderStatus!.add(new OrderStatus.fromJson(v));
       });
     }
-    if (json['voucherTransaction'] != null) {
-      voucherTransaction = <Null>[];
-      json['voucherTransaction'].forEach((v) {
-        // voucherTransaction!.add(new Null.fromJson(v));
-      });
-    }
+    // if (json['voucherTransaction'] != null) {
+    //   voucherTransaction = <Null>[];
+    //   json['voucherTransaction'].forEach((v) {
+    //     voucherTransaction!.add(new Null.fromJson(v));
+    //   });
+    // }
   }
 
   Map<String, dynamic> toJson() {
@@ -98,10 +98,10 @@ class OrderResponseData {
     if (this.orderStatus != null) {
       data['orderStatus'] = this.orderStatus!.map((v) => v.toJson()).toList();
     }
-    if (this.voucherTransaction != null) {
-      // data['voucherTransaction'] =
-      //     this.voucherTransaction!.map((v) => v.toJson()).toList();
-    }
+    // if (this.voucherTransaction != null) {
+    //   data['voucherTransaction'] =
+    //       this.voucherTransaction!.map((v) => v.toJson()).toList();
+    // }
     return data;
   }
 }
@@ -208,8 +208,11 @@ class Product {
   bool? isFeatured;
   String? status;
   String? categoryId;
+  String? upcCode;
+  String? skuCode;
   String? createdAt;
   String? updatedAt;
+  List<Images>? images;
 
   Product(
       {this.id,
@@ -220,8 +223,11 @@ class Product {
       this.isFeatured,
       this.status,
       this.categoryId,
+      this.upcCode,
+      this.skuCode,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.images});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -232,8 +238,16 @@ class Product {
     isFeatured = json['isFeatured'];
     status = json['status'];
     categoryId = json['categoryId'];
+    upcCode = json['upc_code'];
+    skuCode = json['sku_code'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    if (json['images'] != null) {
+      images = <Images>[];
+      json['images'].forEach((v) {
+        images!.add(new Images.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -246,6 +260,39 @@ class Product {
     data['isFeatured'] = this.isFeatured;
     data['status'] = this.status;
     data['categoryId'] = this.categoryId;
+    data['upc_code'] = this.upcCode;
+    data['sku_code'] = this.skuCode;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    if (this.images != null) {
+      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Images {
+  String? id;
+  String? productId;
+  String? url;
+  String? createdAt;
+  String? updatedAt;
+
+  Images({this.id, this.productId, this.url, this.createdAt, this.updatedAt});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productId = json['productId'];
+    url = json['url'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['productId'] = this.productId;
+    data['url'] = this.url;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
     return data;

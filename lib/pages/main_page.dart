@@ -25,7 +25,7 @@ class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => MainPage(key: mainPageKey));
+    return CupertinoPageRoute<void>(builder: (_) => MainPage(key: mainPageKey));
   }
 
   @override

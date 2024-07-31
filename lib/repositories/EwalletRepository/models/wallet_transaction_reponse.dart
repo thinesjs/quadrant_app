@@ -38,7 +38,7 @@ class WalletTransactionsData {
   WalletTransactionsData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];
-    balance = json['balance'];
+    balance = json['balance'] != null ? (json['balance'] as num).toDouble() : null;
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     if (json['transactions'] != null) {

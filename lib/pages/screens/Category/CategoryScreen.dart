@@ -15,7 +15,8 @@ import 'package:quadrant_app/utils/helpers/network/dio_manager.dart';
 
 class CategoryScreen extends StatelessWidget {
   final String categoryName;
-  const CategoryScreen({super.key, required this.categoryName});
+  final String categoryId;
+  const CategoryScreen({super.key, required this.categoryName, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class CategoryScreen extends StatelessWidget {
             BlocProvider(
                 create: (context) => ProductBloc(
                     productRepository: ProductRepository(DioManager.instance))
-                  ..add(FetchProductByCategory(categoryName)),
+                  ..add(FetchProductByCategory(categoryId)),
                 child: BlocBuilder<ProductBloc, ProductState>(
                   builder: (context, state) {
                     switch (state) {

@@ -8,7 +8,7 @@ part 'order_event.dart';
 part 'order_state.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
-  OrderBloc({ required OrderRepository orderRepository }) : _orderRepository = orderRepository, super(OrderLoading()) {
+  OrderBloc({ required OrderRepository orderRepository }) : _orderRepository = orderRepository, super(OrderInitial()) {
     on<FetchOrders>(_onFetchOrders);
     on<FetchOrder>(_onFetchOrder);
   }

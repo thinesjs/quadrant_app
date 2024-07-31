@@ -153,8 +153,12 @@ class _CartScreenState extends State<CartScreen> {
                                 isDark: isDark,
                                 text: "Checkout",
                                 onTap: () {
-                                  Navigator.push(
-                                      context, CheckoutScreen.route());
+                                  final result = Navigator.push(context, CheckoutScreen.route());
+                                  if (!context.mounted) return;
+                                  result.then((value) {
+                                    context.read<CartBloc>().add(const FetchCart(CartType.ONLINE));
+                                  });
+                                      
                                 }),
                           ],
                         ),

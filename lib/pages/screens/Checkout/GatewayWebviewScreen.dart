@@ -50,8 +50,6 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
           onNavigationRequest: (NavigationRequest request) {
             print(request.url);
             if (request.url.startsWith('https://quadrant-api.thinesjs.com/v1/cart/redirect-app')) {
-            // if (request.url.startsWith('http://localhost:3000/api/v1/')) {
-              // https://api.thinesjaishankar.com/v1/cart/redirect-app?billplz%5Bid%5D=s1lteul0&billplz%5Bpaid%5D=true&billplz%5Bpaid_at%5D=2024-05-30+03%3A21%3A42+%2B0800&billplz%5Bx_signature%5D=aaac23b6d0d6aafa6601760dc29faf8709d7bfda34afd893cd318c4fc29dd917
               Navigator.pop(context, true);
               return NavigationDecision.prevent;
             }
