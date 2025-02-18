@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -112,6 +113,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Timer? _reconnectTimer;
+  final int _reconnectDelay = 3;
+
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
       // Uri.parse('ws://localhost:8080/qentry-listen'),
@@ -119,7 +123,6 @@ class _MyAppState extends State<MyApp> {
     );
 
     channel.stream.listen((message) async {
-      print(message);
       if (isRecognitionNotification(message)) {
         try {
           var data = jsonDecode(message);
@@ -129,7 +132,30 @@ class _MyAppState extends State<MyApp> {
           log('Error parsing message: $e');
         }
       }
-    });
+    },
+    onDone: () {
+      log('WebSocket connection closed. Attempting to reconnect...');
+      _attemptReconnect();
+    },
+    onError: (error) {
+      log('WebSocket error: $error. Attempting to reconnect...');
+      _attemptReconnect();
+    },);
+  }
+
+  void connectWebSocket() {
+  channel = WebSocketChannel.connect(
+    Uri.parse('ws://quadrant-ws.thinesjs.com/qentry-listen'),
+  );
+}
+
+  void _attemptReconnect() {
+    if (_reconnectTimer == null || !_reconnectTimer!.isActive) {
+      _reconnectTimer = Timer(Duration(seconds: _reconnectDelay), () {
+        log('Reconnecting to WebSocket...');
+        initializeWebSocket();
+      });
+    }
   }
 
   @override

@@ -51,11 +51,12 @@ class _CameraViewState extends State<CameraView> {
   double _maxAvailableExposureOffset = 0.0;
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
-  String _text = "Position your face within the frame";
+  bool _isUploading = false; // New variable to track upload state
+  String _text = "Look straight at the camera";
 
   int _captureCount = 0;
   final List<String> _captureInstructions = [
-    "Position your face within the frame",
+    "Look straight at the camera",
     "Move your face slightly to the left",
     "Move your face slightly to the right"
   ];
@@ -63,7 +64,6 @@ class _CameraViewState extends State<CameraView> {
   @override
   void initState() {
     super.initState();
-
     _initialize();
   }
 
@@ -84,46 +84,57 @@ class _CameraViewState extends State<CameraView> {
 
   Future<void> _captureImage() async {
     if (widget.faces.isNotEmpty && widget.faces.length == 1) {
-      // final faceImage = widget.faces.first;
-
       final image = await _controller!.takePicture();
+
+      setState(() {
+        _isUploading = true; // Show overlay when uploading starts
+      });
 
       List<int> imageBytes = await image.readAsBytes();
 
       final MultipartFile file = MultipartFile.fromBytes(
         imageBytes,
         filename: path.basename(image.path),
-        contentType: MediaType('image', 'jpeg')
+        contentType: MediaType('image', 'jpeg'),
       );
 
-      var response = await DioManager.instance.dio.post("/v1/qentry/create",
+      try {
+        var response = await DioManager.instance.dio.post(
+          "/v1/qentry/create",
           data: FormData.fromMap({
             "image": file,
-          }));
+          }),
+        );
 
-      if (response.statusCode == HttpStatus.created) {
-        log(response.data.toString(), name: "qentry-post image");
-        QEntryRegister jsonResponse = QEntryRegister.fromJson(response.data);
-        if(jsonResponse.success ?? false){
-          setState(() {
-            _captureCount++;
-            if (_captureCount >= 3) {
-              _text = "Captures complete. Processing...";
-            } else {
-              _text = _captureInstructions[_captureCount];
-            }
-          });
-        }else{
-          setState(() {
-            _text = "We're having trouble registering you. Try again later.";
-          });
+        if (response.statusCode == HttpStatus.created) {
+          log(response.data.toString(), name: "qentry-post image");
+          QEntryRegister jsonResponse = QEntryRegister.fromJson(response.data);
+          if (jsonResponse.success ?? false) {
+            setState(() {
+              _captureCount++;
+              if (_captureCount >= 3) {
+                _text = "Captures complete. Processing...";
+              } else {
+                _text = _captureInstructions[_captureCount];
+              }
+            });
+          } else {
+            setState(() {
+              _text = "We're having trouble registering you. Try again later.";
+            });
+          }
+        } else {
+          throw Exception('Failed to process qentry');
         }
-
-      } else {
-        throw Exception('Failed to process qentry');
+      } catch (e) {
+        setState(() {
+          _text = "Error uploading image: ${e.toString()}";
+        });
+      } finally {
+        setState(() {
+          _isUploading = false; // Hide overlay when upload completes
+        });
       }
-
-
     }
   }
 
@@ -142,21 +153,27 @@ class _CameraViewState extends State<CameraView> {
     if (_cameras.isEmpty) return Container();
     if (_controller == null) return Container();
     if (_controller?.value.isInitialized == false) return Container();
+    final sz = MediaQuery.of(context).size;
     var size = MediaQuery.of(context).size.width;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+
+    var scale = sz.aspectRatio * _controller!.value.aspectRatio;
+    if (scale < 1) scale = 1 / scale;
+
     return ColoredBox(
       color: Colors.black,
       child: Stack(
-        // fit: StackFit.expand,
         children: <Widget>[
           Center(
             child: _changingCameraLens
                 ? Center(
                     child: LoadingAnimationWidget.waveDots(
-                        color: isDark
-                            ? CustomColors.primaryLight
-                            : CustomColors.textColorLight,
-                        size: 24))
+                      color: isDark
+                          ? CustomColors.primaryLight
+                          : CustomColors.textColorLight,
+                      size: 24,
+                    ),
+                  )
                 : Scaffold(
                     body: Center(
                       child: Column(
@@ -165,7 +182,7 @@ class _CameraViewState extends State<CameraView> {
                           Container(
                             margin: const EdgeInsets.only(bottom: 20.0),
                             child: Text(
-                              _text,
+                              (widget.faces.isEmpty && _captureCount < 3) ? "Position your face within the frame" : _text,
                               style: TextStyle(fontSize: 18.0),
                             ),
                           ),
@@ -189,8 +206,8 @@ class _CameraViewState extends State<CameraView> {
                                 child: Container(
                                   width: 300,
                                   height: 300,
-                                  child: AspectRatio(
-                                    aspectRatio: _controller!.value.aspectRatio,
+                                  child: Transform.scale(
+                                    scale: scale,
                                     child: CameraPreview(
                                       _controller!,
                                       child: widget.customPaint,
@@ -213,10 +230,19 @@ class _CameraViewState extends State<CameraView> {
                     ),
                   ),
           ),
-
-          // _backButton(),
           _switchLiveCameraToggle(),
-          // _exposureControl(),
+          if (_isUploading) 
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: LoadingAnimationWidget.waveDots(
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -11,6 +11,7 @@ import 'package:popover/popover.dart';
 import 'package:quadrant_app/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:quadrant_app/blocs/billboard/bloc/billboard_bloc.dart';
 import 'package:quadrant_app/blocs/product/bloc/product_bloc.dart';
+import 'package:quadrant_app/blocs/qentry/bloc/qentry_bloc.dart';
 import 'package:quadrant_app/pages/components/category_button.dart';
 import 'package:quadrant_app/pages/components/custom_textfield.dart';
 import 'package:quadrant_app/pages/components/product_card.dart';
@@ -63,14 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<Item> categories = [
-    Item(name: 'Grocery', urlString:'66447d5898ed0d0f236cfa6f', icon: Iconsax.tree),
-    Item(name: 'Household', urlString:'664750823cb1d589639bbf91', icon: Iconsax.lamp),
-    Item(name: 'Health & Beauty', urlString:'6647508f3cb1d589639bbf92', icon: Iconsax.health),
-    Item(name: 'Appliances', urlString:'6647509b3cb1d589639bbf93', icon: Iconsax.mobile),
-    Item(name: 'Pets', urlString:'664750cb3cb1d589639bbf96', icon: Iconsax.pet),
-    Item(name: 'Bakery', urlString:'664750f13cb1d589639bbf99', icon: Iconsax.cake),
-    Item(name: 'Fresh Produce', urlString:'664750dd3cb1d589639bbf98', icon: Iconsax.milk),
-    Item(name: 'More', urlString:'Grocery', icon: Iconsax.more),
+    Item(
+        name: 'Grocery',
+        urlString: '66447d5898ed0d0f236cfa6f',
+        icon: Iconsax.tree),
+    Item(
+        name: 'Household',
+        urlString: '664750823cb1d589639bbf91',
+        icon: Iconsax.lamp),
+    Item(
+        name: 'Health & Beauty',
+        urlString: '6647508f3cb1d589639bbf92',
+        icon: Iconsax.health),
+    Item(
+        name: 'Appliances',
+        urlString: '6647509b3cb1d589639bbf93',
+        icon: Iconsax.mobile),
+    Item(
+        name: 'Pets', urlString: '664750cb3cb1d589639bbf96', icon: Iconsax.pet),
+    Item(
+        name: 'Bakery',
+        urlString: '664750f13cb1d589639bbf99',
+        icon: Iconsax.cake),
+    Item(
+        name: 'Fresh Produce',
+        urlString: '664750dd3cb1d589639bbf98',
+        icon: Iconsax.milk),
+    Item(name: 'More', urlString: 'Grocery', icon: Iconsax.more),
   ];
   final _controller = ScrollController();
 
@@ -105,8 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onChange: (String val) {},
                       ),
                     ),
-                    Expanded(
-                        child: QuickAccessButton(isDark: isDark)),
+                    Expanded(child: QuickAccessButton(isDark: isDark)),
                   ],
                 ),
               ),
@@ -276,7 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         CupertinoPageRoute(
                           builder: (context) => CategoryScreen(
-                              categoryName: categories[index].name, categoryId: categories[index].urlString ?? ''),
+                              categoryName: categories[index].name,
+                              categoryId: categories[index].urlString ?? ''),
                         ),
                       );
                     },
@@ -284,6 +304,107 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
+            BlocBuilder<QentryBloc, QentryState>(
+              builder: (context, state) {
+                bool isDetected = state is QentryVerified;
+                if (isDetected) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SectionText(
+                                isDark: isDark,
+                                text: "For You",
+                                size: 20.0,
+                                bold: true),
+                            SideSectionText(
+                                isDark: isDark,
+                                text: "See all",
+                                size: 16.0,
+                                onTap: () => mainPageKey.currentState
+                                    ?.switchToScreen(1)),
+                          ],
+                        ),
+                      ),
+                      BlocProvider(
+                        create: (context) =>
+                            ProductBloc(productRepository: _productRepository)
+                              ..add(FetchForYouProduct()),
+                        child: Padding(
+                          padding: const EdgeInsets.all(19),
+                          child: BlocBuilder<ProductBloc, ProductState>(
+                              builder: (context, state) {
+                            switch (state) {
+                              case ProductLoading():
+                                return Center(
+                                    child: LoadingAnimationWidget.waveDots(
+                                        color: isDark
+                                            ? CustomColors.primaryLight
+                                            : CustomColors.textColorLight,
+                                        size: 24));
+                              case ProductsLoaded():
+                                return SizedBox(
+                                  height: 270.0,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    padding: EdgeInsets.zero,
+                                    itemCount: state.products?.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        child: ProductCard(
+                                          isDark: isDark,
+                                          name: state.products?[index].name ??
+                                              "",
+                                          price:
+                                              state.products?[index].price ??
+                                                  0.0,
+                                          rating: 0.0,
+                                          image: state.products?[index]
+                                                  .images?[0].url ??
+                                              "",
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    ProductScreen(
+                                                        productId: state
+                                                                .products?[
+                                                                    index]
+                                                                .id ??
+                                                            ''),
+                                              ),
+                                            );
+                                          },
+                                        ).animate().fade(),
+                                      );
+                                    },
+                                  ),
+                                );
+                              case ProductError():
+                                return const Text('Something went wrong!');
+                              default:
+                                return Center(
+                                    child: LoadingAnimationWidget.waveDots(
+                                        color: isDark
+                                            ? CustomColors.primaryLight
+                                            : CustomColors.textColorLight,
+                                        size: 24));
+                            }
+                          }),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ).animate().fade().slideY(begin: -0.2),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
@@ -443,85 +564,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }),
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 29, vertical: 2.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SectionText(
-                      isDark: isDark, text: "For You", size: 20.0, bold: true),
-                  SideSectionText(
-                      isDark: isDark,
-                      text: "See all",
-                      size: 16.0,
-                      onTap: () => mainPageKey.currentState?.switchToScreen(1)),
-                ],
-              ),
-            ).animate().fade().slideY(begin: -0.2),
-            BlocProvider(
-              create: (context) =>
-                  ProductBloc(productRepository: _productRepository)
-                    ..add(FetchForYouProduct()),
-              child: Padding(
-                padding: const EdgeInsets.all(19),
-                child: BlocBuilder<ProductBloc, ProductState>(
-                    builder: (context, state) {
-                  switch (state) {
-                    case ProductLoading():
-                      return Center(
-                          child: LoadingAnimationWidget.waveDots(
-                              color: isDark
-                                  ? CustomColors.primaryLight
-                                  : CustomColors.textColorLight,
-                              size: 24));
-                    case ProductsLoaded():
-                      return SizedBox(
-                        height: 270.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.zero,
-                          itemCount: state.products?.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: ProductCard(
-                                isDark: isDark,
-                                name: state.products?[index].name ?? "",
-                                price: state.products?[index].price ?? 0.0,
-                                rating: 0.0,
-                                image:
-                                    state.products?[index].images?[0].url ?? "",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => ProductScreen(
-                                          productId:
-                                              state.products?[index].id ?? ''),
-                                    ),
-                                  );
-                                },
-                              ).animate().fade(),
-                            );
-                          },
-                        ),
-                      );
-                    case ProductError():
-                      return const Text('Something went wrong!');
-                    default:
-                      return Center(
-                          child: LoadingAnimationWidget.waveDots(
-                              color: isDark
-                                  ? CustomColors.primaryLight
-                                  : CustomColors.textColorLight,
-                              size: 24));
-                  }
-                }),
-              ),
-            ),
-            SizedBox(height: displayHeight / 7),
+            SizedBox(height: displayHeight / 5),
           ],
         ),
       ),
@@ -555,9 +598,8 @@ class QuickAccessButton extends StatelessWidget {
           width: displayWidth,
           height: displayHeight / 4.7,
           transition: PopoverTransition.scale,
-          backgroundColor: isDark
-              ? CustomColors.cardColorDark
-              : CustomColors.cardColorLight,
+          backgroundColor:
+              isDark ? CustomColors.cardColorDark : CustomColors.cardColorLight,
         );
       },
       child: Row(

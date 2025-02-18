@@ -99,7 +99,7 @@ class ProductRepository {
 
   Future<List<Products>?> fetchForYouProducts() async {
     log("getting for you products", name: "ProductRepository");
-    var response = await dioManager.dio.get("/v1/products/for-you");
+    var response = await dioManager.dio.get("/v1/qentry/offers");
     
     if (response.statusCode == HttpStatus.ok) {
       ProductsResponse jsonResponse = ProductsResponse.fromJson(response.data);
